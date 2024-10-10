@@ -1,0 +1,20 @@
+<template>
+  <div>
+    <button>{{ label }}</button>
+  </div>
+</template>
+
+<script>
+export default {
+  props: {
+    label: String,
+    color: String,
+  },
+};
+</script>
+
+<style scoped>
+button {
+  background-color: v-bind(color);
+}
+</style>
