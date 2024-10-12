@@ -30,6 +30,15 @@ const routes = [
     component: () => import("../views/DetailProduit.vue"),
   },
   {
+
+    path: "/product-back",
+    name: "BackDetailProduit",
+    component: () => import("../views/BackProduit.vue"),
+    
+     meta: { title: 'WebWares - Liste Produits Back' },
+ },
+ {
+
     path: "/categorie/:id", 
     name: "CategorieProduits",
 
@@ -55,6 +64,7 @@ const routes = [
 
     component: () => import("../views/ConditionsUtilisation.vue"),
     meta: { title: 'WebWares - Conditions Utilisation' },
+
   },
 ];
 
