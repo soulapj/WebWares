@@ -1,31 +1,45 @@
 <template>
-  <nav>
-    <router-link to="/">Accueil</router-link> |
-    <router-link to="/produit">Liste Produit</router-link> |
-    <router-link to="/panier">Panier</router-link>
-  </nav>
-  <router-view />
+
+  <div id="app">
+    <!-- Header should be visible on all pages -->
+    <HeaderComponent />
+
+    <!-- Router-view to show different views like HomeView, Product List, etc. -->
+    <router-view />
+
+    <!-- Footer should be visible on all pages -->
+    <FooterComponent />
+  </div>
 </template>
 
+<script>
+import HeaderComponent from './components/HeaderComponent.vue';
+import FooterComponent from './components/FooterComponent.vue';
+// localStorage.clear();
+export default {
+  created() {
+    this.$store.dispatch("loadCommandesFromLocalStorage");
+  },
+  components: {
+    HeaderComponent,
+    FooterComponent,
+  },
+};
+</script>
+
 <style>
+:root {
+  --color-primary: #D7C3A7;
+  --color-secondary: #264653;
+  --color-accent: #E9C46A;
+  --color-background: #F4F4F4;
+  --color-logout: #e63946;
+}
+body {
+  margin: 0;
+}
 #app {
-  font-family: Avenir, Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-align: center;
-  color: #2c3e50;
-}
-
-nav {
-  padding: 30px;
-}
-
-nav a {
-  font-weight: bold;
-  color: #2c3e50;
-}
-
-nav a.router-link-exact-active {
-  color: #42b983;
+  font-family: 'Roboto', 'Open Sans';
+  margin: 0;
 }
 </style>
