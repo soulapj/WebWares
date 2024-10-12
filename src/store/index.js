@@ -14,7 +14,7 @@ export default createStore({
     produits: [
       {
         id: 1,
-        images: "@/assets/mobilier/mobilier-5.jpg",
+        images: require("@/assets/mobilier/mobilier-5.jpg"),
         titre: "Table à manger en bois",
         description: "Table à manger en bois massif avec finition élégante.",
         prix: 299.99,
@@ -23,7 +23,7 @@ export default createStore({
       },
       {
         id: 2,
-        images: "@/assets/luminaire/luminaire-1.jpg",
+        images: require("@/assets/luminaire/luminaire-1.jpg"),
         titre: "Lampe moderne",
         description: "Lampe avec un design moderne et éclairage ajustable.",
         prix: 129.99,
@@ -32,7 +32,7 @@ export default createStore({
       },
       {
         id: 3,
-        images: "@/assets/tapis/tapis-2.jpg",
+        images: require("@/assets/tapis/tapis-2.jpg"),
         titre: "Tapis en laine",
         description: "Tapis doux en laine avec motif géométrique.",
         prix: 89.99,
@@ -41,7 +41,7 @@ export default createStore({
       },
       {
         id: 4,
-        images: "@/assets/luminaire/luminaire-3.jpg",
+        images: require("@/assets/luminaire/luminaire-3.jpg"),
         titre: "Vase éthnique en argile",
         description: "Vase éthnique en argile avec motifs gravés à la main.",
         prix: 49.99,
@@ -112,6 +112,11 @@ export default createStore({
     setDetailProduit(state, prod) {
       state.detailProd = prod;
     },
+    deleteBackProduit(state, id){
+      if (confirm("Êtes vous sur?")){
+        state.produits.splice(id, 1);
+      }
+    }
   },
   actions: {
     loadDetailProduits({ commit }, idProduit) {

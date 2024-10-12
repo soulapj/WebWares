@@ -24,6 +24,11 @@ const routes = [
     name: "DetailProduit",
     component: () => import("../views/DetailProduit.vue"),
   },
+  {
+    path: "/productback",
+    name: "DetailProduit",
+    component: () => import("../views/BackProduit.vue"),
+  },
 ];
 
 const router = createRouter({
