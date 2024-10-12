@@ -63,6 +63,7 @@ export default {
       return this.commandes.some((commande) =>
         commande.produits.some((prod) => prod.produitId === produitId)
       );
+    },
     // Méthode pour mettre à jour la recherche
     handleSearchUpdate(newSearchQuery) {
       this.searchQuery = newSearchQuery;
