@@ -24,7 +24,6 @@
       <router-link :to="{ name: 'DetailProduit', params: { id: prod.id } }"
         >voir détails</router-link
       >
-      </div>
     </div>
   </div>
 </template>
