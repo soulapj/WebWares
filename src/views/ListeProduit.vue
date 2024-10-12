@@ -1,10 +1,7 @@
 <template>
   <SearchBar :placeholder="'Rechercher un produit...'" :searchQuery="searchQuery" @update-search="handleSearchUpdate" />
-  <div class="catégorie" v-for="(cat, id) in this.categories" :key="id">
-    <p>{{ cat.name }}</p>
-  </div>
   <div class="produit">
-    <div v-for="(prod, index) in this.produits" :key="index">
+    <div v-for="(prod, index) in filteredProduits" :key="index">
       <img :src="prod.images" />
       <h4>{{ prod.titre }}</h4>
       <p>Nombre d'article restant :{{ prod.moq }}</p>
