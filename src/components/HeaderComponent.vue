@@ -187,7 +187,7 @@ i:hover {
 .user-menu .dropdown {
   display: none;
   text-align: center;
-  position: absolute;
+  position: absolute;/*position a gerer */
   top: 25px;
   left: -100px;
   background-color: var(--color-background);
