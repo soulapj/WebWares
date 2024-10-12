@@ -2,10 +2,20 @@
   <nav>
     <router-link to="/">Accueil</router-link> |
     <router-link to="/produit">Liste Produit</router-link> |
-    <router-link to="/panier">Panier</router-link>
+    <router-link to="/panier">Panier</router-link> |
+    <router-link to="/utilisateur">Profil Utilisateur</router-link>
   </nav>
   <router-view />
 </template>
+
+<script>
+// localStorage.clear();
+export default {
+  created() {
+    this.$store.dispatch("loadCommandesFromLocalStorage");
+  },
+};
+</script>
 
 <style>
 #app {
