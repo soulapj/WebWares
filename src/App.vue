@@ -1,4 +1,5 @@
 <template>
+
   <div id="app">
     <!-- Header should be visible on all pages -->
     <HeaderComponent />
@@ -14,8 +15,12 @@
 <script>
 import HeaderComponent from './components/HeaderComponent.vue';
 import FooterComponent from './components/FooterComponent.vue';
-
+// localStorage.clear();
 export default {
+  created() {
+    this.$store.dispatch("loadCommandesFromLocalStorage");
+  },
+};
   components: {
     HeaderComponent,
     FooterComponent,

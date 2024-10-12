@@ -3,6 +3,7 @@ import { createStore } from "vuex";
 export default createStore({
   state: {
     detailProd: {},
+    commandeValider: [],
 
     categories: [
       { id: 1, name: "Mobilier d'intérieur" },
@@ -51,24 +52,24 @@ export default createStore({
     ],
 
     commandes: [
-      {
-        id: 1,
-        produits: [
-          { produitId: 1, quantite: 2 },
-          { produitId: 3, quantite: 1 },
-        ],
-        coutTotal: 689.97,
-        userId: 1,
-      },
-      {
-        id: 2,
-        produits: [
-          { produitId: 2, quantite: 1 },
-          { produitId: 4, quantite: 3 },
-        ],
-        coutTotal: 539.96,
-        userId: 2,
-      },
+      // {
+      //   id: 1,
+      //   produits: [
+      //     { produitId: 1, titre: "Table à manger en bois", quantite: 2 },
+      //     { produitId: 3, titre: "Tapis en laine", quantite: 1 },
+      //   ],
+      //   countTotal: 689.97,
+      //   userId: 1,
+      // },
+      // {
+      //   id: 2,
+      //   produits: [
+      //     { produitId: 2, titre: "Lampe moderne", quantite: 1 },
+      //     { produitId: 4, titre: "Vase éthnique en argile", quantite: 3 },
+      //   ],
+      //   countTotal: 539.96,
+      //   userId: 2,
+      // },
     ],
 
     utilisateurs: [
@@ -112,7 +113,120 @@ export default createStore({
     setDetailProduit(state, prod) {
       state.detailProd = prod;
     },
+    setCommandesFromLocalStorage(state, commandes) {
+      state.commandes = commandes;
+    },
+    setCommandeValider(state, commande) {
+      state.commandeValider = commande;
+    },
+
+    clearPanier(state) {
+      state.commandes = [];
+      localStorage.removeItem("commandes");
+    },
+
+    addProduitToCommande(state, prodId) {
+      let produitInfo = state.produits.find((p) => p.id === prodId);
+      if (!produitInfo) return;
+
+      let commandeExistante = state.commandes.find((commande) =>
+        commande.produits.some((p) => p.produitId === prodId)
+      );
+
+      if (commandeExistante) {
+        let produit = commandeExistante.produits.find(
+          (p) => p.produitId === prodId
+        );
+        produit.quantite++;
+        commandeExistante.countTotal += produitInfo.prix;
+      } else {
+        state.commandes.push({
+          id: state.commandes.length + 1,
+          produits: [
+            {
+              produitId: produitInfo.id,
+              titre: produitInfo.titre,
+              quantite: 1,
+            },
+          ],
+          countTotal: produitInfo.prix,
+          userId: 1,
+        });
+      }
+      localStorage.setItem("commandes", JSON.stringify(state.commandes));
+    },
+
+    removeProduit(state, prodId) {
+      state.commandes = state.commandes
+        .map((commande) => ({
+          ...commande,
+          produits: commande.produits.filter((p) => p.produitId !== prodId),
+        }))
+        .filter((commande) => commande.produits.length > 0);
+      localStorage.setItem("commandes", JSON.stringify(state.commandes));
+    },
+
+    incrementQuantite(state, prodId) {
+      let commande = state.commandes.find((com) =>
+        com.produits.some((p) => p.produitId === prodId)
+      );
+      if (commande) {
+        let produit = commande.produits.find((p) => p.produitId === prodId);
+        produit.quantite++;
+        let produitInfo = state.produits.find((p) => p.id === prodId);
+        commande.countTotal += produitInfo.prix;
+        localStorage.setItem("commandes", JSON.stringify(state.commandes));
+      }
+    },
+
+    decrementQuantite(state, prodId) {
+      let commande = state.commandes.find((com) =>
+        com.produits.some((p) => p.produitId === prodId)
+      );
+      if (commande) {
+        let produit = commande.produits.find((p) => p.produitId === prodId);
+        if (produit.quantite > 1) {
+          produit.quantite--;
+          let produitInfo = state.produits.find((p) => p.id === prodId);
+          commande.countTotal -= produitInfo.prix;
+          localStorage.setItem("commandes", JSON.stringify(state.commandes));
+        }
+      }
+    },
+
+    saveCommandeToLocalStorage(state, commande) {
+      if (commande && Array.isArray(commande.produits)) {
+        state.commandeValider.push({
+          id: state.commandeValider.length + 1,
+          produits: commande.produits.map((p) => ({
+            produitId: p.produitId,
+            titre: p.titre,
+            quantite: p.quantite,
+          })),
+          countTotal: commande.countTotal,
+          userId: commande.userId,
+        });
+        localStorage.setItem(
+          "commandeValider",
+          JSON.stringify(state.commandeValider)
+        );
+      } else {
+        console.error("Invalid commande object", commande);
+      }
+    },
+
+    updateProductStock(state, { produitId, quantite }) {
+      const produit = state.produits.find((p) => p.id === produitId);
+      if (produit && produit.moq >= quantite) {
+        produit.moq -= quantite;
+      } else {
+        console.error(
+          `Quantité demandée pour le produit ID: ${produitId} est supérieure au stock disponible.`
+        );
+      }
+    },
   },
+
   actions: {
     loadDetailProduits({ commit }, idProduit) {
       const selectedProduct = this.state.produits.find(
@@ -122,7 +236,56 @@ export default createStore({
         commit("setDetailProduit", selectedProduct);
       }
     },
+
+    addProduitToPanier({ commit }, prodId) {
+      commit("addProduitToCommande", prodId);
+    },
+    removeProduit({ commit }, produitId) {
+      commit("removeProduit", produitId);
+    },
+
+    loadCommandesFromLocalStorage({ commit }) {
+      const commandes = JSON.parse(localStorage.getItem("commandes"));
+      if (commandes && Array.isArray(commandes)) {
+        commit("setCommandesFromLocalStorage", commandes);
+      }
+    },
+
+    saveCommandeToLocalStorage({ commit }, currentCommande) {
+      if (currentCommande && Array.isArray(currentCommande.produits)) {
+        commit("saveCommandeToLocalStorage", currentCommande);
+      } else {
+        console.error("Invalid currentCommande object", currentCommande);
+      }
+    },
   },
-  getters: {},
+
+  getters: {
+    subTotal: (state) => (produitId) => {
+      const produit = state.commandes
+        .flatMap((commande) => commande.produits)
+        .find((p) => p.produitId === produitId);
+      if (produit) {
+        const produitInfo = state.produits.find((p) => p.id === produitId);
+        return (produit.quantite * produitInfo.prix).toFixed(2);
+      }
+      return 0;
+    },
+
+    total: (state) => {
+      return state.commandes.reduce((acc, commande) => {
+        return (
+          acc +
+          commande.produits.reduce((subAcc, produit) => {
+            return (
+              subAcc +
+              produit.quantite *
+                state.produits.find((p) => p.id === produit.produitId).prix
+            );
+          }, 0)
+        );
+      }, 0);
+    },
+  },
   modules: {},
 });
