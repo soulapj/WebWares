@@ -86,12 +86,14 @@ export default {
 
 <style scoped>
 header {
+  position:relative;
   display: flex;
   justify-content: space-around;
   align-items: center;
   padding: 0.5rem 0;
   background-color: var(--color-background);
   box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.1);
+  z-index: 238;
 }
 
 .logo img {
