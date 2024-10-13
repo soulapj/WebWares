@@ -113,8 +113,8 @@ export default createStore({
     setDetailProduit(state, prod) {
       state.detailProd = prod;
     },
-    deleteBackProduit(state, id){
-      if (confirm("Êtes vous sur?")){
+    deleteBackProduit(state, id) {
+      if (confirm("Êtes vous sur?")) {
         state.produits.splice(id, 1);
       }
     },
@@ -142,8 +142,15 @@ export default createStore({
         let produit = commandeExistante.produits.find(
           (p) => p.produitId === prodId
         );
-        produit.quantite++;
-        commandeExistante.countTotal += produitInfo.prix;
+
+        if (produit.quantite < produitInfo.moq) {
+          produit.quantite = produitInfo.moq;
+          commandeExistante.countTotal +=
+            (produitInfo.moq - produit.quantite) * produitInfo.prix;
+        } else {
+          produit.quantite++;
+          commandeExistante.countTotal += produitInfo.prix;
+        }
       } else {
         state.commandes.push({
           id: state.commandes.length + 1,
@@ -151,10 +158,10 @@ export default createStore({
             {
               produitId: produitInfo.id,
               titre: produitInfo.titre,
-              quantite: 1,
+              quantite: produitInfo.moq,
             },
           ],
-          countTotal: produitInfo.prix,
+          countTotal: produitInfo.prix * produitInfo.moq,
           userId: 1,
         });
       }
@@ -190,11 +197,16 @@ export default createStore({
       );
       if (commande) {
         let produit = commande.produits.find((p) => p.produitId === prodId);
-        if (produit.quantite > 1) {
+        let produitInfo = state.produits.find((p) => p.id === prodId);
+
+        if (produit.quantite > produitInfo.moq) {
           produit.quantite--;
-          let produitInfo = state.produits.find((p) => p.id === prodId);
           commande.countTotal -= produitInfo.prix;
           localStorage.setItem("commandes", JSON.stringify(state.commandes));
+        } else {
+          console.log(
+            `La quantité minimum pour ce produit est ${produitInfo.moq}`
+          );
         }
       }
     },
@@ -217,17 +229,6 @@ export default createStore({
         );
       } else {
         console.error("Invalid commande object", commande);
-      }
-    },
-
-    updateProductStock(state, { produitId, quantite }) {
-      const produit = state.produits.find((p) => p.id === produitId);
-      if (produit && produit.moq >= quantite) {
-        produit.moq -= quantite;
-      } else {
-        console.error(
-          `Quantité demandée pour le produit ID: ${produitId} est supérieure au stock disponible.`
-        );
       }
     },
   },
