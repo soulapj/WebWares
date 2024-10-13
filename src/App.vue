@@ -1,13 +1,13 @@
 <template>
   <div id="app">
-    <!-- Header should be visible on all pages -->
-    <HeaderComponent />
+      <!-- Header should be visible on all pages -->
+      <HeaderComponent />
 
-    <!-- Router-view to show different views like HomeView, Product List, etc. -->
-    <router-view />
+      <!-- Router-view to show different views like HomeView, Product List, etc. -->
+      <router-view />
 
     <!-- Footer should be visible on all pages -->
-    <FooterComponent />
+      <FooterComponent />
   </div>
 </template>
 
@@ -23,7 +23,7 @@ export default {
     HeaderComponent,
     FooterComponent,
   },
-};
+}
 </script>
 
 <style>
@@ -34,11 +34,17 @@ export default {
   --color-background: #f4f4f4;
   --color-logout: #e63946;
 }
-body {
+body, html {
+  height: 100%;
   margin: 0;
+  padding: 0;
+  box-sizing: border-box;
 }
 #app {
-  font-family: "Roboto", "Open Sans";
-  margin: 0;
+  font-family: 'Roboto', 'Open Sans';
+  display: flex;           /* may cause fout a merde to others*/
+  flex-direction: column;   /* may cause fout a merde to others*/
+  min-height: 100vh;    /* may cause fout a merde to others*/
 }
+
 </style>
