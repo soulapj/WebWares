@@ -15,7 +15,7 @@ export default createStore({
     produits: [
       {
         id: 1,
-        images: "@/assets/mobilier/mobilier-5.jpg",
+        images: require("@/assets/mobilier/mobilier-5.jpg"),
         titre: "Table à manger en bois",
         description: "Table à manger en bois massif avec finition élégante.",
         prix: 299.99,
@@ -24,7 +24,7 @@ export default createStore({
       },
       {
         id: 2,
-        images: "@/assets/luminaire/luminaire-1.jpg",
+        images: require("@/assets/luminaire/luminaire-1.jpg"),
         titre: "Lampe moderne",
         description: "Lampe avec un design moderne et éclairage ajustable.",
         prix: 129.99,
@@ -33,7 +33,7 @@ export default createStore({
       },
       {
         id: 3,
-        images: "@/assets/tapis/tapis-2.jpg",
+        images: require("@/assets/tapis/tapis-2.jpg"),
         titre: "Tapis en laine",
         description: "Tapis doux en laine avec motif géométrique.",
         prix: 89.99,
@@ -42,7 +42,7 @@ export default createStore({
       },
       {
         id: 4,
-        images: "@/assets/luminaire/luminaire-3.jpg",
+        images: require("@/assets/luminaire/luminaire-3.jpg"),
         titre: "Vase éthnique en argile",
         description: "Vase éthnique en argile avec motifs gravés à la main.",
         prix: 49.99,
@@ -113,6 +113,11 @@ export default createStore({
     setDetailProduit(state, prod) {
       state.detailProd = prod;
     },
+    deleteBackProduit(state, id) {
+      if (confirm("Êtes vous sur?")) {
+        state.produits.splice(id, 1);
+      }
+    },
     setCommandesFromLocalStorage(state, commandes) {
       state.commandes = commandes;
     },
@@ -137,8 +142,15 @@ export default createStore({
         let produit = commandeExistante.produits.find(
           (p) => p.produitId === prodId
         );
-        produit.quantite++;
-        commandeExistante.countTotal += produitInfo.prix;
+
+        if (produit.quantite < produitInfo.moq) {
+          produit.quantite = produitInfo.moq;
+          commandeExistante.countTotal +=
+            (produitInfo.moq - produit.quantite) * produitInfo.prix;
+        } else {
+          produit.quantite++;
+          commandeExistante.countTotal += produitInfo.prix;
+        }
       } else {
         state.commandes.push({
           id: state.commandes.length + 1,
@@ -146,10 +158,10 @@ export default createStore({
             {
               produitId: produitInfo.id,
               titre: produitInfo.titre,
-              quantite: 1,
+              quantite: produitInfo.moq,
             },
           ],
-          countTotal: produitInfo.prix,
+          countTotal: produitInfo.prix * produitInfo.moq,
           userId: 1,
         });
       }
@@ -185,11 +197,16 @@ export default createStore({
       );
       if (commande) {
         let produit = commande.produits.find((p) => p.produitId === prodId);
-        if (produit.quantite > 1) {
+        let produitInfo = state.produits.find((p) => p.id === prodId);
+
+        if (produit.quantite > produitInfo.moq) {
           produit.quantite--;
-          let produitInfo = state.produits.find((p) => p.id === prodId);
           commande.countTotal -= produitInfo.prix;
           localStorage.setItem("commandes", JSON.stringify(state.commandes));
+        } else {
+          console.log(
+            `La quantité minimum pour ce produit est ${produitInfo.moq}`
+          );
         }
       }
     },
@@ -212,17 +229,6 @@ export default createStore({
         );
       } else {
         console.error("Invalid commande object", commande);
-      }
-    },
-
-    updateProductStock(state, { produitId, quantite }) {
-      const produit = state.produits.find((p) => p.id === produitId);
-      if (produit && produit.moq >= quantite) {
-        produit.moq -= quantite;
-      } else {
-        console.error(
-          `Quantité demandée pour le produit ID: ${produitId} est supérieure au stock disponible.`
-        );
       }
     },
   },

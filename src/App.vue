@@ -1,5 +1,4 @@
 <template>
-
   <div id="app">
       <!-- Header should be visible on all pages -->
       <HeaderComponent />
@@ -13,8 +12,8 @@
 </template>
 
 <script>
-import HeaderComponent from './components/HeaderComponent.vue';
-import FooterComponent from './components/FooterComponent.vue';
+import HeaderComponent from "./components/HeaderComponent.vue";
+import FooterComponent from "./components/FooterComponent.vue";
 // localStorage.clear();
 export default {
   created() {
@@ -29,10 +28,10 @@ export default {
 
 <style>
 :root {
-  --color-primary: #D7C3A7;
+  --color-primary: #d7c3a7;
   --color-secondary: #264653;
-  --color-accent: #E9C46A;
-  --color-background: #F4F4F4;
+  --color-accent: #e9c46a;
+  --color-background: #f4f4f4;
   --color-logout: #e63946;
 }
 body, html {
