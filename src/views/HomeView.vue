@@ -3,8 +3,13 @@
     <!-- Hero section with a welcome message -->
     <div class="hero">
       <h1>Bienvenue sur WebWares</h1>
-      <p>La meilleure plateforme pour commander des meubles et des décorations en ligne.</p>
-      <router-link to="/signup" class="btn hero-btn">S'inscrire maintenant</router-link>
+      <p>
+        La meilleure plateforme pour commander des meubles et des décorations en
+        ligne.
+      </p>
+      <router-link to="/signup" class="btn hero-btn"
+        >S'inscrire maintenant</router-link
+      >
     </div>
 
     <!-- Features section -->
@@ -19,12 +24,18 @@
         <div class="feature">
           <img src="@/assets/deco/deco-1.jpg" alt="Produits de Qualité" />
           <h3>Produits de Qualité</h3>
-          <p>Découvrez notre large gamme de meubles et décorations de haute qualité.</p>
+          <p>
+            Découvrez notre large gamme de meubles et décorations de haute
+            qualité.
+          </p>
         </div>
         <div class="feature">
           <img src="@/assets/deco/deco-1.jpg" alt="Service Client" />
           <h3>Service Client</h3>
-          <p>Notre équipe est à votre disposition pour toute question ou assistance.</p>
+          <p>
+            Notre équipe est à votre disposition pour toute question ou
+            assistance.
+          </p>
         </div>
       </div>
     </section>
@@ -40,10 +51,10 @@ export default {
 <style scoped>
 /* Hero Section */
 .hero {
-  background-color: #e0d1be; 
+  background-color: #e0d1be;
   text-align: center;
   padding: 100px 20px;
-  color: #264653; 
+  color: #264653;
 }
 
 .hero h1 {
@@ -57,7 +68,7 @@ export default {
 }
 
 .hero-btn {
-  background-color: #e9c46a; 
+  background-color: #e9c46a;
   color: white;
   padding: 15px 30px;
   font-size: 18px;
@@ -69,14 +80,14 @@ export default {
 .features {
   padding: 60px 20px;
   text-align: center;
-  background-color: #f4f4f4; 
+  background-color: #f4f4f4;
 }
 
 .features h2 {
-  font-family: 'Merriweather', serif;
+  font-family: "Merriweather", serif;
   font-size: 36px;
   margin-bottom: 40px;
-  color: #264653; 
+  color: #264653;
 }
 
 .feature-grid {

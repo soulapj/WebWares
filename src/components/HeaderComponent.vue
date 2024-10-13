@@ -16,7 +16,10 @@
         <span>Catégories</span>
         <ul>
           <li v-for="category in categories" :key="category.id">
-            <router-link :to="{ name: 'CategorieProduits', params: { id: category.id }}">{{ category.name }}</router-link>
+            <router-link
+              :to="{ name: 'CategorieProduits', params: { id: category.id } }"
+              >{{ category.name }}</router-link
+            >
           </li>
         </ul>
       </div>
@@ -25,8 +28,17 @@
     <!-- Authentication Links -->
     <div>
       <div class="auth-section" v-if="!isLoggedIn">
-        <ButtonComponent to="/login" label="Connexion" color="var(--color-secondary)"/>
-        <ButtonComponent to="/signup" label="S'inscrire" color="var(--color-accent)" textColor="var(--color-secondary)" />
+        <ButtonComponent
+          to="/login"
+          label="Connexion"
+          color="var(--color-secondary)"
+        />
+        <ButtonComponent
+          to="/signup"
+          label="S'inscrire"
+          color="var(--color-accent)"
+          textColor="var(--color-secondary)"
+        />
       </div>
 
       <div class="icons" v-else>
@@ -47,18 +59,16 @@
         </div>
       </div>
     </div>
-    
   </header>
 </template>
 
 <script>
-import { mapState } from 'vuex';
-import ButtonComponent from './ButtonComponents.vue';
-
+import { mapState } from "vuex";
+import ButtonComponent from "./ButtonComponents.vue";
 
 export default {
   components: {
-    ButtonComponent
+    ButtonComponent,
   },
   data() {
     return {
@@ -68,12 +78,12 @@ export default {
   computed: {
     ...mapState({
       categories: (state) => state.categories,
-      currentUser: (state) => state.utilisateurs.find(user => user.id === 1), // Example: Replace logic with actual authentication data
+      currentUser: (state) => state.utilisateurs.find((user) => user.id === 1), // Example: Replace logic with actual authentication data
     }),
   },
   methods: {
     logout() {
-      // Logout logic goes here 
+      // Logout logic goes here
       this.isLoggedIn = false;
     },
   },
@@ -119,7 +129,6 @@ nav a:hover {
   transition: 0.9s ease;
   padding: 0.5rem;
   border-radius: 5px;
-
 }
 
 .categories-dropdown {
@@ -187,7 +196,7 @@ i:hover {
 .user-menu .dropdown {
   display: none;
   text-align: center;
-  position: absolute;/*position a gerer */
+  position: absolute; /*position a gerer */
   top: 25px;
   left: -100px;
   background-color: var(--color-background);
@@ -222,6 +231,4 @@ i:hover {
   border: 2px solid var(--color-logout);
   padding: 0.5rem 1rem;
 }
-
 </style>
-
