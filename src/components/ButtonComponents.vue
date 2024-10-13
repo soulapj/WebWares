@@ -1,10 +1,19 @@
 <template>
   <div>
-    <router-link v-if="to" :to="to" class="button" :style="{ backgroundColor: color, color: textColor }">
+    <router-link
+      v-if="to"
+      :to="to"
+      class="button"
+      :style="{ backgroundColor: color, color: textColor }"
+    >
       {{ label }}
     </router-link>
-    
-    <button v-else class="button" :style="{ backgroundColor: color, color: textColor }">
+
+    <button
+      v-else
+      class="button"
+      :style="{ backgroundColor: color, color: textColor }"
+    >
       {{ label }}
     </button>
   </div>
@@ -19,11 +28,11 @@ export default {
     },
     color: {
       type: String,
-      default: 'var(--color-primary)', // Default if no color is provided
+      default: "var(--color-primary)", // Default if no color is provided
     },
     textColor: {
       type: String,
-      default: 'var(--color-background)', 
+      default: "var(--color-background)",
     },
     to: {
       type: String, // This is the path to navigate to, if provided

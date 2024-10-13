@@ -1,4 +1,5 @@
 <template>
+
   <SearchBar :placeholder="'Rechercher un produit...'" :searchQuery="searchQuery" @update-search="handleSearchUpdate" />
    <div class="produit">
       <div v-for="(prod, index) in filteredProduits" :key="index">
@@ -71,8 +72,8 @@ export default {
 
 <style scoped>
 img {
-  max-width: 100%;
-  height: 100px;
+  width: 250px;
+  height: 230px;
   margin: 15px;
 }
 
@@ -84,6 +85,7 @@ img {
 .produit {
   display: flex;
   justify-content: center;
+  flex-wrap: wrap;
   gap: 50px;
 }
 </style>

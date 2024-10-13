@@ -19,7 +19,7 @@
                 v-for="produit in commande.produits"
                 :key="produit.produitId"
               >
-                <p>{{ produit.titre }}</p>
+                <p>{{ produit.titre }} *moq : {{ produit.moq }}</p>
               </div>
             </td>
             <td>
@@ -65,7 +65,7 @@
         <ButtonComponents
           label="Valider la commande"
           color="#E9C46A"
-          @click="validerCommande"
+          @click="openValidateCommandeModal(commandeValider.id)"
         />
       </div>
     </div>
@@ -94,6 +94,28 @@
         />
       </template>
     </ModalComponent>
+    <ModalComponent :showModal="showModalCommandeConfirm" color="#d7c3a7">
+      <template #header>
+        <h2>Confirmation de la commande :</h2>
+      </template>
+
+      <template #body>
+        <p>Êtes-vous sûr de vouloir valider votre commande?</p>
+      </template>
+
+      <template #footer>
+        <ButtonComponents
+          label="Valider"
+          color="#E9C46A"
+          @click="validerCommande()"
+        />
+        <ButtonComponents
+          label="Annuler"
+          color="#E9C46A"
+          @click="closeValidateCommandeModal"
+        />
+      </template>
+    </ModalComponent>
   </div>
 </template>
 
@@ -111,12 +133,14 @@ export default {
   data() {
     return {
       showModalConfirm: false,
+      showModalCommandeConfirm: false,
       produitToRemove: null,
+      commandeValidated: null,
     };
   },
 
   computed: {
-    ...mapState(["commandes"]),
+    ...mapState(["commandes", "commandeValider"]),
     ...mapGetters(["total", "subTotal"]),
   },
   methods: {
@@ -127,6 +151,15 @@ export default {
     closeDeleteModalConfirm() {
       this.showModalConfirm = false;
       this.produitToRemove = null;
+    },
+
+    openValidateCommandeModal(commandeId) {
+      this.commandeValidated = commandeId;
+      this.showModalCommandeConfirm = true;
+    },
+    closeValidateCommandeModal() {
+      this.showModalCommandeConfirm = false;
+      this.commandeValidated = null;
     },
 
     removeProduit() {
@@ -146,13 +179,9 @@ export default {
         userId: 1,
       };
       this.$store.dispatch("saveCommandeToLocalStorage", currentCommande);
-      currentCommande.produits.forEach((produit) => {
-        this.$store.commit("updateProductStock", {
-          produitId: produit.produitId,
-          quantite: produit.quantite,
-        });
-      });
+
       this.$store.commit("clearPanier");
+      this.closeValidateCommandeModal();
     },
   },
 };

@@ -244,4 +244,3 @@ tr:hover {
         justify-content: center;
     }
   </style>
-  
