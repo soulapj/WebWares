@@ -263,10 +263,8 @@ export default createStore({
     setDetailProduit(state, prod) {
       state.detailProd = prod;
     },
-    deleteBackProduit(state, id) {
-      if (confirm("Êtes vous sur?")) {
+    deleteBackProduit(state, id){
         state.produits.splice(id, 1);
-      }
     },
     setCommandesFromLocalStorage(state, commandes) {
       state.commandes = commandes;

@@ -1,15 +1,12 @@
 <template>
-  <SearchBar
-    :placeholder="'Rechercher un produit...'"
-    :searchQuery="searchQuery"
-    @update-search="handleSearchUpdate"
-  />
-  <div class="produit">
-    <div v-for="(prod, index) in filteredProduits" :key="index">
-      <img :src="prod.images" />
-      <h4>{{ prod.titre }}</h4>
-      <p>Quantité minimal par commande :{{ prod.moq }}</p>
-      <p>EUR : {{ prod.prix }} €</p>
+
+  <SearchBar :placeholder="'Rechercher un produit...'" :searchQuery="searchQuery" @update-search="handleSearchUpdate" />
+   <div class="produit">
+      <div v-for="(prod, index) in filteredProduits" :key="index">
+        <img :src="prod.images" />
+        <h4>{{ prod.titre }}</h4>
+        <p>Nombre d'article restant : {{ prod.moq }}</p>
+        <p>EUR : {{ prod.prix }} €</p>
       <ButtonComponents
         v-if="commandes && !isInBag(prod.id)"
         label="Ajouter au panier"

@@ -62,6 +62,14 @@ const routes = [
     component: () => import("../views/ConditionsUtilisation.vue"),
     meta: { title: "WebWares - Conditions Utilisation" },
   },
+  {
+    path: "/user-back",
+    name: "BackUser",
+
+    component: () => import("../views/BackUser.vue"),
+    meta: { title: 'WebWares - Liste Utilisateur Back' },
+
+  },
 ];
 
 const router = createRouter({

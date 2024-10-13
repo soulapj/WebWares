@@ -2,7 +2,6 @@
   <div class="search-container">
     <div class="search-bar-wrapper">
       <!-- Icone de loupe -->
-      <i class="fas fa-search search-icon"></i>
       <!-- Barre de recherche -->
       <input
         v-model="searchQueryLocal"
