@@ -8,15 +8,16 @@
 
     <!-- Navigation Links -->
     <nav>
-      <router-link to="/">Accueil</router-link>
-      <router-link to="/produit">Tous les Produits</router-link>
+      <router-link to="/"><i class="fa-sharp fa-solid fa-house"></i></router-link>
+      <router-link to="/produit">Produits</router-link>
 
       <!-- Dynamic Categories -->
       <div class="categories-dropdown">
-        <span>Catégories</span>
+        <span>Catégories <i class="fa-duotone fa-solid fa-caret-down fa-xl"></i></span>
         <ul>
           <li v-for="category in categories" :key="category.id">
-            <router-link :to="{ name: 'CategorieProduits', params: { id: category.id }}">{{ category.name }}</router-link>
+            <router-link :to="{ name: 'CategorieProduits', params: { id: category.id } }">{{ category.name
+              }}</router-link>
           </li>
         </ul>
       </div>
@@ -25,20 +26,21 @@
     <!-- Authentication Links -->
     <div>
       <div class="auth-section" v-if="!isLoggedIn">
-        <ButtonComponent to="/login" label="Connexion" color="var(--color-secondary)"/>
-        <ButtonComponent to="/signup" label="S'inscrire" color="var(--color-accent)" textColor="var(--color-secondary)" />
+        <ButtonComponent to="/login" label="Connexion" color="var(--color-secondary)" />
+        <ButtonComponent to="/signup" label="S'inscrire" color="var(--color-accent)"
+          textColor="var(--color-secondary)" />
       </div>
 
       <div class="icons" v-else>
         <!-- Cart Icon -->
         <router-link to="/panier" class="cart-icon">
-          <i class="fa-solid fa-cart-shopping"></i>
+          <i class="fa-solid fa-basket-shopping fa-lg"></i>
         </router-link>
 
         <!-- User Menu -->
         <div class="user-menu">
           <span class="user-icon">
-            <i class="fa-solid fa-user"></i>
+            <i class="fa-solid fa-user fa-lg"></i>
           </span>
           <div class="dropdown">
             <p class="welcome-msg">Bienvenue {{ currentUser.raisonSociale }}</p>
@@ -47,7 +49,7 @@
         </div>
       </div>
     </div>
-    
+
   </header>
 </template>
 
@@ -68,7 +70,7 @@ export default {
   computed: {
     ...mapState({
       categories: (state) => state.categories,
-      currentUser: (state) => state.utilisateurs.find(user => user.id === 1), // Example: Replace logic with actual authentication data
+      currentUser: (state) => state.utilisateurs.find(user => user.id === user.id), //  Replace logic with actual authentication data
     }),
   },
   methods: {
@@ -144,9 +146,9 @@ nav a:hover {
   box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.3);
   border-radius: 5px;
   list-style: none;
-  padding: 1rem 0;
+  padding: 1rem;
   width: 20rem;
-  text-align: center;
+  text-align: left;
   top: 20px;
   left: -100px;
 }
@@ -178,6 +180,7 @@ i {
 
 i:hover {
   color: var(--color-primary);
+  transition: 0.3s ease;
 }
 
 .user-menu {
@@ -195,6 +198,7 @@ i:hover {
   border-radius: 5px;
   padding: 1rem 0;
   width: 17rem;
+
 }
 
 .user-menu:hover .dropdown {
@@ -221,7 +225,6 @@ i:hover {
   color: var(--color-logout);
   border: 2px solid var(--color-logout);
   padding: 0.5rem 1rem;
+  transition: 0.3s ease;
 }
-
 </style>
-

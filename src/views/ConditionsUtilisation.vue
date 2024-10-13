@@ -31,7 +31,8 @@
 
   .terms-page {
     padding: 2.5rem;
-    color: var(--color-secondary);  }
+    color: var(--color-secondary);  
+  }
   
   .terms-page p {
     margin-bottom: 1.5rem;
