@@ -7,20 +7,26 @@
           <tr>
             <th>Produit</th>
             <th>Quantité</th>
-            <th>Total de(s) article(s) (TTC)</th>
-            <!-- <th>Montant total de(s) article(s) (HT) Prix HT = Prix TTC ÷ (1 + Taux de TVA)</th> -->
+            <th>Total HT</th>
+            <th>Total TTC</th>
             <th>Actions</th>
           </tr>
         </thead>
         <tbody>
           <tr v-for="commande in commandes" :key="commande.id">
             <td>
-              <div v-for="produit in commande.produits" :key="produit.produitId">
+              <div
+                v-for="produit in commande.produits"
+                :key="produit.produitId"
+              >
                 <p>{{ produit.titre }} *moq : {{ produit.moq }}</p>
               </div>
             </td>
             <td>
-              <div v-for="produit in commande.produits" :key="produit.produitId">
+              <div
+                v-for="produit in commande.produits"
+                :key="produit.produitId"
+              >
                 <span>
                   <button @click="decrementQuantite(produit)">-</button>
                   {{ produit.quantite }}
@@ -29,14 +35,31 @@
               </div>
             </td>
             <td>
-              <div v-for="produit in commande.produits" :key="produit.produitId">
+              <div
+                v-for="produit in commande.produits"
+                :key="produit.produitId"
+              >
+                <p>{{ subTotalHT(produit.produitId) }} €</p>
+              </div>
+            </td>
+            <td>
+              <div
+                v-for="produit in commande.produits"
+                :key="produit.produitId"
+              >
                 <p>{{ subTotal(produit.produitId) }} €</p>
               </div>
             </td>
             <td>
-              <div v-for="produit in commande.produits" :key="produit.produitId">
-                <ButtonComponents label="Supprimer l'article" color="#E9C46A"
-                  @click="openDeleteModal(produit.produitId)" />
+              <div
+                v-for="produit in commande.produits"
+                :key="produit.produitId"
+              >
+                <ButtonComponents
+                  label="Supprimer l'article"
+                  type="logout"
+                  @click="openDeleteModal(produit.produitId)"
+                />
               </div>
             </td>
           </tr>
@@ -44,11 +67,19 @@
       </table>
       <div class="total-container">
         <p>
-          Montant total de votre commande:
-          <strong>{{ total.toFixed(2) }} €</strong>
+          Montant total de votre commande (HT): <strong>{{ totalHT }} €</strong>
         </p>
-        <ButtonComponents label="Valider la commande" color="#E9C46A"
-          @click="openValidateCommandeModal(commandeValider.id)" />
+        <p>
+          Montant total de votre commande:
+          <strong>{{ total }} €</strong>
+        </p>
+        <div class="poursuiteBtn">
+          <ButtonComponents
+            label="Poursuivre la commande"
+            type="submit"
+            @click="$router.push('/resume-commande')"
+          />
+        </div>
       </div>
     </div>
     <div v-else>
@@ -64,22 +95,16 @@
       </template>
 
       <template #footer>
-        <ButtonComponents label="Valider" color="#E9C46A" @click="removeProduit()" />
-        <ButtonComponents label="Annuler" color="#E9C46A" @click="closeDeleteModalConfirm" />
-      </template>
-    </ModalComponent>
-    <ModalComponent :showModal="showModalCommandeConfirm" color="#d7c3a7">
-      <template #header>
-        <h2>Confirmation de la commande :</h2>
-      </template>
-
-      <template #body>
-        <p>Êtes-vous sûr de vouloir valider votre commande?</p>
-      </template>
-
-      <template #footer>
-        <ButtonComponents label="Valider" color="#E9C46A" @click="validerCommande()" />
-        <ButtonComponents label="Annuler" color="#E9C46A" @click="closeValidateCommandeModal" />
+        <ButtonComponents
+          label="Valider"
+          color="#E9C46A"
+          @click="removeProduit()"
+        />
+        <ButtonComponents
+          label="Annuler"
+          color="#E9C46A"
+          @click="closeDeleteModalConfirm"
+        />
       </template>
     </ModalComponent>
   </div>
@@ -99,7 +124,6 @@ export default {
   data() {
     return {
       showModalConfirm: false,
-      showModalCommandeConfirm: false,
       produitToRemove: null,
       commandeValidated: null,
     };
@@ -107,7 +131,7 @@ export default {
 
   computed: {
     ...mapState(["commandes", "commandeValider"]),
-    ...mapGetters(["total", "subTotal"]),
+    ...mapGetters(["total", "subTotal", "totalHT", "subTotalHT"]),
   },
   methods: {
     openDeleteModal(produitId) {
@@ -117,15 +141,6 @@ export default {
     closeDeleteModalConfirm() {
       this.showModalConfirm = false;
       this.produitToRemove = null;
-    },
-
-    openValidateCommandeModal(commandeId) {
-      this.commandeValidated = commandeId;
-      this.showModalCommandeConfirm = true;
-    },
-    closeValidateCommandeModal() {
-      this.showModalCommandeConfirm = false;
-      this.commandeValidated = null;
     },
 
     removeProduit() {
@@ -138,17 +153,6 @@ export default {
     decrementQuantite(produit) {
       this.$store.commit("decrementQuantite", produit.produitId);
     },
-    validerCommande() {
-      const currentCommande = {
-        produits: this.commandes.flatMap((commande) => commande.produits),
-        countTotal: this.total,
-        userId: 1,
-      };
-      this.$store.dispatch("saveCommandeToLocalStorage", currentCommande);
-
-      this.$store.commit("clearPanier");
-      this.closeValidateCommandeModal();
-    },
   },
 };
 </script>
@@ -159,6 +163,10 @@ export default {
   flex-direction: column;
   justify-content: center;
   margin: 20px 0;
+}
+
+h2 {
+  text-align: center;
 }
 
 table {
@@ -189,6 +197,11 @@ tr:hover {
 
 button {
   margin: 0 5px;
+}
+
+.poursuiteBtn {
+  display: flex;
+  justify-content: center;
 }
 
 .total-container {
