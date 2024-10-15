@@ -67,25 +67,8 @@ const routes = [
     name: "BackUser",
 
     component: () => import("../views/BackUser.vue"),
-    meta: { title: 'WebWares - Liste Utilisateur Back' },
-
+    meta: { title: "WebWares - Liste Utilisateur Back" },
   },
-    // ---------- Ajout des routes pour la page de connexion et d'inscription -C
-    {
-      path :"/login",
-      name: "LoginPage",
-      component: () => import("../views/LoginPage.vue"),
-      meta: { title: 'WebWares - Login Page' },
-      
-    },
-    {
-      path :"/signup",
-      name: "RegistrationPage",
-      component: () => import("../views/RegistrationPage.vue"),
-      meta: { title: 'WebWares - Register Page' },
-    }
-    // ----------------------------------------------- //
-
   {
     path: "/resume-commande",
     name: "ConfirmCommande",

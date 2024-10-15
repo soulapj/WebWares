@@ -42,13 +42,11 @@ export default {
     }
   }
 }
-
 </script>
 
 <style scoped>
 .best-sellers {
   text-align: center;
-
   padding: 0 2rem 2rem 2rem;
   color: var(--color-secondary);
 }
@@ -59,15 +57,12 @@ export default {
 
 .best-seller-container {
   display: grid;
-
   grid-template-columns: repeat(4, 1fr);
   gap: 0.5rem;
-
 }
 
 .best-seller {
   display: flex;
-
   position: relative;
   justify-content: center;
   align-items: center;
@@ -113,7 +108,6 @@ export default {
 .overlay img {
   width: 100%;
   height: auto;
-
 }
 
 @media (max-width: 768px) {

@@ -8,13 +8,11 @@
 
     <!-- Navigation Links -->
     <nav>
-
       <router-link to="/">Accueil</router-link>
       <router-link to="/produit">Produits</router-link>
 
       <!-- Dynamic Categories -->
       <div class="categories-dropdown">
-
         <span
           >Catégories <i class="fa-duotone fa-solid fa-caret-down fa-xl"></i
         ></span>
@@ -32,7 +30,6 @@
     <!-- Authentication Links -->
     <div>
       <div class="auth-section" v-if="!isLoggedIn">
-
         <ButtonComponents
           to="/login"
           label="Connexion"
@@ -45,7 +42,6 @@
       <div class="icons" v-else>
         <!-- Cart Icon -->
         <router-link to="/panier" class="cart-icon">
-
           <span v-if="commandes && commandes.length > 0">{{
             commandes.length
           }}</span>
@@ -59,7 +55,6 @@
           </span>
           <div class="dropdown">
             <p class="welcome-msg">Bienvenue {{ currentUser.raisonSociale }}</p>
-
             <ButtonComponents
               label="Déconnexion"
               type="logout"
@@ -73,8 +68,7 @@
 </template>
 
 <script>
-
-import { mapState, mapActions } from "vuex";
+import { mapState } from "vuex";
 import ButtonComponents from "./ButtonComponents.vue";
 
 export default {
@@ -92,37 +86,24 @@ export default {
       currentUser: (state) =>
         state.utilisateurs.find((user) => user.id === user.id),
       commandes: (state) => state.commandes,
-      isLoggedIn: (state) => state.isLoggedIn,
-      currentUser: (state) => state.currentUtilisateur, //  Replace logic with actual authentication data
     }),
   },
   methods: {
-        //modification de la methode logout -C
-    ...mapActions(["logout"]),
     logout() {
       this.isLoggedIn = false;
     },
     login() {
       this.isLoggedIn = true;
     },
-    handleLogout(){
-      this.logout();
-      this.$router.push("/login");
-      this.isLoggedIn = false;
-    },
   },
   created() {
     this.isLoggedIn = !!this.currentUser;
-    this.$store.dispatch("loadCurrentUtilisateurFromLocalStorage");
-
   },
-
 };
 </script>
 
 <style scoped>
 header {
-
   position: relative;
   display: flex;
   justify-content: space-around;
@@ -226,7 +207,6 @@ i:hover {
 .user-menu .dropdown {
   display: none;
   text-align: center;
-
   position: absolute;
   /*position a gerer */
   top: 25px;
@@ -264,7 +244,6 @@ i:hover {
   padding: 0.5rem 1rem;
   transition: 0.3s ease;
 }
-
 
 @media (max-width: 768px) {
   header {

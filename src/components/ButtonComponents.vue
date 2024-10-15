@@ -1,6 +1,5 @@
 <template>
   <div>
-
     <router-link v-if="to" :to="to" :class="['btn', buttonTypeClass]">
       {{ label }}
     </router-link>
@@ -39,7 +38,6 @@ export default {
           return 'btn-default';
       }
     }
-
   },
 }
 </script>

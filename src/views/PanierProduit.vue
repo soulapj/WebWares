@@ -7,7 +7,6 @@
           <tr>
             <th>Produit</th>
             <th>Quantité</th>
-
             <th>Total HT</th>
             <th>Total TTC</th>
             <th>Actions</th>
@@ -108,29 +107,6 @@
         />
       </template>
     </ModalComponent>
-    <ModalComponent :showModal="showModalCommandeConfirm" color="#d7c3a7">
-      <template #header>
-        <h2>Confirmation de la commande :</h2>
-      </template>
-
-      <template #body>
-        <p>Êtes-vous sûr de vouloir valider votre commande?</p>
-      </template>
-
-      <template #footer>
-        <ButtonComponents
-          label="Valider"
-          color="#E9C46A"
-          @click="validerCommande()"
-        />
-        <ButtonComponents
-          label="Annuler"
-          color="#E9C46A"
-          @click="closeValidateCommandeModal"
-        />
-      </template>
-    </ModalComponent>
-
   </div>
 </template>
 
@@ -148,7 +124,6 @@ export default {
   data() {
     return {
       showModalConfirm: false,
-      showModalCommandeConfirm: false,
       produitToRemove: null,
       commandeValidated: null,
     };
@@ -156,7 +131,6 @@ export default {
 
   computed: {
     ...mapState(["commandes", "commandeValider"]),
-
     ...mapGetters(["total", "subTotal", "totalHT", "subTotalHT"]),
   },
   methods: {
@@ -169,15 +143,6 @@ export default {
       this.produitToRemove = null;
     },
 
-    openValidateCommandeModal(commandeId) {
-      this.commandeValidated = commandeId;
-      this.showModalCommandeConfirm = true;
-    },
-    closeValidateCommandeModal() {
-      this.showModalCommandeConfirm = false;
-      this.commandeValidated = null;
-    },
-
     removeProduit() {
       this.$store.commit("removeProduit", this.produitToRemove);
       this.closeDeleteModalConfirm();
@@ -187,17 +152,6 @@ export default {
     },
     decrementQuantite(produit) {
       this.$store.commit("decrementQuantite", produit.produitId);
-    },
-    validerCommande() {
-      const currentCommande = {
-        produits: this.commandes.flatMap((commande) => commande.produits),
-        countTotal: this.total,
-        userId: 1,
-      };
-      this.$store.dispatch("saveCommandeToLocalStorage", currentCommande);
-
-      this.$store.commit("clearPanier");
-      this.closeValidateCommandeModal();
     },
   },
 };
@@ -210,7 +164,6 @@ export default {
   justify-content: center;
   margin: 20px 0;
 }
-
 
 h2 {
   text-align: center;
@@ -245,7 +198,6 @@ tr:hover {
 button {
   margin: 0 5px;
 }
-
 
 .poursuiteBtn {
   display: flex;

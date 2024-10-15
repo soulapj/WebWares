@@ -13,7 +13,6 @@
             </div>
         </div>
         <div class="contact-form">
-
             <form @submit.prevent="submitForm">
                 <div class="form-row">
                     <div class="form-group">
@@ -29,7 +28,6 @@
                 <div class="form-row">
                     <div class="form-group">
                         <label for="email">Email*</label>
-
                         <input type="email" v-model="formData.email" placeholder="Votre email" required>
                     </div>
                     <div class="form-group">
@@ -40,9 +38,7 @@
 
                 <div class="form-group">
                     <label for="subject">Suje*</label>
-
                     <input type="text" v-model="formData.subject" placeholder="Votre suje ici" required>
-
                 </div>
 
                 <div class="form-group">
@@ -175,7 +171,6 @@ form textarea {
     background-color: var(--color-secondary);
     color: #fff;
     font-size: 1rem;
-
     border: 2px solid var(--color-secondary);
     border-radius: 50px;
     cursor: pointer;
