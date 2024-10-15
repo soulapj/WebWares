@@ -13,59 +13,74 @@
             </div>
         </div>
         <div class="contact-form">
-            <form @click.prevent="">
+
+            <form @submit.prevent="submitForm">
                 <div class="form-row">
                     <div class="form-group">
                         <label for="first-name">Prenom*</label>
-                        <input type="text" id="first-name" placeholder="Votre prenom">
+                        <input type="text" v-model="formData.firstName" placeholder="Votre prenom" required>
                     </div>
                     <div class="form-group">
                         <label for="last-name">Nom*</label>
-                        <input type="text" id="last-name" placeholder="Votre nom">
+                        <input type="text" v-model="formData.lastName" placeholder="Votre nom" required>
                     </div>
                 </div>
 
                 <div class="form-row">
                     <div class="form-group">
                         <label for="email">Email*</label>
-                        <input type="email" id="email" placeholder="Votre email">
+
+                        <input type="email" v-model="formData.email" placeholder="Votre email" required>
                     </div>
                     <div class="form-group">
-                        <label for="phone">Téléphone </label>
-                        <input type="text" id="phone" placeholder="Votre téléphone">
+                        <label for="phone">Téléphone</label>
+                        <input type="text" v-model="formData.phone" placeholder="Votre téléphone">
                     </div>
                 </div>
 
                 <div class="form-group">
                     <label for="subject">Suje*</label>
-                    <input type="text" id="subject" placeholder="Votre suje ici">
+
+                    <input type="text" v-model="formData.subject" placeholder="Votre suje ici" required>
+
                 </div>
 
                 <div class="form-group">
                     <label for="message">Message*</label>
-                    <textarea id="message" placeholder="Votre message"></textarea>
+                    <textarea v-model="formData.message" placeholder="Votre message" required></textarea>
                 </div>
-
-                <div class="form-group">
-                    <button type="submit" class="submit-btn">Envoyer</button>
-                </div>
+                <ButtonComponents label="Envoyer" type="submit" />
             </form>
         </div>
-
     </section>
 </template>
 
 <script>
-export default {
-    data() {
-        return {
+import { mapState } from 'vuex';
+import ButtonComponents from './ButtonComponents.vue';
 
+export default {
+    components: {
+        ButtonComponents,
+    },
+    computed: {
+
+        ...mapState({
+            formData: state => state.formData
+        })
+    },
+    methods: {
+
+        submitForm() {
+            this.$store.dispatch('saveFormData', this.formData);
+            alert('Form data saved!');
         }
     },
-    methods() {
-
+    created() {
+        // read from localstorage and prefill the form
+        // this.$store.dispatch('initializeFormData');
     }
-}
+};
 </script>
 
 <style scoped>
@@ -145,6 +160,11 @@ form textarea:focus {
     border-color: var(--color-secondary);
 }
 
+form input:focus::placeholder,
+form textarea:focus::placeholder {
+    color: transparent;
+}
+
 form textarea {
     resize: vertical;
     height: 8rem;
@@ -155,7 +175,8 @@ form textarea {
     background-color: var(--color-secondary);
     color: #fff;
     font-size: 1rem;
-    border: none;
+
+    border: 2px solid var(--color-secondary);
     border-radius: 50px;
     cursor: pointer;
     font-weight: bold;
@@ -170,6 +191,26 @@ form textarea {
 }
 
 @media (max-width: 768px) {
+    .contact {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        margin-top: 1rem;
+    }
+    .contact-form {
+        width: 80%;
+    }
+
+    .contact-info {
+        display: flex;
+        flex-direction: column;
+    }
+
+    .contact-info h1 {
+        text-align: center;
+    }
+
     .form-row {
         flex-direction: column;
     }

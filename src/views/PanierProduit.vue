@@ -7,8 +7,9 @@
           <tr>
             <th>Produit</th>
             <th>Quantité</th>
-            <th>Total de(s) article(s) (TTC)</th>
-            <!-- <th>Montant total de(s) article(s) (HT) Prix HT = Prix TTC ÷ (1 + Taux de TVA)</th> -->
+
+            <th>Total HT</th>
+            <th>Total TTC</th>
             <th>Actions</th>
           </tr>
         </thead>
@@ -39,6 +40,14 @@
                 v-for="produit in commande.produits"
                 :key="produit.produitId"
               >
+                <p>{{ subTotalHT(produit.produitId) }} €</p>
+              </div>
+            </td>
+            <td>
+              <div
+                v-for="produit in commande.produits"
+                :key="produit.produitId"
+              >
                 <p>{{ subTotal(produit.produitId) }} €</p>
               </div>
             </td>
@@ -49,7 +58,7 @@
               >
                 <ButtonComponents
                   label="Supprimer l'article"
-                  color="#E9C46A"
+                  type="logout"
                   @click="openDeleteModal(produit.produitId)"
                 />
               </div>
@@ -59,14 +68,19 @@
       </table>
       <div class="total-container">
         <p>
-          Montant total de votre commande:
-          <strong>{{ total.toFixed(2) }} €</strong>
+          Montant total de votre commande (HT): <strong>{{ totalHT }} €</strong>
         </p>
-        <ButtonComponents
-          label="Valider la commande"
-          color="#E9C46A"
-          @click="openValidateCommandeModal(commandeValider.id)"
-        />
+        <p>
+          Montant total de votre commande:
+          <strong>{{ total }} €</strong>
+        </p>
+        <div class="poursuiteBtn">
+          <ButtonComponents
+            label="Poursuivre la commande"
+            type="submit"
+            @click="$router.push('/resume-commande')"
+          />
+        </div>
       </div>
     </div>
     <div v-else>
@@ -116,6 +130,7 @@
         />
       </template>
     </ModalComponent>
+
   </div>
 </template>
 
@@ -141,7 +156,8 @@ export default {
 
   computed: {
     ...mapState(["commandes", "commandeValider"]),
-    ...mapGetters(["total", "subTotal"]),
+
+    ...mapGetters(["total", "subTotal", "totalHT", "subTotalHT"]),
   },
   methods: {
     openDeleteModal(produitId) {
@@ -195,6 +211,11 @@ export default {
   margin: 20px 0;
 }
 
+
+h2 {
+  text-align: center;
+}
+
 table {
   width: 80%;
   border-collapse: collapse;
@@ -223,6 +244,12 @@ tr:hover {
 
 button {
   margin: 0 5px;
+}
+
+
+.poursuiteBtn {
+  display: flex;
+  justify-content: center;
 }
 
 .total-container {

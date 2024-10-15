@@ -1,7 +1,6 @@
 <template>
   <div class="modal-overlay" v-if="showModal">
 
-    <!-- J'ai ajouté quelques modifications au style du modal -->
     <div class="modal" :style="color">
       <div>
         <slot></slot>
@@ -39,13 +38,14 @@ export default {
   left: 0;
   width: 100%;
   height: 100%;
+
+  background-color: rgba(0, 0, 0, 0.5);
   display: flex;
   justify-content: center;
   align-items: center;
-  z-index: 999;
 }
 .modal {
-  background-color: white;
+  background-color: v-bind(color);
   padding: 40px;
   border-radius: 10px;
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);

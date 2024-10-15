@@ -8,18 +8,22 @@
 
     <!-- Navigation Links -->
     <nav>
-      <router-link to="/"><i class="fa-sharp fa-solid fa-house"></i></router-link>
+
+      <router-link to="/">Accueil</router-link>
       <router-link to="/produit">Produits</router-link>
 
       <!-- Dynamic Categories -->
       <div class="categories-dropdown">
-        <span>Catégories <i class="fa-duotone fa-solid fa-caret-down fa-xl"></i></span>
+
+        <span
+          >Catégories <i class="fa-duotone fa-solid fa-caret-down fa-xl"></i
+        ></span>
         <ul>
           <li v-for="category in categories" :key="category.id">
-
             <router-link
               :to="{ name: 'CategorieProduits', params: { id: category.id } }"
-              >{{ category.name }}</router-link>
+              >{{ category.name }}</router-link
+            >
           </li>
         </ul>
       </div>
@@ -29,22 +33,22 @@
     <div>
       <div class="auth-section" v-if="!isLoggedIn">
 
-        <ButtonComponent
+        <ButtonComponents
           to="/login"
           label="Connexion"
-          color="var(--color-secondary)"
+          type="login"
+          @click="login"
         />
-        <ButtonComponent
-          to="/signup"
-          label="S'inscrire"
-          color="var(--color-accent)"
-          textColor="var(--color-secondary)"
-        />
+        <ButtonComponents to="/signup" label="S'inscrire" type="register" />
       </div>
 
       <div class="icons" v-else>
         <!-- Cart Icon -->
         <router-link to="/panier" class="cart-icon">
+
+          <span v-if="commandes && commandes.length > 0">{{
+            commandes.length
+          }}</span>
           <i class="fa-solid fa-basket-shopping fa-lg"></i>
         </router-link>
 
@@ -55,8 +59,12 @@
           </span>
           <div class="dropdown">
             <p class="welcome-msg">Bienvenue {{ currentUser.raisonSociale }}</p>
-            <!-- j'ai juste changé la méthode pour éviter un callstack infini-->
-            <button class="logout" @click="handleLogout">Déconnexion</button>
+
+            <ButtonComponents
+              label="Déconnexion"
+              type="logout"
+              @click="logout"
+            />
           </div>
         </div>
       </div>
@@ -65,51 +73,57 @@
 </template>
 
 <script>
-//import de mactions Ajoutée -C
+
 import { mapState, mapActions } from "vuex";
-import ButtonComponent from "./ButtonComponents.vue";
+import ButtonComponents from "./ButtonComponents.vue";
 
 export default {
   components: {
-    ButtonComponent,
+    ButtonComponents,
   },
-  // data() {
-  //   return {
-  //     isLoggedIn: false, // This should be dynamically set, depending on user authentication state
-  //   };
-  // },
+  data() {
+    return {
+      isLoggedIn: false,
+    };
+  },
   computed: {
     ...mapState({
       categories: (state) => state.categories,
+      currentUser: (state) =>
+        state.utilisateurs.find((user) => user.id === user.id),
+      commandes: (state) => state.commandes,
       isLoggedIn: (state) => state.isLoggedIn,
       currentUser: (state) => state.currentUtilisateur, //  Replace logic with actual authentication data
     }),
   },
   methods: {
-
-    //modification de la methode logout -C
+        //modification de la methode logout -C
     ...mapActions(["logout"]),
-
+    logout() {
+      this.isLoggedIn = false;
+    },
+    login() {
+      this.isLoggedIn = true;
+    },
     handleLogout(){
       this.logout();
       this.$router.push("/login");
       this.isLoggedIn = false;
     },
-    // -----------------------------------
   },
-  // ----------------------------------- Ajout du chargement de l'utilisateur courant dans le created -C
   created() {
+    this.isLoggedIn = !!this.currentUser;
     this.$store.dispatch("loadCurrentUtilisateurFromLocalStorage");
 
   },
 
-  // -----------------------------------
 };
 </script>
 
 <style scoped>
 header {
-  position:relative;
+
+  position: relative;
   display: flex;
   justify-content: space-around;
   align-items: center;
@@ -212,7 +226,9 @@ i:hover {
 .user-menu .dropdown {
   display: none;
   text-align: center;
-  position: absolute; /*position a gerer */
+
+  position: absolute;
+  /*position a gerer */
   top: 25px;
   left: -100px;
   background-color: var(--color-background);
@@ -220,7 +236,6 @@ i:hover {
   border-radius: 5px;
   padding: 1rem 0;
   width: 17rem;
-
 }
 
 .user-menu:hover .dropdown {
@@ -248,5 +263,12 @@ i:hover {
   border: 2px solid var(--color-logout);
   padding: 0.5rem 1rem;
   transition: 0.3s ease;
+}
+
+
+@media (max-width: 768px) {
+  header {
+    display: none;
+  }
 }
 </style>

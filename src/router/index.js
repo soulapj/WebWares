@@ -85,6 +85,13 @@ const routes = [
       meta: { title: 'WebWares - Register Page' },
     }
     // ----------------------------------------------- //
+
+  {
+    path: "/resume-commande",
+    name: "ConfirmCommande",
+
+    component: () => import("../views/ConfirmCommande.vue"),
+  },
 ];
 
 const router = createRouter({

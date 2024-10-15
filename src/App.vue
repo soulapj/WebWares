@@ -8,12 +8,14 @@
 
     <!-- Footer should be visible on all pages -->
       <FooterComponent />
+      <HeaderMobileComponent />
   </div>
 </template>
 
 <script>
 import HeaderComponent from "./components/HeaderComponent.vue";
 import FooterComponent from "./components/FooterComponent.vue";
+import HeaderMobileComponent from "./components/HeaderMobileComponent.vue";
 // localStorage.clear();
 export default {
   created() {
@@ -22,6 +24,7 @@ export default {
   components: {
     HeaderComponent,
     FooterComponent,
+    HeaderMobileComponent,
   },
 }
 </script>

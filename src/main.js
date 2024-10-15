@@ -3,6 +3,7 @@ import App from './App.vue'
 import router from './router'
 import store from './store'
 
+
 // je vais tenter un truc : on va gérer un ID unique par session, ça permettra de gérer les sessions multiples
 
 function generateUniqueTabId(){
@@ -50,6 +51,6 @@ store.subscribe((mutation) => {
 
 // nécessaire pour pouvoir charger correctement nos données depuis le local storage sinon on ne peut pas récupérer les entreprises que l'on a inscrites
 store.dispatch('loadUtilisateursFromLocalStorage'); 
-// ---------------------- //    
+
 
 createApp(App).use(store).use(router).mount('#app')
