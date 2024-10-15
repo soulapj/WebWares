@@ -1,4 +1,5 @@
 <template>
+
     <div>
         <!-- Ajouter un produit -->
         <!-- Search bar (filtre)-->

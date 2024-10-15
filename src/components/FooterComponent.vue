@@ -68,4 +68,13 @@ footer {
   color: var(--color-accent);
   transition: 0.5s ease;
 }
+
+@media (max-width: 768px) {
+  .footer-links {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center
+  }
+}
 </style>
