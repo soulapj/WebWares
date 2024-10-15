@@ -4,6 +4,7 @@ export default createStore({
   state: {
     detailProd: {},
     commandeValider: [],
+
     formData: {
       firstName: "",
       lastName: "",
@@ -240,7 +241,10 @@ export default createStore({
         ville: "Paris",
         email: "entrepriseA@example.com",
         motDePasse: "motdepasseA",
+        //ajout du username pour la connexion -C
+        username : "Entreprise A",
         role: "USER",
+        commandes : []
       },
       {
         id: 2,
@@ -251,9 +255,14 @@ export default createStore({
         ville: "Paris",
         email: "entrepriseB@example.com",
         motDePasse: "motdepasseB",
+        username : "Entreprise B",
         role: "ADMIN",
+        commandes : [],
       },
     ],
+    //-------- Ajout d'un utilisateur current à null pour la connexion ça permettra de suivre les données également -C 
+    currentUtilisateur : {},
+    // -----------//
   },
   mutations: {
     setCategories(state, cat) {
@@ -265,12 +274,10 @@ export default createStore({
     setCommande(state, com) {
       state.commandes = com;
     },
-    setUtilisateur(state, user) {
-      state.utilisateurs = user;
-    },
     setDetailProduit(state, prod) {
       state.detailProd = prod;
     },
+
     deleteBackProduit(state, id) {
       state.produits.splice(id, 1);
     },
@@ -318,10 +325,29 @@ export default createStore({
             },
           ],
           countTotal: produitInfo.prix * produitInfo.moq,
-          userId: 1,
+
+          userId: state.currentUtilisateur.id, // je récupère l'id de l'utilisateur connecté -C
         });
+        
       }
       localStorage.setItem("commandes", JSON.stringify(state.commandes));
+
+      // je tente un truc ici l'idée est que la commande push dans le tableau commandes de l'utilisateur -------------- C
+      // Je n'ai pas osé modifié d'autres parties, donc je vous laisse
+
+      const utilisateur = state.utilisateurs.find(user => user.id === state.currentUtilisateur.id);
+      if(utilisateur) {
+        alert('Utilisateur trouvé');
+        if (!Array.isArray(utilisateur.commandes)) {
+          utilisateur.commandes = [];
+        
+        }
+        utilisateur.commandes.push(state.commandes[state.commandes.length - 1]);
+        localStorage.setItem("utilisateurs", JSON.stringify(state.utilisateurs));
+
+        state.currentUtilisateur.commandes = utilisateur.commandes;
+        localStorage.setItem("currentUtilisateur", JSON.stringify(state.currentUtilisateur));
+      }
     },
 
     removeProduit(state, prodId) {
@@ -332,6 +358,7 @@ export default createStore({
         }))
         .filter((commande) => commande.produits.length > 0);
       localStorage.setItem("commandes", JSON.stringify(state.commandes));
+
     },
 
     incrementQuantite(state, prodId) {
@@ -345,6 +372,7 @@ export default createStore({
         commande.countTotal += produitInfo.prix;
         localStorage.setItem("commandes", JSON.stringify(state.commandes));
       }
+
     },
 
     decrementQuantite(state, prodId) {
@@ -365,6 +393,7 @@ export default createStore({
           );
         }
       }
+
     },
 
     saveCommandeToLocalStorage(state, commande) {
@@ -387,6 +416,95 @@ export default createStore({
         console.error("Invalid commande object", commande);
       }
     },
+
+     //------- mutations pour les utilisateurs -C
+
+    checkRole(state, {email, role}){
+      const user = state.utilisateurs.find(user => user.email === email);
+      return user && user.role === role;
+      },
+    
+    //on push le nouvel utilisateur dans le tableau utilisateurs
+
+    // l'utilisateurs dans ce cas est le tableau des utilisateurs.
+    setUtilisateurs(state, utilisateurs) {
+        state.utilisateurs = utilisateurs;
+      },
+
+    addUser(state, newUser){
+        state.utilisateurs.push(newUser);
+        localStorage.setItem("utilisateurs", JSON.stringify(state.utilisateurs));
+      },
+
+    loadUtilisateursFromLocalStorage(state){
+      const utilisateurs = JSON.parse(localStorage.getItem("utilisateurs"));
+      if(utilisateurs && Array.isArray(utilisateurs)){
+        state.utilisateurs = utilisateurs; 
+      }
+    },
+
+    loginExistingUser(state, user) {
+        state.currentUtilisateur = user;
+        state.isLoggedIn = true;
+        localStorage.setItem("currentUtilisateur", JSON.stringify(user));
+        sessionStorage.setItem("currentUtilisateur", JSON.stringify(user));
+
+      },
+
+    logoutUser(state) {
+      const userId = state.currentUtilisateur.id;
+
+      if(userId) 
+      {
+        const userSessionKey = `currentUtilisateur_${userId}`;
+        sessionStorage.removeItem(userSessionKey);
+      }
+
+  
+      state.currentUtilisateur = {};
+      state.isLoggedIn = false;
+      localStorage.removeItem("currentUtilisateur");
+    },
+
+    setCurrentUtilisateurFromSessionStorage(state) {
+      const currentUtilisateur = sessionStorage.getItem("currentUtilisateur");
+      if (currentUtilisateur) 
+      {
+        state.currentUtilisateur = JSON.parse(currentUtilisateur);
+        state.isLoggedIn = true;
+        
+      }
+      else 
+      {
+        state.currentUtilisateur = {};
+        state.isLoggedIn = false
+      }
+    },
+
+    setCurrentUtilisateurFromLocalStorage(state) {
+      const currentUtilisateur = localStorage.getItem("currentUtilisateur");
+      if (currentUtilisateur)
+      {
+        state.currentUtilisateur =JSON.parse(currentUtilisateur);
+        state.isLoggedIn = true;
+        sessionStorage.setItem("currentUtilisateur", currentUtilisateur);
+
+      }
+      else 
+      {
+        state.currentUtilisateur = {};
+        state.isLoggedIn = false;
+      }
+    },
+
+    //ici on met à jour le tableau des utilisateurs avec le user
+    setUtilisateur(state, user) {
+        state.utilisateurs = user;
+        
+      },
+
+    // -------------------------- //
+
     // Contact form ===============================arash================================================================ \\
     setFormData(state, payload) {
       state.formData = payload;
@@ -428,6 +546,41 @@ export default createStore({
         console.error("Invalid currentCommande object", currentCommande);
       }
     },
+
+     //---------- actions pour les utilisateurs -C
+
+    //cette action permet de load le tableau des utilisateurs que l'on met à jour
+    loadUtilisateursFromLocalStorage({commit}) {
+      commit("loadUtilisateursFromLocalStorage");
+    },
+
+
+     registerUser({commit}, newUser){
+      const id = this.state.utilisateurs.length + 1;
+      const userWithId = {id, ...newUser};
+      commit("addUser", userWithId);
+      return {success: true};
+    },
+
+    // ici on load l'utilisateur courant de la session storage ou du local storage
+    loadCurrentUtilisateurFromSessionStorage({commit})   {
+      commit("setCurrentUtilisateurFromSessionStorage");
+    },
+
+    loadCurrentUtilisateurFromLocalStorage({commit}){
+      commit("setCurrentUtilisateurFromLocalStorage");
+    },
+
+    login({commit}, user){
+      commit("loginExistingUser", user);
+    },
+
+    logout({commit}) {
+      commit("logoutUser");
+    }
+    
+    //---------------------------------------- //
+
     // Contact Form ==========================arash=============================================== \\
     saveFormData({ commit }, formData) {
       commit("setFormData", formData);
@@ -454,6 +607,39 @@ export default createStore({
       return 0;
     },
 
+    total: (state) => {
+      return state.commandes.reduce((acc, commande) => {
+        return (
+          acc +
+          commande.produits.reduce((subAcc, produit) => {
+            return (
+              subAcc +
+              produit.quantite *
+                state.produits.find((p) => p.id === produit.produitId).prix
+            );
+          }, 0)
+        );
+      }, 0);
+    },
+    
+    //--------------- getters pour les utilisateurs -C
+
+    getUtilisateurs: (state) => state.utilisateurs,
+    //attention j'ai mis le getteur à get UtilisateurByEmail !
+    getUtilisateurByEmail: (state) => (email) =>
+      state.utilisateurs.find((user) => user.email === email),
+
+    //attention j'ai mis le getteur à get UtilisateurByUsername !
+    getUtilisateurByUsername: (state) => (username) =>
+      state.utilisateurs.find((user) => user.username === username),
+
+    getUtilisateurBySiret : (state) => (siret) =>
+      state.utilisateurs.find((user) => user.siret === siret),
+
+    isLoggedIn: (state) => state.isLoggedIn, // getter pour l'état de connexion
+
+    //-------------------------//
+  },
     subTotalHT: (state) => (produitId) => {
       const produit = state.commandes
         .flatMap((commande) => commande.produits)

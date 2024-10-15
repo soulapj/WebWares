@@ -1,4 +1,5 @@
 <template>
+
   <div class="hero-container">
     <div class="hero">
       <img src="../assets/hero/hero6.jpg" alt="Hero Image" class="hero-img">
@@ -12,6 +13,7 @@
 </template>
 
 <script>
+
 
 import ButtonComponents from './ButtonComponents.vue';
 export default {
@@ -46,8 +48,10 @@ export default {
 .hero-msg button {
   background-color: var(--color-secondary);
   color: var(--color-background);
+
   border: 2px solid var(--color-secondary);
   ;
+
   padding: 1rem 2rem;
   font-weight: bold;
   border-radius: 5px;
@@ -71,6 +75,7 @@ export default {
   font-size: 1.3rem;
   margin-bottom: 2rem;
 }
+
 
 @media (max-width: 768px) {
   .hero-container {

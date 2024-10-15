@@ -1,4 +1,5 @@
 <template>
+
   <SearchBar
     :placeholder="'Rechercher un produit...'"
     :searchQuery="searchQuery"
@@ -47,6 +48,7 @@ export default {
         (product) => product.categorieId === parseInt(this.$route.params.id)
       );
     },
+
     filteredProduits() {
       return this.produits.filter((prod) =>
         prod.titre.toLowerCase().includes(this.searchQuery.toLowerCase())
@@ -57,6 +59,7 @@ export default {
     handleSearchUpdate(newSearchQuery) {
       this.searchQuery = newSearchQuery;
     },
+
   },
   created() {
     const categoryId = parseInt(this.$route.params.id);
