@@ -29,7 +29,7 @@ export default {
       categories: (state) => state.categories,
     }),
     products() {
-      // Filter products based on the category ID
+      
       return this.produits.filter(
         (product) => product.categorieId === parseInt(this.$route.params.id)
       );

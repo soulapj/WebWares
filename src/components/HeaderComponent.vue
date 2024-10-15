@@ -8,7 +8,7 @@
 
     <!-- Navigation Links -->
     <nav>
-      <router-link to="/"><i class="fa-sharp fa-solid fa-house"></i></router-link>
+      <router-link to="/">Accueil</router-link>
       <router-link to="/produit">Produits</router-link>
 
       <!-- Dynamic Categories -->
@@ -17,9 +17,8 @@
         <ul>
           <li v-for="category in categories" :key="category.id">
 
-            <router-link
-              :to="{ name: 'CategorieProduits', params: { id: category.id } }"
-              >{{ category.name }}</router-link>
+            <router-link :to="{ name: 'CategorieProduits', params: { id: category.id } }">{{ category.name
+              }}</router-link>
           </li>
         </ul>
       </div>
@@ -29,17 +28,8 @@
     <div>
       <div class="auth-section" v-if="!isLoggedIn">
 
-        <ButtonComponent
-          to="/login"
-          label="Connexion"
-          color="var(--color-secondary)"
-        />
-        <ButtonComponent
-          to="/signup"
-          label="S'inscrire"
-          color="var(--color-accent)"
-          textColor="var(--color-secondary)"
-        />
+        <ButtonComponents to="/login" label="Connexion" type="login" @click="login"/>
+        <ButtonComponents to="/signup" label="S'inscrire" type="register" />
       </div>
 
       <div class="icons" v-else>
@@ -55,7 +45,7 @@
           </span>
           <div class="dropdown">
             <p class="welcome-msg">Bienvenue {{ currentUser.raisonSociale }}</p>
-            <button class="logout" @click="logout">Déconnexion</button>
+            <ButtonComponents label="Déconnexion" type="logout" @click="logout" />
           </div>
         </div>
       </div>
@@ -65,31 +55,34 @@
 
 <script>
 import { mapState } from "vuex";
-import ButtonComponent from "./ButtonComponents.vue";
+import ButtonComponents from "./ButtonComponents.vue";
 
 export default {
   components: {
-    ButtonComponent,
+    ButtonComponents,
   },
   data() {
     return {
-      isLoggedIn: false, // This should be dynamically set, depending on user authentication state
+      isLoggedIn: false,
     };
   },
   computed: {
     ...mapState({
       categories: (state) => state.categories,
-      currentUser: (state) => state.utilisateurs.find(user => user.id === user.id), //  Replace logic with actual authentication data
+      currentUser: (state) => state.utilisateurs.find(user => user.id === user.id),
     }),
   },
   methods: {
     logout() {
-      // Logout logic goes here
+
       this.isLoggedIn = false;
     },
+    login() {
+      this.isLoggedIn = true;
+    }
   },
   created() {
-    // (replace this with actual authentication logic)
+
     this.isLoggedIn = !!this.currentUser;
   },
 };
@@ -198,7 +191,8 @@ i:hover {
 .user-menu .dropdown {
   display: none;
   text-align: center;
-  position: absolute; /*position a gerer */
+  position: absolute;
+  /*position a gerer */
   top: 25px;
   left: -100px;
   background-color: var(--color-background);
@@ -234,5 +228,11 @@ i:hover {
   border: 2px solid var(--color-logout);
   padding: 0.5rem 1rem;
   transition: 0.3s ease;
+}
+
+@media (max-width: 768px) {
+  header {
+    display: none;
+  }
 }
 </style>

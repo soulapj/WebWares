@@ -20,11 +20,7 @@
         <tr v-for="(produit, index) in this.produits" :key="index">
           <td>{{ produit.id }}</td>
           <td>
-            <img
-              v-bind:src="produit.images"
-              id="image"
-              v-bind:alt="produit.titre"
-            />
+            <img v-bind:src="produit.images" id="image" v-bind:alt="produit.titre" />
           </td>
           <td>{{ produit.titre }}</td>
           <td>{{ produit.description }}</td>
@@ -32,15 +28,8 @@
           <td>{{ produit.moq }}</td>
           <td>Catégorie {{ produit.categorieId }}</td>
           <td>
-            <ButtonComponents
-              label="Modifier"
-              color="#72BF78"
-            ></ButtonComponents>
-            <ButtonComponents
-              label="Supprimer"
-              color="red"
-              v-on:click="deleted(index)"
-            ></ButtonComponents>
+            <ButtonComponents label="Modifier" color="#72BF78"></ButtonComponents>
+            <ButtonComponents label="Supprimer" color="red" v-on:click="deleted(index)"></ButtonComponents>
           </td>
         </tr>
       </tbody>
@@ -74,10 +63,12 @@ img {
   height: 100px;
   margin: 15px;
 }
+
 .catégorie {
   display: inline-block;
   margin: 50px;
 }
+
 .produit {
   display: flex;
   justify-content: center;

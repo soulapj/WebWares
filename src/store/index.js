@@ -4,6 +4,14 @@ export default createStore({
   state: {
     detailProd: {},
     commandeValider: [],
+    formData: {
+      firstName: '',
+      lastName: '',
+      email: '',
+      phone: '',
+      subject: '',
+      message: ''
+    },
 
     categories: [
       { id: 1, name: "Mobilier d'intérieur" },
@@ -231,6 +239,14 @@ export default createStore({
         console.error("Invalid commande object", commande);
       }
     },
+    // Contact form ===============================arash================================================================ \\
+    setFormData(state, payload) {
+      state.formData = payload;
+    },
+    updateField(state, { field, value }) {
+      state.formData[field] = value;
+    },
+    // ============================================================================================================ \\
   },
 
   actions: {
@@ -264,6 +280,19 @@ export default createStore({
         console.error("Invalid currentCommande object", currentCommande);
       }
     },
+    // Contact Form ==========================arash=============================================== \\
+      saveFormData({ commit }, formData) {
+        commit('setFormData', formData);
+        localStorage.setItem('formData', JSON.stringify(formData));
+      },
+      initializeFormData({ commit }) {
+        const savedFormData = localStorage.getItem('formData');
+        if (savedFormData) {
+          commit('setFormData', JSON.parse(savedFormData));
+        }
+      },
+    // ========================================================================================= \\
+
   },
 
   getters: {
@@ -292,6 +321,24 @@ export default createStore({
         );
       }, 0);
     },
+    // Sorted best seller ======================arash====================================================== \\
+    sortedBestSellers(state) {
+      
+      const produitsWithQuantite = state.produits.map(produit => {
+        
+        const order = state.commandeValider.find(
+          (commande) => commande.productId === produit.id
+        );
+            
+        return {
+          ...produit,  
+          quantite: order ? order.quantite : 0,  
+        };
+      });
+      return produitsWithQuantite.sort((a, b) => b.quantite - a.quantite);
+    },
+    // ========================================================================================================\\
+    
   },
   modules: {},
 });

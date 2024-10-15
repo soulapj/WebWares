@@ -15,18 +15,12 @@
         <tbody>
           <tr v-for="commande in commandes" :key="commande.id">
             <td>
-              <div
-                v-for="produit in commande.produits"
-                :key="produit.produitId"
-              >
+              <div v-for="produit in commande.produits" :key="produit.produitId">
                 <p>{{ produit.titre }} *moq : {{ produit.moq }}</p>
               </div>
             </td>
             <td>
-              <div
-                v-for="produit in commande.produits"
-                :key="produit.produitId"
-              >
+              <div v-for="produit in commande.produits" :key="produit.produitId">
                 <span>
                   <button @click="decrementQuantite(produit)">-</button>
                   {{ produit.quantite }}
@@ -35,23 +29,14 @@
               </div>
             </td>
             <td>
-              <div
-                v-for="produit in commande.produits"
-                :key="produit.produitId"
-              >
+              <div v-for="produit in commande.produits" :key="produit.produitId">
                 <p>{{ subTotal(produit.produitId) }} €</p>
               </div>
             </td>
             <td>
-              <div
-                v-for="produit in commande.produits"
-                :key="produit.produitId"
-              >
-                <ButtonComponents
-                  label="Supprimer l'article"
-                  color="#E9C46A"
-                  @click="openDeleteModal(produit.produitId)"
-                />
+              <div v-for="produit in commande.produits" :key="produit.produitId">
+                <ButtonComponents label="Supprimer l'article" color="#E9C46A"
+                  @click="openDeleteModal(produit.produitId)" />
               </div>
             </td>
           </tr>
@@ -62,11 +47,8 @@
           Montant total de votre commande:
           <strong>{{ total.toFixed(2) }} €</strong>
         </p>
-        <ButtonComponents
-          label="Valider la commande"
-          color="#E9C46A"
-          @click="openValidateCommandeModal(commandeValider.id)"
-        />
+        <ButtonComponents label="Valider la commande" color="#E9C46A"
+          @click="openValidateCommandeModal(commandeValider.id)" />
       </div>
     </div>
     <div v-else>
@@ -82,16 +64,8 @@
       </template>
 
       <template #footer>
-        <ButtonComponents
-          label="Valider"
-          color="#E9C46A"
-          @click="removeProduit()"
-        />
-        <ButtonComponents
-          label="Annuler"
-          color="#E9C46A"
-          @click="closeDeleteModalConfirm"
-        />
+        <ButtonComponents label="Valider" color="#E9C46A" @click="removeProduit()" />
+        <ButtonComponents label="Annuler" color="#E9C46A" @click="closeDeleteModalConfirm" />
       </template>
     </ModalComponent>
     <ModalComponent :showModal="showModalCommandeConfirm" color="#d7c3a7">
@@ -104,16 +78,8 @@
       </template>
 
       <template #footer>
-        <ButtonComponents
-          label="Valider"
-          color="#E9C46A"
-          @click="validerCommande()"
-        />
-        <ButtonComponents
-          label="Annuler"
-          color="#E9C46A"
-          @click="closeValidateCommandeModal"
-        />
+        <ButtonComponents label="Valider" color="#E9C46A" @click="validerCommande()" />
+        <ButtonComponents label="Annuler" color="#E9C46A" @click="closeValidateCommandeModal" />
       </template>
     </ModalComponent>
   </div>

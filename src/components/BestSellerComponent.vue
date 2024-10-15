@@ -1,45 +1,53 @@
 <template>
-    <section class="best-sellers">
-      <h2>Best Sellers</h2>
-      <div class="best-seller-container">
-        <div class="best-seller">
-          <img src="../assets/deco/deco-3.jpg" alt="" class="best-seller-img">
+  <section class="best-sellers">
+    <h2>Best Sellers</h2>
+    <div class="best-seller-container" v-if="sortedBestSellers.length">
+      <!-- <router-link to="/produit"> -->
+      <div class="best-seller" v-for="produit in sortedBestSellers" :key="produit.id">
+        <!-- <router-link :to="{ name: 'ProductDetails', params: { id: produit.id } }"> -->
+          <img :src="produit.images" :alt="produit.titre" class="best-seller-img" />
+        <!-- </router-link> -->
+        <div class="overlay"> <!-- v-if login state condition to be added -->
+          <h1>Pour voir les détails s'inscrire</h1>
+          <ButtonComponents type="register" label="S'INSCRIRE" />
         </div>
-        <div class="best-seller">
-          <img src="../assets/luminaire/luminaire-1.jpg" alt="" class="best-seller-img">
-        </div>
-        <div class="best-seller">
-          <img src="../assets/mobilier/mobilier-2.jpg" alt="" class="best-seller-img">
-        </div>
-        <div class="best-seller">
-          <img src="../assets/tapis/tapis-1.jpg" alt="" class="best-seller-img">
-        </div>
-        <div class="best-seller">
-          <img src="../assets/luminaire/luminaire-3.jpg" alt="" class="best-seller-img">
-        </div>
-        <div class="best-seller">
-          <img src="../assets/mobilier/mobilier-1.jpg" alt="" class="best-seller-img">
-        </div>
-        <div class="best-seller">
-          <img src="../assets/tapis/tapis-4.jpg" alt="" class="best-seller-img">
-        </div>
-        <div class="best-seller">
-          <img src="../assets/deco/deco-1.jpg" alt="" class="best-seller-img">
+        <div class="overlay"> <!-- v-if logout state condition to be added /-->
+          <p>{{ produit.titre }}</p>
+          <p>{{ produit.prix }}</p>
         </div>
       </div>
-    </section>
+      <!-- </router-link> -->
+    </div>
+  </section>
 </template>
 
 <script>
-    export default {
-        
+import ButtonComponents from './ButtonComponents.vue';
+import { mapState } from "vuex";
+import { mapGetters } from "vuex";
+
+export default {
+  components: {
+    ButtonComponents,
+  },
+  computed: {
+    ...mapState(["produits"]),
+    ...mapGetters(["sortedBestSellers"]),
+
+  },
+  methods: {
+    pickBestSellers(index) {
+      let productSold = this.commandeValider.produits[index].quantite;
+      productSold.sort((a, b) => b - a);
     }
+  }
+}
 </script>
 
 <style scoped>
 .best-sellers {
   text-align: center;
-  padding: 2rem;
+  padding: 0 2rem 2rem 2rem;
   color: var(--color-secondary);
 }
 
@@ -49,29 +57,66 @@
 
 .best-seller-container {
   display: grid;
-  grid-template-columns: repeat(4, 1fr); 
-  gap: 0.5rem; 
-  justify-content: center; 
-  align-items: center; 
+  grid-template-columns: repeat(4, 1fr);
+  gap: 0.5rem;
 }
 
 .best-seller {
   display: flex;
+  position: relative;
   justify-content: center;
   align-items: center;
-  background-color: #f4f4f4; 
-  height: 30rem; 
+  background-color: #f4f4f4;
+  height: 30rem;
+  overflow: hidden;
 }
 
 .best-seller-img {
-  width: 100%; 
+  width: 100%;
   height: 100%;
-  object-fit: cover; 
+  object-fit: cover;
+  display: block;
+}
+
+.overlay {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: rgba(0, 0, 0, 0.6);
+  color: white;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  opacity: 0;
+  transition: opacity 0.5s ease;
+}
+
+.overlay:hover {
+  opacity: 1;
+  cursor: pointer;
+}
+
+.overlay h1 {
+  font-size: 2rem;
+  font-style: italic;
+}
+
+.overlay img {
+  width: 100%;
+  height: auto;
 }
 
 @media (max-width: 768px) {
   .best-seller-container {
-    grid-template-columns: repeat(2, 1fr); 
+    grid-template-columns: repeat(1, 1fr);
+  }
+
+  .best-sellers {
+    padding: 0;
   }
 }
 </style>
