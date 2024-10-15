@@ -67,8 +67,13 @@ const routes = [
     name: "BackUser",
 
     component: () => import("../views/BackUser.vue"),
-    meta: { title: 'WebWares - Liste Utilisateur Back' },
+    meta: { title: "WebWares - Liste Utilisateur Back" },
+  },
+  {
+    path: "/resume-commande",
+    name: "ConfirmCommande",
 
+    component: () => import("../views/ConfirmCommande.vue"),
   },
 ];
 

@@ -5,12 +5,12 @@ export default createStore({
     detailProd: {},
     commandeValider: [],
     formData: {
-      firstName: '',
-      lastName: '',
-      email: '',
-      phone: '',
-      subject: '',
-      message: ''
+      firstName: "",
+      lastName: "",
+      email: "",
+      phone: "",
+      subject: "",
+      message: "",
     },
 
     categories: [
@@ -271,8 +271,8 @@ export default createStore({
     setDetailProduit(state, prod) {
       state.detailProd = prod;
     },
-    deleteBackProduit(state, id){
-        state.produits.splice(id, 1);
+    deleteBackProduit(state, id) {
+      state.produits.splice(id, 1);
     },
     setCommandesFromLocalStorage(state, commandes) {
       state.commandes = commandes;
@@ -429,18 +429,17 @@ export default createStore({
       }
     },
     // Contact Form ==========================arash=============================================== \\
-      saveFormData({ commit }, formData) {
-        commit('setFormData', formData);
-        localStorage.setItem('formData', JSON.stringify(formData));
-      },
-      initializeFormData({ commit }) {
-        const savedFormData = localStorage.getItem('formData');
-        if (savedFormData) {
-          commit('setFormData', JSON.parse(savedFormData));
-        }
-      },
+    saveFormData({ commit }, formData) {
+      commit("setFormData", formData);
+      localStorage.setItem("formData", JSON.stringify(formData));
+    },
+    initializeFormData({ commit }) {
+      const savedFormData = localStorage.getItem("formData");
+      if (savedFormData) {
+        commit("setFormData", JSON.parse(savedFormData));
+      }
+    },
     // ========================================================================================= \\
-
   },
 
   getters: {
@@ -455,38 +454,67 @@ export default createStore({
       return 0;
     },
 
-    total: (state) => {
-      return state.commandes.reduce((acc, commande) => {
-        return (
-          acc +
-          commande.produits.reduce((subAcc, produit) => {
-            return (
-              subAcc +
-              produit.quantite *
-                state.produits.find((p) => p.id === produit.produitId).prix
-            );
-          }, 0)
-        );
-      }, 0);
+    subTotalHT: (state) => (produitId) => {
+      const produit = state.commandes
+        .flatMap((commande) => commande.produits)
+        .find((p) => p.produitId === produitId);
+      if (produit) {
+        const produitInfo = state.produits.find((p) => p.id === produitId);
+        const prixHT = produitInfo.prix / 1.2;
+        return (produit.quantite * prixHT).toFixed(2);
+      }
+      return 0;
     },
+
+    total: (state) => {
+      return state.commandes
+        .reduce((acc, commande) => {
+          return (
+            acc +
+            commande.produits.reduce((subAcc, produit) => {
+              return (
+                subAcc +
+                produit.quantite *
+                  state.produits.find((p) => p.id === produit.produitId).prix
+              );
+            }, 0)
+          );
+        }, 0)
+        .toFixed(2);
+    },
+
+    totalHT: (state) => {
+      return state.commandes
+        .reduce((acc, commande) => {
+          return (
+            acc +
+            commande.produits.reduce((subAcc, produit) => {
+              const produitInfo = state.produits.find(
+                (p) => p.id === produit.produitId
+              );
+              const prixHT = produitInfo.prix / 1.2;
+              return subAcc + produit.quantite * prixHT;
+            }, 0)
+          );
+        }, 0)
+        .toFixed(2);
+    },
+
     // Sorted best seller ======================arash====================================================== \\
     sortedBestSellers(state) {
-      
-      const produitsWithQuantite = state.produits.map(produit => {
-        
+      const produitsWithQuantite = state.produits.map((produit) => {
         const order = state.commandeValider.find(
           (commande) => commande.productId === produit.id
         );
-            
+
         return {
-          ...produit,  
-          quantite: order ? order.quantite : 0,  
+          ...produit,
+          quantite: order ? order.quantite : 0,
         };
       });
       return produitsWithQuantite.sort((a, b) => b.quantite - a.quantite);
     },
     // ========================================================================================================\\
-    
   },
   modules: {},
 });
