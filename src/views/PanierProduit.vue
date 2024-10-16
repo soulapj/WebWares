@@ -19,7 +19,7 @@
                 v-for="produit in commande.produits"
                 :key="produit.produitId"
               >
-                <p>{{ produit.titre }} *moq : {{ produit.moq }}</p>
+                <p>{{ produit.titre }} *moq : {{ produit.quantite }}</p>
               </div>
             </td>
             <td>
