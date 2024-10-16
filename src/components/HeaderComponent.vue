@@ -36,7 +36,12 @@
           type="login"
           @click="login"
         />
-        <ButtonComponents to="/signup" label="S'inscrire" type="register" />
+        <ButtonComponents
+        to="/signup"
+         label="S'inscrire" 
+         type="register"
+         @click="goToRegister"
+        />
       </div>
 
       <div class="icons" v-else>
@@ -72,32 +77,60 @@ import { mapState } from "vuex";
 import ButtonComponents from "./ButtonComponents.vue";
 
 export default {
+
+  props :{
+    isLoggedIn :{
+      type : Boolean,
+      required : true
+    }
+  },
+
+
   components: {
     ButtonComponents,
   },
   data() {
     return {
-      isLoggedIn: false,
+      // isLoggedIn: false,
     };
   },
   computed: {
     ...mapState({
       categories: (state) => state.categories,
-      currentUser: (state) =>
-        state.utilisateurs.find((user) => user.id === user.id),
+      
+      //ici on j'ai juste modifié sur state.currentUserId -C
+      currentUser: (state) => state.utilisateurs.find((user) => user.id === state.currentUserId),
       commandes: (state) => state.commandes,
     }),
   },
   methods: {
+  // j'ai modifié et ajouté quelques méthodes ici : tout est indiqué par mes commentaires
+
     logout() {
-      this.isLoggedIn = false;
+  
+      // ------------ Clément 
+
+      alert("Déconnexion");
+      this.$store.commit("clearCurrentUtilisateur");
+      localStorage.removeItem("currentUtilisateur");
+
+      this.$emit("user-logged-in", false);
+      alert(this.isLoggedIn);
+      this.$router.push("/");
+      // ------------ //
     },
     login() {
-      this.isLoggedIn = true;
+      // this.isLoggedIn = true; le problème était que ça nous mettait directement en connecté donc passé en commentaire
+      this.$router.push("/login");
     },
+
+    goToRegister() {
+      this.$router.push("/register");
+    },
+    // -------------------------------- //
   },
   created() {
-    this.isLoggedIn = !!this.currentUser;
+    // this.isLoggedIn = !!this.currentUser;
   },
 };
 </script>

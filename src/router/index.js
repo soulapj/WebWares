@@ -75,6 +75,23 @@ const routes = [
 
     component: () => import("../views/ConfirmCommande.vue"),
   },
+  // --------------------------------- Clément
+  {
+    path : "/login",
+    name: "Login",
+
+    component: () => import("../views/LoginPage.vue"),
+  },
+  {
+    path : "/register",
+    name: "Register",
+
+    component: () => import("../views/RegistrationPage.vue"),
+
+  }
+
+
+  // --------------------------------- 
 ];
 
 const router = createRouter({
