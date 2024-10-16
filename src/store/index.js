@@ -518,11 +518,20 @@ export default createStore({
       }
     },
 
-    registerUser({commit}, newUser){
+    registerUser({commit, state}, newUser){
+
+      const utilisateurs = JSON.parse(localStorage.getItem('utilisateurs')) || state.utilisateurs;
+
       const id = this.state.utilisateurs.length + 1;
       const userWithId = {id, ...newUser};
-      commit("addUser", userWithId);
+
+      commit("addUser", userWithId);      
+      utilisateurs.push(userWithId);
+      
+ 
+      localStorage.setItem("utilisateurs", JSON.stringify(utilisateurs));
       return {success: true};
+     
     },
 
     setUserIdForCommande({commit}, {userId, commandeId}) {

@@ -87,6 +87,7 @@ export default {
     // -----------------C
     this.$store.dispatch("loadUtilisateursFromLocalStorage");
     this.$store.dispatch("loadCurrentUtilisateurFromLocalStorage");
+    this.$store.dispatch("loadCurrentUtilisateursFromLocalStorage")
     this.$store.dispatch("loadCommandesFromLocalStorage");
 
     // ----------------- //
