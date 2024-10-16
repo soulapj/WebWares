@@ -90,7 +90,7 @@ export default {
     };
   },
   computed: {
-    ...mapState(["commandes", "utilisateurs"]),
+    ...mapState(["commandes", "utilisateurs", "currentUtilisateur"]),
     ...mapGetters(["total"]),
 
     commandeProduits() {
@@ -98,7 +98,9 @@ export default {
     },
 
     utilisateur() {
-      return this.utilisateurs.find((user) => user.id === 1);
+      const currentUser = this.currentUtilisateur;
+      if (!currentUser) return null;
+      return this.utilisateurs.find((user) => user.id === currentUser.id);
     },
   },
   methods: {
