@@ -22,7 +22,7 @@
 <style scoped>
 .mobile-nav-container {
     background-color: var(--color-background);
-    /* background-color: var(--color-secondary); */
+    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.5);
     display: flex;
     justify-content: space-between;
     padding: 2.2rem;
@@ -31,7 +31,6 @@
 }
 
 i {
-    /* color: var(--color-accent); */
     color: var(--color-secondary);
 }
 

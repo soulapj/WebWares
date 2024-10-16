@@ -45,7 +45,7 @@
           </span>
           <div class="dropdown">
             <p class="welcome-msg">Bienvenue {{ currentUser.raisonSociale }}</p>
-            <ButtonComponents label="Déconnexion" type="logout" @click="logout" />
+            <ButtonComponents label="Ajouter" type="add" @click="logout" />
           </div>
         </div>
       </div>

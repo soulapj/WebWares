@@ -2,21 +2,19 @@
   <section class="best-sellers">
     <h2>Best Sellers</h2>
     <div class="best-seller-container" v-if="sortedBestSellers.length">
-      <!-- <router-link to="/produit"> -->
       <div class="best-seller" v-for="produit in sortedBestSellers" :key="produit.id">
-        <!-- <router-link :to="{ name: 'ProductDetails', params: { id: produit.id } }"> -->
-          <img :src="produit.images" :alt="produit.titre" class="best-seller-img" />
-        <!-- </router-link> -->
-        <div class="overlay"> <!-- v-if login state condition to be added -->
+        <img :src="produit.images" :alt="produit.titre" class="best-seller-img" />
+        <div class="overlay" @click="$router.push(`/product-details/` + produit.id)">
+          <!-- v-if login state condition to be added -->
           <h1>Pour voir les détails s'inscrire</h1>
           <ButtonComponents type="register" label="S'INSCRIRE" />
         </div>
-        <div class="overlay"> <!-- v-if logout state condition to be added /-->
+        <div class="overlay" @click="$router.push(`/product-details/` + produit.id)">
+          <!-- v-if logout state condition to be added /-->
           <p>{{ produit.titre }}</p>
           <p>{{ produit.prix }}</p>
         </div>
       </div>
-      <!-- </router-link> -->
     </div>
   </section>
 </template>
@@ -71,10 +69,12 @@ export default {
   overflow: hidden;
 }
 
+.test {}
+
 .best-seller-img {
+  object-fit: cover;
   width: 100%;
   height: 100%;
-  object-fit: cover;
   display: block;
 }
 
@@ -104,6 +104,8 @@ export default {
   font-size: 2rem;
   font-style: italic;
 }
+
+
 
 .overlay img {
   width: 100%;

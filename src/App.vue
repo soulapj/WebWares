@@ -36,12 +36,14 @@ export default {
   --color-accent: #e9c46a;
   --color-background: #f4f4f4;
   --color-logout: #e63946;
+  --spacing: 1.5rem;
 }
 body, html {
   height: 100%;
   margin: 0;
   padding: 0;
   box-sizing: border-box;
+  /* font-size: 62.5%; */
 }
 #app {
   font-family: 'Roboto', 'Open Sans';

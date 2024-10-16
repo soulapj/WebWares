@@ -34,6 +34,10 @@ export default {
           return 'btn-login';
         case 'submit':
           return 'btn-submit';
+        case 'add':
+          return 'btn-add';
+        case 'delete':
+          return 'btn-delete';
         default:
           return 'btn-default';
       }
@@ -94,6 +98,32 @@ export default {
   color: var(--color-secondary);
   border: 2px solid var(--color-secondary);
 }
+.btn-add {
+  /* login */
+  background-color: var(--color-secondary);
+  color: var(--color-background);
+  border: 2px solid var(--color-secondary);
+  padding: 0.1rem;
+}
+
+.btn-add:hover {
+  /* login:hover */
+  color: var(--color-secondary);
+  border: 2px solid var(--color-secondary);
+}
+.btn-delete {
+  /* login */
+  background-color: var(--color-logout);
+  color: var(--color-background);
+  border: 2px solid var(--color-logout);
+  padding: 0.2rem;
+}
+
+.btn-delete:hover {
+  /* login:hover */
+  color: var(--color-logout);
+  border: 2px solid var(--color-logout);
+}
 
 .btn-submit {
   /* submit */
@@ -116,5 +146,11 @@ export default {
 /* Default) */
 .btn-default {
   background-color: #6c757d;
+  color: var(--color-background);
+}
+
+.btn-default:hover {
+  background-color: var(--color-background);
+  color: #6c757d;
 }
 </style>
