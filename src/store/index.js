@@ -4,6 +4,8 @@ export default createStore({
   state: {
     detailProd: {},
     commandeValider: [],
+    // ----------C j'ai un ajouté un state currentUtilisateur set sur null
+    currentUtilisateur: null,
     formData: {
       firstName: "",
       lastName: "",
@@ -395,6 +397,63 @@ export default createStore({
       state.formData[field] = value;
     },
     // ============================================================================================================ \\
+
+    // --------------------- mutations Clément
+    setCurrentUtilisateurFromLocalStorage(state) {
+      const currentUtilisateur = localStorage.getItem("currentUtilisateur");
+      if (currentUtilisateur)
+      {
+        state.currentUtilisateur =JSON.parse(currentUtilisateur);
+        state.isLoggedIn = true;
+        localStorage.setItem("isLoggedIn", true);
+
+      }
+      else 
+      {
+        state.currentUtilisateur = null;
+        state.isLoggedIn = false;
+      }
+    },
+    
+    setCurrentUtilisateur(state, userId) {
+      const utilisateur = state.utilisateurs.find((user) => user.id === userId);
+      if(utilisateur)
+        {
+          state.currentUtilisateur = utilisateur;
+          state.currentUserId = userId;
+          localStorage.setItem("currentUtilisateur", JSON.stringify(utilisateur));
+        }      
+    },
+
+    clearCurrentUtilisateur(state) { 
+      state.currentUtilisateur = null;
+      state.isLoggedIn = false;
+    },
+
+    addUser(state, newUser) {
+      state.utilisateurs.push(newUser);
+      localStorage.setItem('utilisateurs', JSON.stringify(state.utilisateurs));
+    },
+
+    setUtilisateursFromLocalStorage(state, utilisateurs) {
+      state.utilisateurs = utilisateurs;
+    },
+
+    setUserIdForcommande(state, {userId, commandeId}) {
+      const commande = state.commandeValider.find(c => c.id === commandeId);
+
+      if(commande) {
+        commande.userId = userId;
+        localStorage.setItem('commandeValider', JSON.stringify(state.commandeValider));
+      }
+      else 
+      {
+        console.error(`Commande avec l'ID ${commandeId} non trouvée.`);
+      }
+    },
+
+    // -----------------------//
+
   },
 
   actions: {
@@ -440,6 +499,36 @@ export default createStore({
       }
     },
     // ========================================================================================= \\
+
+
+    // --------------------- actions Clément
+
+    loadCurrentUtilisateurFromLocalStorage({commit}){
+      const currentUtilisateur = localStorage.getItem("currentUtilisateur");
+      if(currentUtilisateur) {
+        commit("setCurrentUtilisateur", JSON.parse(currentUtilisateur));
+      }
+    },
+
+    //-> ici on charge le tableau et non l'utilisateur unique 
+    loadCurrentUtilisateursFromLocalStorage({commit}){ 
+      const utilisateurs = JSON.parse(localStorage.getItem('utilisateurs'));
+      if(utilisateurs && Array.isArray(utilisateurs)){
+        commit("setUtilisateursFromLocalStorage", utilisateurs);
+      }
+    },
+
+    registerUser({commit}, newUser){
+      const id = this.state.utilisateurs.length + 1;
+      const userWithId = {id, ...newUser};
+      commit("addUser", userWithId);
+      return {success: true};
+    },
+
+    setUserIdForCommande({commit}, {userId, commandeId}) {
+      commit("setUserIdForcommande", {userId, commandeId});
+    },  
+    // -----------------------//
   },
 
   getters: {
@@ -500,6 +589,24 @@ export default createStore({
         .toFixed(2);
     },
 
+     // --------------------- getters Clément
+
+     getUtilisateurs: (state) => state.utilisateurs,
+     //attention j'ai mis le getteur à get UtilisateurByEmail !
+     getUtilisateurByEmail: (state) => (email) =>
+       state.utilisateurs.find((user) => user.email === email),
+ 
+     //attention j'ai mis le getteur à get UtilisateurByUsername !
+     getUtilisateurByUsername: (state) => (username) =>
+       state.utilisateurs.find((user) => user.username === username),
+ 
+     getUtilisateurBySiret : (state) => (siret) =>
+       state.utilisateurs.find((user) => user.siret === siret),
+ 
+     //isLoggedIn: (state) => state.isLoggedIn, // getter pour l'état de connexion
+
+     // ---------------------------------//
+
     // Sorted best seller ======================arash====================================================== \\
     sortedBestSellers(state) {
       const produitsWithQuantite = state.produits.map((produit) => {
@@ -516,5 +623,7 @@ export default createStore({
     },
     // ========================================================================================================\\
   },
+
+ 
   modules: {},
 });
