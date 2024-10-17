@@ -7,6 +7,7 @@ export default createStore({
 
     savedCommandes: [],
     // ----------C j'ai un ajouté un state currentUtilisateur set sur null
+    currentUtilisateur: null,
 
     formData: {
       firstName: "",
@@ -678,6 +679,21 @@ export default createStore({
   },
 
   getters: {
+    currentUser(state) {
+      return state.utilisateurs.find((user) => user.id === state.currentUserId);
+    },
+    isLoggedIn(state, getters) {
+      return !!getters.currentUser;
+    },
+
+    isAdmin(state, getters) {
+      return getters.currentUser && getters.currentUser.role === "ADMIN";
+    },
+
+    isUser(state, getters) {
+      return getters.currentUser && getters.currentUser.role === "USER";
+    },
+
     subTotal: (state) => (produitId) => {
       const produit = state.commandes
         .flatMap((commande) => commande.produits)
@@ -733,6 +749,10 @@ export default createStore({
           );
         }, 0)
         .toFixed(2);
+    },
+
+    isUserLoggedIn: (state) => {
+      return !!state.currentUtilisateur;
     },
 
     // --------------------- getters Clément

@@ -7,7 +7,7 @@
     </div>
 
     <!-- Navigation Links -->
-    <nav>
+    <nav v-if="isUser || !isLoggedIn">
       <router-link to="/">Accueil</router-link>
       <router-link to="/produit">Produits</router-link>
 
@@ -25,6 +25,13 @@
           </li>
         </ul>
       </div>
+    </nav>
+
+    <nav v-if="isAdmin && isLoggedIn">
+      <router-link to="/user-back">Utilisateur</router-link>
+      <router-link to="/product-back">Produits</router-link>
+      <!-- <router-link to="/">Catégories</router-link> -->
+      <router-link to="/gestion-commande">Commandes</router-link>
     </nav>
 
     <!-- Authentication Links -->
@@ -46,7 +53,7 @@
 
       <div class="icons" v-else>
         <!-- Cart Icon -->
-        <router-link to="/panier" class="cart-icon">
+        <router-link to="/panier" class="cart-icon" v-if="isUser">
           <span v-if="commandes && commandes.length > 0">{{
             commandes.length
           }}</span>
@@ -78,7 +85,7 @@
 </template>
 
 <script>
-import { mapState } from "vuex";
+import { mapState, mapGetters } from "vuex";
 import ButtonComponents from "./ButtonComponents.vue";
 
 export default {
@@ -101,12 +108,13 @@ export default {
     ...mapState({
       categories: (state) => state.categories,
 
-      
-      //ici on j'ai juste modifié sur state.currentUserId 
-      currentUser: (state) => state.utilisateurs.find((user) => user.id === state.currentUserId),
+      //ici on j'ai juste modifié sur state.currentUserId
+      currentUser: (state) =>
+        state.utilisateurs.find((user) => user.id === state.currentUserId),
 
       commandes: (state) => state.commandes,
     }),
+    ...mapGetters(["currentUser", "isLoggedIn", "isAdmin", "isUser"]),
   },
   methods: {
     // j'ai modifié et ajouté quelques méthodes ici : tout est indiqué par mes commentaires
