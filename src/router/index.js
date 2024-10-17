@@ -102,6 +102,30 @@ const routes = [
   },
 
   // ---------------------------------
+  {
+    path: "/ajout-produit",
+    name: "AjoutProd",
+
+    component: () => import("../views/BackAjoutProd.vue"),
+    meta: { title: 'WebWares - Ajout de nouveau produit' },
+
+  },
+  {
+    path: "/modif-produit/:id",
+    name: "ModProd",
+
+    component: () => import("../views/BackModifProd.vue"),
+    meta: { title: 'WebWares - Modification produit' },
+
+  },
+  {
+    path: "/modif-user/:id",
+    name: "ModUser",
+
+    component: () => import("../views/BackModifUser.vue"),
+    meta: { title: 'WebWares - Modification utilisateur' },
+
+  },
 ];
 
 const router = createRouter({
