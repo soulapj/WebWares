@@ -4,6 +4,7 @@ export default createStore({
   state: {
     detailProd: {},
     commandeValider: [],
+    commandesTransferees: [],
     savedCommandes: [],
     // ----------C j'ai un ajouté un state currentUtilisateur set sur null
 
@@ -544,12 +545,21 @@ export default createStore({
         savedCommande => savedCommande.userId !== userId
       );
       localStorage.setItem("savedCommandes", JSON.stringify(state.savedCommandes));
-    }
+    },
     
 
     // ----------------------- Fin mutations clément //
-
-
+    // ----------------------- mutations alex //
+    // Ajouter une commande dans les commandes transférées
+    transferCommande(state, commande) {
+      state.commandesTransferees.push(commande);
+    },
+    // Retirer une commande des commandes validées
+    removeCommandeValider(state, commandeId) {
+      state.commandeValider = state.commandeValider.filter(
+        (commande) => commande.id !== commandeId
+      );
+    },
   },
 
   actions: {
@@ -672,9 +682,22 @@ export default createStore({
       if(userId) {
         commit("clearSavedCommandesForUser", userId);
       }
-    }
+    },
      // ----------------------- Fin action Clément//
 
+     // -----------------------  action Alex//
+     transferCommande({ commit, state }, commandeId) {
+      // Trouver la commande à transférer
+      const commande = state.commandeValider.find(
+        (cmd) => cmd.id === commandeId
+      );
+      if (commande) {
+        // Ajouter la commande aux commandes transférées
+        commit('transferCommande', commande);
+        // Retirer la commande du tableau des commandes validées
+        commit('removeCommandeValider', commandeId);
+      }
+    },
   },
 
   getters: {
@@ -736,20 +759,6 @@ export default createStore({
     },
 
     // --------------------- getters Clément
-
-    getUtilisateurs: (state) => state.utilisateurs,
-    //attention j'ai mis le getteur à get UtilisateurByEmail !
-    getUtilisateurByEmail: (state) => (email) =>
-      state.utilisateurs.find((user) => user.email === email),
-
-    //attention j'ai mis le getteur à get UtilisateurByUsername !
-    getUtilisateurByUsername: (state) => (username) =>
-      state.utilisateurs.find((user) => user.username === username),
-
-    getUtilisateurBySiret: (state) => (siret) =>
-      state.utilisateurs.find((user) => user.siret === siret),
-
-
      getUtilisateurs: (state) => state.utilisateurs,
      //attention j'ai mis le getteur à get UtilisateurByEmail !
      getUtilisateurByEmail: (state) => (email) =>
@@ -791,9 +800,11 @@ export default createStore({
         };
       });
       return produitsWithQuantite.sort((a, b) => b.quantite - a.quantite);
+     },
+      // ========================================================================================================\\
+      // Getter pour les commandes validées
+      commandeValider: (state) => state.commandeValider,
+      // Getter pour les commandes transférées
+      commandesTransferees: (state) => state.commandesTransferees,
     },
-    // ========================================================================================================\\
-  },
-
-  modules: {},
 });
