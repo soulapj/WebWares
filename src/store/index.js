@@ -4,8 +4,10 @@ export default createStore({
   state: {
     detailProd: {},
     commandeValider: [],
+    currentUserId: null,
     // ----------C j'ai un ajouté un state currentUtilisateur set sur null
     currentUtilisateur: null,
+
     formData: {
       firstName: "",
       lastName: "",
@@ -396,6 +398,31 @@ export default createStore({
         console.error("Invalid commande object", commande);
       }
     },
+
+    updateUtilisateur(state, updatedData) {
+      const index = state.utilisateurs.findIndex(
+        (user) => user.id === updatedData.id
+      );
+
+      if (index !== -1) {
+        state.utilisateurs[index] = {
+          ...state.utilisateurs[index],
+          ...updatedData,
+        };
+
+        if (state.currentUserId === updatedData.id) {
+          state.currentUtilisateur = {
+            ...state.utilisateurs[index],
+          };
+
+          localStorage.setItem(
+            "currentUtilisateur",
+            JSON.stringify(state.currentUtilisateur)
+          );
+        }
+      }
+    },
+
     // Contact form ===============================arash================================================================ \\
     setFormData(state, payload) {
       state.formData = payload;

@@ -75,23 +75,33 @@ const routes = [
 
     component: () => import("../views/ConfirmCommande.vue"),
   },
+  {
+    path: "/profile/:id",
+    name: "UtilisateurProfile",
+
+    component: () => import("../views/UtilisateurProfile.vue"),
+  },
+  {
+    path: "/modification-profile",
+    name: "ModificationProfile",
+
+    component: () => import("../views/ModificationProfile.vue"),
+  },
   // --------------------------------- Clément
   {
-    path : "/login",
+    path: "/login",
     name: "Login",
 
     component: () => import("../views/LoginPage.vue"),
   },
   {
-    path : "/register",
+    path: "/register",
     name: "Register",
 
     component: () => import("../views/RegistrationPage.vue"),
+  },
 
-  }
-
-
-  // --------------------------------- 
+  // ---------------------------------
 ];
 
 const router = createRouter({
