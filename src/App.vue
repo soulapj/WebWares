@@ -41,53 +41,31 @@ export default {
 
       if(loggedInStatus)
       {
+
         const currentUtilisateur = JSON.parse(localStorage.getItem("currentUtilisateur"));
+
         if (currentUtilisateur) {
           this.currentUserId = currentUtilisateur.id;
-          this.updateUserIdInCommande(this.currentUserId);
-          alert("current user id : " + this.currentUserId);
-        }
+          // alert("currentUserId: " + this.currentUserId);
+          this.$store.dispatch("updateUserIdInCommandes", {
+            userId: this.currentUserId,
+          });
+
+          // this.$store.commit("filterCommandesByCurrentuser");
+        }        
       }
-    },
-
-    updateUserIdInCommande(userId) {
-    //récupérer les commandes validées à partir du localStorage
-    let commandes = JSON.parse(localStorage.getItem("commandes")) || [];
-
-    // Vérifie si des commandes existent et mets à jour l'ID  utilisateur dans les commandes validées
-    commandes = commandes.map(commande => {
-      if(!commande.userId || commande.userId !== userId) {
-        commande.userId = userId;
-      }
-      return commande;
-    })
-
-    localStorage.setItem("commandes", JSON.stringify(commandes));
-
-    //on  met à jour l'ID utilisateur dans le store
-    commandes.forEach((commande) => {
-      this.$store.dispatch("setUserIdForCommande", {
-        userId,
-        commandeId : commande.id,
-      })
-      alert("userID : " + userId + " commandeId : " + commande.id);
-    });
-  },
+    },  
 
   // -------------------- //
   },
 
 
-
-
-  // ----------------- //
   created() {
     
 
     // -----------------C
-    this.$store.dispatch("loadUtilisateursFromLocalStorage");
+    this.$store.dispatch("loadUtilisateurArrayFromLocalStorage");
     this.$store.dispatch("loadCurrentUtilisateurFromLocalStorage");
-    this.$store.dispatch("loadCurrentUtilisateursFromLocalStorage")
     this.$store.dispatch("loadCommandesFromLocalStorage");
 
     // ----------------- //
