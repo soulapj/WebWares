@@ -2,14 +2,33 @@
   <section class="best-sellers">
     <h2>Best Sellers</h2>
     <div class="best-seller-container" v-if="sortedBestSellers.length">
-      <div class="best-seller" v-for="produit in sortedBestSellers" :key="produit.id">
-        <img :src="produit.images" :alt="produit.titre" class="best-seller-img" />
-        <div v-if="!userRole" class="overlay" @click="$router.push(`/product-details/` + produit.id)">
+
+      <!-- <router-link to="/produit"> -->
+      <div
+        class="best-seller"
+        v-for="produit in sortedBestSellers"
+        :key="produit.id"
+      >
+        <!-- <router-link :to="{ name: 'ProductDetails', params: { id: produit.id } }"> -->
+        <img
+          :src="produit.images"
+          :alt="produit.titre"
+          class="best-seller-img"
+        />
+        <!-- </router-link> -->
+        <div class="overlay" v-if="!isLoggedIn">
+
           <!-- v-if login state condition to be added -->
           <h1>Pour voir les détails s'inscrire</h1>
-          <ButtonComponents type="register" label="S'INSCRIRE" />
+          <ButtonComponents
+            type="register"
+            label="S'INSCRIRE"
+            @click="$router.push('/register')"
+          />
         </div>
-        <div class="overlay" v-if="userRole === `USER`" @click="$router.push(`/product-details/` + produit.id)">
+
+        <div class="overlay" v-if="isLoggedIn">
+
           <!-- v-if logout state condition to be added /-->
           <p>{{ produit.titre }}</p>
           <p>{{ produit.prix }}</p>
@@ -20,8 +39,10 @@
 </template>
 
 <script>
+
 import ButtonComponents from './ButtonComponents.vue';
 import { mapState, mapGetters } from "vuex";
+
 
 export default {
   components: {
@@ -34,16 +55,17 @@ export default {
   },
   computed: {
     ...mapState(["produits"]),
-    ...mapGetters(["sortedBestSellers"]),
-    
+
+    ...mapGetters(["sortedBestSellers", "isLoggedIn"]),
   },
-  created() {
-    const savedUser = JSON.parse(localStorage.getItem('currentUser'));
-    if (savedUser && savedUser.role) {
-      this.userRole = savedUser.role;
-    }
-  }
-}
+  methods: {
+    pickBestSellers(index) {
+      let productSold = this.commandeValider.produits[index].quantite;
+      productSold.sort((a, b) => b - a);
+    },
+  },
+};
+
 </script>
 
 <style scoped>
