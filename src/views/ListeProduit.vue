@@ -8,21 +8,25 @@
     <div v-for="(prod, index) in filteredProduits" :key="index">
       <img :src="prod.images" />
       <h4>{{ prod.titre }}</h4>
-      <p>Quantité d'achat de l'article minimum : {{ prod.moq }}</p>
-      <p>EUR : {{ prod.prix }} €</p>
+      <p v-if="isUserLoggedIn">
+        Quantité d'achat de l'article minimum : {{ prod.moq }}
+      </p>
+      <p v-if="isUserLoggedIn">EUR : {{ prod.prix }} €</p>
       <ButtonComponents
-        v-if="commandes && !isInBag(prod.id)"
+        v-if="isUserLoggedIn && commandes && !isInBag(prod.id)"
         label="Ajouter au panier"
         color="#E9C46A"
         @click="addToPanier(prod.id)"
       />
       <ButtonComponents
-        v-else
+        v-if="isUserLoggedIn && commandes && isInBag(prod.id)"
         label="Supprimer du panier"
         color="#E9C46A"
         @click="removeToPanier(prod.id)"
       />
-      <router-link :to="{ name: 'DetailProduit', params: { id: prod.id } }"
+      <router-link
+        v-if="isUserLoggedIn"
+        :to="{ name: 'DetailProduit', params: { id: prod.id } }"
         >voir détails</router-link
       >
     </div>
@@ -30,7 +34,7 @@
 </template>
 
 <script>
-import { mapState } from "vuex";
+import { mapState, mapGetters } from "vuex";
 import ButtonComponents from "@/components/ButtonComponents.vue";
 import SearchBar from "@/components/SearchBar.vue"; // Import du composant
 
@@ -46,6 +50,7 @@ export default {
   },
   computed: {
     ...mapState(["produits", "categories", "commandes"]),
+    ...mapGetters(["isUserLoggedIn"]),
     // Propriété calculée pour filtrer les produits
     filteredProduits() {
       return this.produits.filter((prod) =>
@@ -69,6 +74,9 @@ export default {
     handleSearchUpdate(newSearchQuery) {
       this.searchQuery = newSearchQuery;
     },
+  },
+  created() {
+    this.$store.dispatch("loadCurrentUtilisateurFromLocalStorage");
   },
 };
 </script>
