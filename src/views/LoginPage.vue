@@ -211,17 +211,32 @@
               return;
             }
 
-            this.$store.commit("loginExistingUser", utilisateur);
-            sessionStorage.setItem(`currentUtilisateur_${utilisateur.id}`, JSON.stringify(utilisateur));
+            if (utilisateur && utilisateur.motDePasse === this.motDePasse)
+            {
+              this.$store.commit('setCurrentUtilisateur', utilisateur.id);
+              this.$store.commit('loadPanierForCurrentUser', utilisateur.id);          
+              this.$emit('user-logged-in', true);
+              this.$router.push("/");
+   
 
-            this.errorMessage = "Connexion réussie !";
-            this.showModal = true;
-            this.isLoggedIn = true;
-            this.$store.commit('setCurrentUtilisateur', utilisateur.id);
-            //ici on émet un évènement pour dire que l'utilisateur est connecté
-            // alert("emissionde l'event user-logged-in");
-            this.$emit('user-logged-in', true);        
-            this.$router.push("/");
+            }
+            else 
+            {
+              this.errorMessage = "Connexion échouée !";
+              this.showModal = true;
+            }
+
+            // this.$store.commit("loginExistingUser", utilisateur);
+            // sessionStorage.setItem(`currentUtilisateur_${utilisateur.id}`, JSON.stringify(utilisateur));
+
+            // this.errorMessage = "Connexion réussie !";
+            // this.showModal = true;
+            // this.isLoggedIn = true;
+            // this.$store.commit('setCurrentUtilisateur', utilisateur.id);          
+            // //ici on émet un évènement pour dire que l'utilisateur est connecté
+            // // alert("emissionde l'event user-logged-in");
+            // this.$emit('user-logged-in', true);        
+            // this.$router.push("/");
     
 
         },
