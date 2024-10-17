@@ -2,43 +2,45 @@
   <section class="best-sellers">
     <h2>Best Sellers</h2>
     <div class="best-seller-container" v-if="sortedBestSellers.length">
-      <!-- <router-link to="/produit"> -->
       <div class="best-seller" v-for="produit in sortedBestSellers" :key="produit.id">
-        <!-- <router-link :to="{ name: 'ProductDetails', params: { id: produit.id } }"> -->
-          <img :src="produit.images" :alt="produit.titre" class="best-seller-img" />
-        <!-- </router-link> -->
-        <div class="overlay"> <!-- v-if login state condition to be added -->
+        <img :src="produit.images" :alt="produit.titre" class="best-seller-img" />
+        <div v-if="!userRole" class="overlay" @click="$router.push(`/product-details/` + produit.id)">
+          <!-- v-if login state condition to be added -->
           <h1>Pour voir les détails s'inscrire</h1>
           <ButtonComponents type="register" label="S'INSCRIRE" />
         </div>
-        <div class="overlay"> <!-- v-if logout state condition to be added /-->
+        <div class="overlay" v-if="userRole === `USER`" @click="$router.push(`/product-details/` + produit.id)">
+          <!-- v-if logout state condition to be added /-->
           <p>{{ produit.titre }}</p>
           <p>{{ produit.prix }}</p>
         </div>
       </div>
-      <!-- </router-link> -->
     </div>
   </section>
 </template>
 
 <script>
 import ButtonComponents from './ButtonComponents.vue';
-import { mapState } from "vuex";
-import { mapGetters } from "vuex";
+import { mapState, mapGetters } from "vuex";
 
 export default {
   components: {
     ButtonComponents,
   },
+  data() {
+    return {
+      userRole: null, 
+    };
+  },
   computed: {
     ...mapState(["produits"]),
     ...mapGetters(["sortedBestSellers"]),
-
+    
   },
-  methods: {
-    pickBestSellers(index) {
-      let productSold = this.commandeValider.produits[index].quantite;
-      productSold.sort((a, b) => b - a);
+  created() {
+    const savedUser = JSON.parse(localStorage.getItem('currentUser'));
+    if (savedUser && savedUser.role) {
+      this.userRole = savedUser.role;
     }
   }
 }
@@ -72,9 +74,9 @@ export default {
 }
 
 .best-seller-img {
+  object-fit: cover;
   width: 100%;
   height: 100%;
-  object-fit: cover;
   display: block;
 }
 

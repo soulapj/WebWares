@@ -5,7 +5,7 @@
       <span class="hero-msg">
         <h1>Bienvenue Sur WebWares</h1>
         <p>Créez un compte pour bénéficier de réductions exclusives sur nos collections.</p>
-        <ButtonComponents label="S'INSCRIRE" type="login"/>
+        <ButtonComponents label="S'INSCRIRE" type="login" @click="$router.push(`/login/`)"/>
       </span>
     </div>
   </div>
@@ -72,7 +72,7 @@ export default {
   margin-bottom: 2rem;
 }
 
-@media (max-width: 768px) {
+@media (max-width: 1260px) {
   .hero-container {
     padding: 0;
   }

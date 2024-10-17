@@ -185,7 +185,7 @@ form textarea {
     font-weight: bold;
 }
 
-@media (max-width: 768px) {
+@media (max-width: 1260px) {
     .contact {
         display: flex;
         flex-direction: column;

@@ -67,6 +67,7 @@
           </span>
           <div class="dropdown">
             <p class="welcome-msg">Bienvenue {{ currentUser.raisonSociale }}</p>
+            
             <ButtonComponents
               label="Profil"
               type="login"
@@ -294,7 +295,7 @@ i:hover {
   transition: 0.3s ease;
 }
 
-@media (max-width: 768px) {
+@media (max-width: 1260px) {
   header {
     display: none;
   }
