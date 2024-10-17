@@ -19,22 +19,34 @@ export default createStore({
     },
 
     categories: [
-      { id: 1, 
-        name: "Mobilier d'intérieur", 
-        images: require("@/assets/category photos/Mobilier d'intérieur.jpg"), 
-        description: "Découvrez notre gamme de mobilier professionnel, conçue pour allier design et fonctionnalité dans tous vos espaces de travail."},
-      { id: 2, 
-        name: "Luminaires", 
-        images: require("@/assets/category photos/Luminaires.jpg"), 
-        description: "Optimisez l'éclairage de vos projets avec nos luminaires modernes, alliant performance et efficacité énergétique."},
-      { id: 3, 
-        name: "Tapis", 
-        images: require("@/assets/category photos/Tapis.jpg"), 
-        description: "Ajoutez une touche d'élégance à vos espaces avec nos tapis haut de gamme, parfaits pour un usage intensif en milieu professionnel."},
-      { id: 4, 
-        name: "Objets de décorations", 
-        images: require("@/assets/category photos/Objets de décorations2.jpg"), 
-        description: "Personnalisez vos espaces avec notre sélection d'articles de décoration, spécialement conçus pour répondre aux exigences des entreprises."},
+      {
+        id: 1,
+        name: "Mobilier d'intérieur",
+        images: require("@/assets/category photos/Mobilier d'intérieur.jpg"),
+        description:
+          "Découvrez notre gamme de mobilier professionnel, conçue pour allier design et fonctionnalité dans tous vos espaces de travail.",
+      },
+      {
+        id: 2,
+        name: "Luminaires",
+        images: require("@/assets/category photos/Luminaires.jpg"),
+        description:
+          "Optimisez l'éclairage de vos projets avec nos luminaires modernes, alliant performance et efficacité énergétique.",
+      },
+      {
+        id: 3,
+        name: "Tapis",
+        images: require("@/assets/category photos/Tapis.jpg"),
+        description:
+          "Ajoutez une touche d'élégance à vos espaces avec nos tapis haut de gamme, parfaits pour un usage intensif en milieu professionnel.",
+      },
+      {
+        id: 4,
+        name: "Objets de décorations",
+        images: require("@/assets/category photos/Objets de décorations2.jpg"),
+        description:
+          "Personnalisez vos espaces avec notre sélection d'articles de décoration, spécialement conçus pour répondre aux exigences des entreprises.",
+      },
     ],
 
     produits: [
@@ -273,7 +285,8 @@ export default createStore({
     ],
   },
   mutations: {
-    setCurrentUser(state, user) {  // ========= test ========
+    setCurrentUser(state, user) {
+      // ========= test ========
       state.currentUser = user;
     },
     setCategories(state, cat) {
@@ -586,9 +599,9 @@ export default createStore({
   actions: {
     // ========= test ==========
     loadCurrentUser({ commit }) {
-      const user = JSON.parse(localStorage.getItem('currentUser'));
+      const user = JSON.parse(localStorage.getItem("currentUser"));
       if (user) {
-        commit('setCurrentUser', user);
+        commit("setCurrentUser", user);
       }
     },
     // =========== test ==========
@@ -603,6 +616,9 @@ export default createStore({
 
     addProduitToPanier({ commit }, prodId) {
       commit("addProduitToCommande", prodId);
+    },
+    removeProduit({ commit }, prodId) {
+      commit("removeProduit", prodId);
     },
 
     loadCommandesFromLocalStorage({ commit, state }) {
@@ -702,14 +718,12 @@ export default createStore({
   },
 
   getters: {
-
     currentUser(state) {
       return state.utilisateurs.find((user) => user.id === state.currentUserId);
     },
     isLoggedIn(state, getters) {
       return !!getters.currentUser;
     },
-
     isAdmin(state, getters) {
       return getters.currentUser && getters.currentUser.role === "ADMIN";
     },
@@ -717,7 +731,6 @@ export default createStore({
     isUser(state, getters) {
       return getters.currentUser && getters.currentUser.role === "USER";
     },
-
 
     subTotal: (state) => (produitId) => {
       const produit = state.commandes
@@ -794,7 +807,6 @@ export default createStore({
     getUtilisateurBySiret: (state) => (siret) =>
       state.utilisateurs.find((user) => user.siret === siret),
 
-
     filteredCommandes: (state) => {
       const userId =
         state.currentUtilisateur?.id || state.previousUtilisateur?.id;
@@ -822,7 +834,9 @@ export default createStore({
           quantite: order ? order.quantite : 0,
         };
       });
-      return produitsWithQuantite.sort((a, b) => b.quantite - a.quantite).slice(0, 8); // top 8 best seller
+      return produitsWithQuantite
+        .sort((a, b) => b.quantite - a.quantite)
+        .slice(0, 8); // top 8 best seller
     },
     // ========================================================================================================\\
   },
