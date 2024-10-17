@@ -1,12 +1,29 @@
 <template>
+  <div class="sheet">
     <div class="registration-page">
-        <h2>Inscription</h2>
+        
+
         <form @submit.prevent="submitForm">
+
+          <h2 class="inscription-title">Inscription</h2>
+
           <div class="form-row-1">
 
             <div>
               <label for="raisonSociale">Raison Sociale :</label>
-              <input type="text" v-model="raisonSociale" id="raisonSociale" @input="checkRaisonSocialLength" :class="{'input-error': hasErrorRaisonSociale}" required />
+              <!-- <input type="text" 
+              v-model="raisonSociale" 
+              id="raisonSociale" 
+              :class="{'input-error': !isValidRaisonSociale}"
+              required /> -->
+
+              <input type ="text"
+                v-model="raisonSociale"
+                id="raisonSociale"
+                :style="raisonSocialeBorderColor"
+                @focus="onFocus"
+                @blur="onBlur"
+                required />
             </div>
             
             <div>
@@ -42,11 +59,6 @@
               <input type="email" v-model="email" id="email" :class="{'input-error': hasErrorMail}" required />
             </div>
 
-            <div>
-              <label for="username">Nom d'utilisateur :</label>
-              <input type="text" v-model="username" id="username" @input="checkUsernameLength" :class="{'input-error': hasErrorUserName}" required />
-            </div>
-
           </div>
           
 
@@ -58,7 +70,11 @@
               @input="checkPassWordStrenght"
               :class="{'input-error': hasErrorPassword}" 
               required />
-              <span class="password-strength" :style="passwordStrengthColor"> {{ passwordStrengthMessage }}</span>          
+              
+              <h3 v-if="motDePasse.length > 0"> Force du mot de passe : </h3> 
+
+              <span class="password-strength" :style="passwordStrengthColor"> 
+                {{ passwordStrengthMessage }}</span>          
             </div>
 
             <div>
@@ -67,10 +83,7 @@
             </div>
 
           </div>      
-          
-          <div>
-              <h3>Force du mot de passe : {{passwordStrength}}</h3>
-          </div>     
+        
 
           <ButtonComponent 
           @click="submitForm"
@@ -82,6 +95,10 @@
           />
         </form>
     </div>
+
+    
+  </div>
+    
 
     <ModalComponent :showModal="showModal" @close="showModal" color="{ backgroundColor:White}">
       <template #header>
@@ -119,6 +136,7 @@
         email: "",
         username: "",
         motDePasse: "",
+        isFocused: false,
         hasErrorRaisonSociale: false,
         hasErrorSiret: false,
         hasErrorAdresse: false,
@@ -149,6 +167,17 @@
         }
       },
 
+      raisonSocialeBorderColor(){
+        if(this.raisonSociale.length < 6){
+          return {color :'red', borderColor : 'red'};
+          
+        }
+        else{
+          return {color : 'black', borderColor : 'black'};
+        }     
+
+      },
+
       siretStrength(){
         if(this.siret.length < 14){
           return {color : 'red'};
@@ -158,8 +187,8 @@
           return {color : ''};
 
         }
+      },
 
-      }
 
      
     },
@@ -167,13 +196,19 @@
     methods: {
       ...mapActions(["registerUser"]),
 
+      onFocus(){
+        this.isFocused = true;
+      },
+      onBlur(){
+        this.isFocused = false;
+      },
+
       closeModal(){
         this.showModal = false;
       },
 
       checkDuplicateData(){
         const userWithEmail = this.$store.getters.getUtilisateurByEmail(this.email);
-        const userWithUsername = this.$store.getters.getUtilisateurByUsername(this.username);
         const userWithSiret = this.$store.getters.getUtilisateurBySiret(this.siret);
 
         if (userWithEmail){
@@ -183,12 +218,6 @@
           return false;
         }
 
-        if (userWithUsername){
-          this.hasErrorUserName = true;
-          this.errorMessage = "Un utilisateur avec ce nom d'utilisateur existe déjà.";
-          this.showModal = true;
-          return false;
-        }
 
         if (userWithSiret){
           this.hasErrorSiret = true;
@@ -232,14 +261,8 @@
       },
 
       checkRaisonSocialLength(){
-        if(this.raisonSociale.length < 3)
-        {
-          this.hasErrorRaisonSociale = true;
-        }
-        else
-        {
-          this.hasErrorRaisonSociale = false;
-        }
+        this.hasErrorRaisonSociale = this.raisonSociale.length < 6;
+        
       },
 
       checkAdress()
@@ -275,11 +298,7 @@
         {
           this.hasErrorVille = false;
         }
-      },
-
-
-
-      
+      },      
 
       checkEmail(){
         const emailRegex = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,6}$/;
@@ -335,7 +354,7 @@
         const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[a-zA-Z\d]{8,}$/;
 
         
-        this.hasErrorRaisonSociale = this.raisonSociale.length < 3;
+        this.hasErrorRaisonSociale = this.checkRaisonSocialLength();
         this.hasErrorSiret = !siretRegex.test(this.siret);
         this.hasErrorAdresse = this.adresse.length < 5;
         this.hasErrorCodePostal = !codePostalRegex.test(this.codePostal);
@@ -424,24 +443,56 @@
   };
   </script>
   
-  <style scoped>
+  <style >
+
+  .input-error {
+    border: 1px solid red;
+  }
+
+  .sheet {
+    padding: 30;
+    max-width: 1400px;
+    width: 100%;
+    position: relative;
+    margin: 0 auto;
+    margin-top: 30px;
+    margin-bottom: 30px;
+    border-style: none;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1), 0 6px 20px rgba(0, 0, 0, 0.1);
+  }
+
+  .inscription-title{
+    text-align: center;
+    position: relative;
+    font-size: 25px;
+    margin-bottom: 80px;
+    top: 20px;
+  }
 
   .registration-page {
-  width: 100%;  
-  max-width: 800px;
-  margin: 50px auto;
-  padding: 20px;
+    margin-left: 22%;
+    display: flex;
+    flex-direction: column;
+    width: 60%;
+    padding: 10px;
+  }
+
+
+  .registration-page input  {
+  width: 80%;  
+  margin: 30px auto;
+  margin-left : -2%;
+  padding: 15px;
   border: 1px solid #ccc;
   border-radius: 10px;
   display: grid;
   grid-template-columns: repeat(3, 1fr);
-  gap: 20px;
   
   }
 
-  .registration-page h2 {
-    grid-column: span 3;
-    text-align: center;
+  .registration-page label {
+    font-size: 20px;  
   }
 
   .registration-page form {
@@ -453,27 +504,30 @@
   .form-row-1{
     display: grid;
     grid-template-columns: repeat(2, 1fr);
-    gap: 30px;
   }
 
   .form-row-2{
     display: grid;
     grid-template-columns: repeat(3, 1fr);
-    gap: 30px;
-
   }
 
   .form-row-3{
     display: grid;
-    grid-template-columns: repeat(2, 1fr);
-    gap: 30px;
+    grid-template-columns: repeat(1, 1fr);
+  }
+
+  .form-row-3 input {
+    width: 95%;
   }
 
   .form-row-4{
     display: grid;
     grid-template-columns: repeat(2, 1fr);
-    gap: 30px;
     align-items: start;
+  }
+
+  .form-row-4 h3{
+    font-size: 20px;
   }
 
   .registration-page h3 {
@@ -486,6 +540,7 @@
   .password-strength {
     font-weight: bold;
     min-height: 20px;
+    font-size: 24px;
   }
 
   .submit-button {
