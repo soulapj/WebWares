@@ -47,7 +47,6 @@ export default {
   background-color: var(--color-secondary);
   color: var(--color-background);
   border: 2px solid var(--color-secondary);
-  ;
   padding: 1rem 2rem;
   font-weight: bold;
   border-radius: 5px;

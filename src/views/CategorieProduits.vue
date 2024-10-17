@@ -138,8 +138,9 @@ export default {
   margin: 5rem 0;  
 }
 .view-all-container img {
-  height: 500px;
-  width: 334px;
+  height: 100%;
+  width: 20rem;
+  object-fit: contain;
 }
 .view-all-container img:hover {
   cursor: pointer;

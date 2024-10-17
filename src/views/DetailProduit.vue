@@ -9,8 +9,8 @@
         <p class="moq">MOQ: {{ detailProd.moq }}</p>
         <QuantityCounterComponent :detailProd="detailProd"/>
         <div class="buttons">
+          <ButtonComponents label="Retour" type="default" @click="goBack" class="test2"/>
           <ButtonComponents label="Ajouter au panier" type="login" @click="addToPanier(detailProd.id)" class="test"/>
-          <ButtonComponents label="Retour" type="default" v-on:click="goBack" class="test2"/>
         </div>
       </div>
     </div>
