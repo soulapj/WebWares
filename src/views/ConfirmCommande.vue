@@ -61,12 +61,12 @@
       <template #footer>
         <ButtonComponents
           label="Valider"
-          color="#72BF78"
+          type="login"
           @click="validerCommande()"
         />
         <ButtonComponents
           label="Annuler"
-          color="red"
+          type="logout"
           @click="closeValidateCommandeModal"
         />
       </template>
@@ -90,11 +90,10 @@ export default {
     };
   },
   computed: {
-
     // ...mapState(["commandes", "utilisateurs"]),
     // --- ici j'ai juste remplacé utilisateur  par currentUtilisateur afin de suivre la connexion de l'utilisateur, ce qui nous permet de set la confirmation de ses
     // commandes sur son id et ses datas correspondantes
-    ...mapState(["commandes", "currentUtilisateur"]),
+    ...mapState(["commandes", "utilisateurs", "currentUtilisateur"]),
 
     //    ...mapGetters(["total"]),
 
@@ -105,11 +104,11 @@ export default {
     },
 
     utilisateur() {
-
       // return this.utilisateurs.find((user) => user.id === 1);
-      return this.currentUtilisateur;
-      
-
+      // return this.currentUtilisateur;
+      const currentUser = this.currentUtilisateur;
+      if (!currentUser) return null;
+      return this.utilisateurs.find((user) => user.id === currentUser.id);
     },
   },
   methods: {
@@ -129,7 +128,7 @@ export default {
         commentaire: this.informationComplementaire,
       };
 
-      this.$store.dispatch("saveCommandeToLocalStorage", currentCommande);
+      this.$store.commit("saveCommandeToLocalStorage", currentCommande);
       this.$store.commit("clearPanier");
       this.closeValidateCommandeModal();
       // --- ici je nettoyerais les saved commandes correspondant à l'id de l'utilisateur

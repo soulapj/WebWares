@@ -19,22 +19,34 @@ export default createStore({
     },
 
     categories: [
-      { id: 1, 
-        name: "Mobilier d'intérieur", 
-        images: require("@/assets/category photos/Mobilier d'intérieur.jpg"), 
-        description: "Découvrez notre gamme de mobilier professionnel, conçue pour allier design et fonctionnalité dans tous vos espaces de travail."},
-      { id: 2, 
-        name: "Luminaires", 
-        images: require("@/assets/category photos/Luminaires.jpg"), 
-        description: "Optimisez l'éclairage de vos projets avec nos luminaires modernes, alliant performance et efficacité énergétique."},
-      { id: 3, 
-        name: "Tapis", 
-        images: require("@/assets/category photos/Tapis.jpg"), 
-        description: "Ajoutez une touche d'élégance à vos espaces avec nos tapis haut de gamme, parfaits pour un usage intensif en milieu professionnel."},
-      { id: 4, 
-        name: "Objets de décorations", 
-        images: require("@/assets/category photos/Objets de décorations2.jpg"), 
-        description: "Personnalisez vos espaces avec notre sélection d'articles de décoration, spécialement conçus pour répondre aux exigences des entreprises."},
+      {
+        id: 1,
+        name: "Mobilier d'intérieur",
+        images: require("@/assets/category photos/Mobilier d'intérieur.jpg"),
+        description:
+          "Découvrez notre gamme de mobilier professionnel, conçue pour allier design et fonctionnalité dans tous vos espaces de travail.",
+      },
+      {
+        id: 2,
+        name: "Luminaires",
+        images: require("@/assets/category photos/Luminaires.jpg"),
+        description:
+          "Optimisez l'éclairage de vos projets avec nos luminaires modernes, alliant performance et efficacité énergétique.",
+      },
+      {
+        id: 3,
+        name: "Tapis",
+        images: require("@/assets/category photos/Tapis.jpg"),
+        description:
+          "Ajoutez une touche d'élégance à vos espaces avec nos tapis haut de gamme, parfaits pour un usage intensif en milieu professionnel.",
+      },
+      {
+        id: 4,
+        name: "Objets de décorations",
+        images: require("@/assets/category photos/Objets de décorations2.jpg"),
+        description:
+          "Personnalisez vos espaces avec notre sélection d'articles de décoration, spécialement conçus pour répondre aux exigences des entreprises.",
+      },
     ],
 
     produits: [
@@ -273,7 +285,8 @@ export default createStore({
     ],
   },
   mutations: {
-    setCurrentUser(state, user) {  // ========= test ========
+    setCurrentUser(state, user) {
+      // ========= test ========
       state.currentUser = user;
     },
     setCategories(state, cat) {
@@ -299,64 +312,6 @@ export default createStore({
     },
     setCommandeValider(state, commande) {
       state.commandeValider = commande;
-    },
-
-    clearPanier(state) {
-      state.commandes = [];
-      localStorage.removeItem("commandes");
-    },
-
-    addProduitToCommande(state, prodId) {
-      let produitInfo = state.produits.find((p) => p.id === prodId);
-      if (!produitInfo) return;
-
-      let userId = state.currentUtilisateur?.id;
-      if (!userId) return; // j'ai juste ajouté cette ligne pour s'assurer qu'on a un userId issu d'un utilisateur connecté
-
-      let commandeExistante = state.commandes.find((commande) =>
-        commande.produits.some((p) => p.produitId === prodId)
-      );
-
-      if (commandeExistante) {
-        let produit = commandeExistante.produits.find(
-          (p) => p.produitId === prodId
-        );
-
-        if (produit.quantite < produitInfo.moq) {
-          produit.quantite = produitInfo.moq;
-          commandeExistante.countTotal +=
-            (produitInfo.moq - produit.quantite) * produitInfo.prix;
-        } else {
-          produit.quantite++;
-          commandeExistante.countTotal += produitInfo.prix;
-        }
-      } else {
-        state.commandes.push({
-          id: state.commandes.length + 1,
-          produits: [
-            {
-              produitId: produitInfo.id,
-              titre: produitInfo.titre,
-              quantite: produitInfo.moq,
-            },
-          ],
-          countTotal: produitInfo.prix * produitInfo.moq,
-
-          userId: userId,
-          // userId: this.state.currentUserId, // juste un test
-        });
-      }
-      localStorage.setItem("commandes", JSON.stringify(state.commandes));
-    },
-
-    removeProduit(state, prodId) {
-      state.commandes = state.commandes
-        .map((commande) => ({
-          ...commande,
-          produits: commande.produits.filter((p) => p.produitId !== prodId),
-        }))
-        .filter((commande) => commande.produits.length > 0);
-      localStorage.setItem("commandes", JSON.stringify(state.commandes));
     },
 
     incrementQuantite(state, prodId) {
@@ -392,9 +347,77 @@ export default createStore({
       }
     },
 
+    clearPanier(state) {
+      state.commandes = [];
+      localStorage.removeItem("commandes");
+    },
+
+    removeProduit(state, prodId) {
+      state.commandes = state.commandes
+        .map((commande) => ({
+          ...commande,
+          produits: commande.produits.filter((p) => p.produitId !== prodId),
+        }))
+        .filter((commande) => commande.produits.length > 0);
+      localStorage.setItem("commandes", JSON.stringify(state.commandes));
+    },
+
+    addProduitToCommande(state, prodId) {
+      let produitInfo = state.produits.find((p) => p.id === prodId);
+      if (!produitInfo) return;
+
+      let userId = state.currentUtilisateur?.id;
+      if (!userId) return; // j'ai juste ajouté cette ligne pour s'assurer qu'on a un userId issu d'un utilisateur connecté
+
+      // const currentUser = state.currentUtilisateur;
+      // if (!currentUser) return;
+
+      let commandeExistante = state.commandes.find((commande) =>
+        commande.produits.some((p) => p.produitId === prodId)
+      );
+      // let commandeExistante = state.commandes.find(
+      //   (commande) =>
+      //     commande.userId === currentUser.id &&
+      //     commande.produits.some((p) => p.produitId === prodId)
+      // );
+
+      if (commandeExistante) {
+        let produit = commandeExistante.produits.find(
+          (p) => p.produitId === prodId
+        );
+
+        if (produit.quantite < produitInfo.moq) {
+          produit.quantite = produitInfo.moq;
+          commandeExistante.countTotal +=
+            (produitInfo.moq - produit.quantite) * produitInfo.prix;
+        } else {
+          produit.quantite++;
+          commandeExistante.countTotal += produitInfo.prix;
+        }
+      } else {
+        state.commandes.push({
+          id: state.commandes.length + 1,
+          produits: [
+            {
+              produitId: produitInfo.id,
+              titre: produitInfo.titre,
+              quantite: produitInfo.moq,
+            },
+          ],
+          countTotal: produitInfo.prix * produitInfo.moq,
+          // userId: currentUser.id,
+          userId: userId,
+          // userId: this.state.currentUserId, // juste un test
+        });
+      }
+      localStorage.setItem("commandes", JSON.stringify(state.commandes));
+    },
+
     saveCommandeToLocalStorage(state, commande) {
       let userId = state.currentUtilisateur?.id;
       if (!userId) return; //j'applique la même logique que dans la mutation addProduitToCommande
+
+      // const currentUser = state.currentUtilisateur;
 
       if (commande && Array.isArray(commande.produits)) {
         state.commandeValider.push({
@@ -406,6 +429,7 @@ export default createStore({
           })),
           countTotal: commande.countTotal,
 
+          // userId: currentUser.id,
           // userId: commande.userId,
           userId: userId,
         });
@@ -586,9 +610,9 @@ export default createStore({
   actions: {
     // ========= test ==========
     loadCurrentUser({ commit }) {
-      const user = JSON.parse(localStorage.getItem('currentUser'));
+      const user = JSON.parse(localStorage.getItem("currentUser"));
       if (user) {
-        commit('setCurrentUser', user);
+        commit("setCurrentUser", user);
       }
     },
     // =========== test ==========
@@ -603,6 +627,9 @@ export default createStore({
 
     addProduitToPanier({ commit }, prodId) {
       commit("addProduitToCommande", prodId);
+    },
+    removeProduit({ commit }, prodId) {
+      commit("removeProduit", prodId);
     },
 
     loadCommandesFromLocalStorage({ commit, state }) {
@@ -703,14 +730,12 @@ export default createStore({
   },
 
   getters: {
-
     currentUser(state) {
       return state.utilisateurs.find((user) => user.id === state.currentUserId);
     },
     isLoggedIn(state, getters) {
       return !!getters.currentUser;
     },
-
     isAdmin(state, getters) {
       return getters.currentUser && getters.currentUser.role === "ADMIN";
     },
@@ -718,7 +743,6 @@ export default createStore({
     isUser(state, getters) {
       return getters.currentUser && getters.currentUser.role === "USER";
     },
-
 
     subTotal: (state) => (produitId) => {
       const produit = state.commandes
@@ -822,7 +846,7 @@ export default createStore({
           quantite: order ? order.quantite : 0,
         };
       });
-      return produitsWithQuantite.sort((a, b) => b.quantite - a.quantite);
+      return produitsWithQuantite.sort((a, b) => b.quantite - a.quantite).slice(0, 8); // top 8 best seller
     },
     // ========================================================================================================\\
   },

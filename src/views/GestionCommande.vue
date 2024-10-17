@@ -19,14 +19,13 @@
             <tr v-for="commande in commandeValider" :key="commande.id">
               <td>{{ commande.id }}</td>
               <td>
-                <ul>
-                  <li v-for="produit in commande.produits" :key="produit.produitId">
+      
+                  <div v-for="produit in commande.produits" :key="produit.produitId">
                     {{ produit.titre }} (x{{ produit.quantite }})
-                  </li>
-                </ul>
+                  </div>
+
               </td>
-              <td>{{ getTotalQuantite(commande.produits) }}</td>
-              <td>{{ commande.countTotal.toFixed(2) }} €</td>
+              <td>{{ commande.countTotal }} €</td>
               <td>
                 <!-- Bouton pour transférer la commande -->
                 <button @click="transferCommande(commande.id)">Transférer</button>
@@ -62,7 +61,7 @@
                 </ul>
               </td>
               <td>{{ getTotalQuantite(commande.produits) }}</td>
-              <td>{{ commande.countTotal.toFixed(2) }} €</td>
+              <td>{{ commande.countTotal }} €</td>
             </tr>
           </tbody>
         </table>
@@ -74,7 +73,7 @@
   </template>
   
   <script>
-  import { mapState, mapActions } from "vuex";
+  import { mapState, mapActions  } from "vuex";
   
   export default {
     name: "GestionCommande",
