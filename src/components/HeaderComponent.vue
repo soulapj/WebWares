@@ -98,7 +98,7 @@ export default {
     ...mapState({
       categories: (state) => state.categories,
       
-      //ici on j'ai juste modifié sur state.currentUserId -C
+      //ici on j'ai juste modifié sur state.currentUserId 
       currentUser: (state) => state.utilisateurs.find((user) => user.id === state.currentUserId),
       commandes: (state) => state.commandes,
     }),
@@ -110,12 +110,15 @@ export default {
   
       // ------------ Clément 
 
-      alert("Déconnexion");
+      // alert("Déconnexion");
+      //ici cette action permet de sauvegarder les commandes de le tableau des savedCommandes
+      this.$store.commit("saveCommandesForUtilisateur");
       this.$store.commit("clearCurrentUtilisateur");
+
       localStorage.removeItem("currentUtilisateur");
 
       this.$emit("user-logged-in", false);
-      alert(this.isLoggedIn);
+      // alert(this.isLoggedIn);
       this.$router.push("/");
       // ------------ //
     },
@@ -124,6 +127,7 @@ export default {
       this.$router.push("/login");
     },
 
+    // méthode pour rediriger vers la page d'inscription
     goToRegister() {
       this.$router.push("/register");
     },
