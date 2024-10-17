@@ -294,11 +294,13 @@ export default createStore({
       let produitInfo = state.produits.find((p) => p.id === prodId);
       if (!produitInfo) return;
 
+
       let userId = state.currentUtilisateur?.id;
       if (!userId) return; // j'ai juste ajouté cette ligne pour s'assurer qu'on a un userId issu d'un utilisateur connecté
 
       let commandeExistante = state.commandes.find((commande) =>
         commande.produits.some((p) => p.produitId === prodId)
+
       );
 
       if (commandeExistante) {
@@ -325,8 +327,10 @@ export default createStore({
             },
           ],
           countTotal: produitInfo.prix * produitInfo.moq,
+
           userId: userId,
           // userId: this.state.currentUserId, // juste un test
+
         });
       }
       localStorage.setItem("commandes", JSON.stringify(state.commandes));
@@ -377,8 +381,10 @@ export default createStore({
 
     saveCommandeToLocalStorage(state, commande) {
 
+
       let userId = state.currentUtilisateur?.id;
       if(!userId) return; //j'applique la même logique que dans la mutation addProduitToCommande
+
 
       if (commande && Array.isArray(commande.produits)) {
         
@@ -390,8 +396,10 @@ export default createStore({
             quantite: p.quantite,
           })),
           countTotal: commande.countTotal,
+
           // userId: commande.userId,
           userId: userId,
+
         });
         localStorage.setItem(
           "commandeValider",
@@ -413,22 +421,19 @@ export default createStore({
     // --------------------- mutations Clément
     setCurrentUtilisateurFromLocalStorage(state) {
       const currentUtilisateur = localStorage.getItem("currentUtilisateur");
-      if (currentUtilisateur)
-      {
-        state.currentUtilisateur =JSON.parse(currentUtilisateur);
+      if (currentUtilisateur) {
+        state.currentUtilisateur = JSON.parse(currentUtilisateur);
         state.isLoggedIn = true;
         localStorage.setItem("isLoggedIn", true);
-
-      }
-      else 
-      {
+      } else {
         state.currentUtilisateur = null;
         state.isLoggedIn = false;
       }
     },
-    
+
     setCurrentUtilisateur(state, userId) {
       const utilisateur = state.utilisateurs.find((user) => user.id === userId);
+
       if(utilisateur)
         {
           state.currentUtilisateur = utilisateur;
@@ -452,6 +457,7 @@ export default createStore({
       if(state.currentUtilisateur) {
         state.previousUtilisateur = state.currentUtilisateur;
       }
+
       state.currentUtilisateur = null;
       state.isLoggedIn = false;
       localStorage.removeItem("currentUtilisateur");
@@ -460,7 +466,7 @@ export default createStore({
 
     addUser(state, newUser) {
       state.utilisateurs.push(newUser);
-      localStorage.setItem('utilisateurs', JSON.stringify(state.utilisateurs));
+      localStorage.setItem("utilisateurs", JSON.stringify(state.utilisateurs));
     },
 
     setUtilisateursFromLocalStorage(state) {
@@ -482,18 +488,20 @@ export default createStore({
       localStorage.setItem("commandes", JSON.stringify(commandes));
     },
 
-    setUserIdForcommande(state, {userId, commandeId}) {
-      const commande = state.commandeValider.find(c => c.id === commandeId);
+    setUserIdForcommande(state, { userId, commandeId }) {
+      const commande = state.commandeValider.find((c) => c.id === commandeId);
 
-      if(commande) {
+      if (commande) {
         commande.userId = userId;
-        localStorage.setItem('commandeValider', JSON.stringify(state.commandeValider));
-      }
-      else 
-      {
+        localStorage.setItem(
+          "commandeValider",
+          JSON.stringify(state.commandeValider)
+        );
+      } else {
         console.error(`Commande avec l'ID ${commandeId} non trouvée.`);
       }
     },
+
 
     //la sauvegarde des commandes de l'utilisateur se fait lors de la déconnexion
     // 
@@ -541,6 +549,7 @@ export default createStore({
 
     // ----------------------- Fin mutations clément //
 
+
   },
 
   actions: {
@@ -587,6 +596,7 @@ export default createStore({
     // ========================================================================================= \\
 
 
+
     // --------------------- Début actions Clément
 
     loadPanierForCurrentUser({commit, state}) {
@@ -597,10 +607,13 @@ export default createStore({
       }
     },
 
-    loadCurrentUtilisateurFromLocalStorage({commit}){
+
+    loadCurrentUtilisateurFromLocalStorage({ commit }) {
       const currentUtilisateur = localStorage.getItem("currentUtilisateur");
+
       if(currentUtilisateur) {
         const utilisateur = JSON.parse(currentUtilisateur);
+
         commit("setCurrentUtilisateur", JSON.parse(currentUtilisateur));
         const savedCommandes = JSON.parse(localStorage.getItem("savedCommandes"));
 
@@ -617,24 +630,29 @@ export default createStore({
       }
     },
 
+
     // ici on charge les utilisateurs depuis le local storage
     loadUtilisateurArrayFromLocalStorage({commit}){ 
       const utilisateurs = JSON.parse(localStorage.getItem('utilisateurs'));
       if(utilisateurs && Array.isArray(utilisateurs)){
+
         commit("setUtilisateursFromLocalStorage", utilisateurs);
       }
     },
+
 
     // loadUtilisateursArrayFromLocalStorage({commit}) {
     //   commit("setUtilisateursFromLocalStorage");
     // },
 
     registerUser({commit}, newUser){
+
       const id = this.state.utilisateurs.length + 1;
-      const userWithId = {id, ...newUser};
+      const userWithId = { id, ...newUser };
       commit("addUser", userWithId);
-      return {success: true};
+      return { success: true };
     },
+
 
     setUserIdForCommande({commit}, userId) {
       commit("setUserIdForcommande", userId);
@@ -656,6 +674,7 @@ export default createStore({
       }
     }
      // ----------------------- Fin action Clément//
+
   },
 
   getters: {
@@ -716,7 +735,20 @@ export default createStore({
         .toFixed(2);
     },
 
-     // --------------------- getters Clément
+    // --------------------- getters Clément
+
+    getUtilisateurs: (state) => state.utilisateurs,
+    //attention j'ai mis le getteur à get UtilisateurByEmail !
+    getUtilisateurByEmail: (state) => (email) =>
+      state.utilisateurs.find((user) => user.email === email),
+
+    //attention j'ai mis le getteur à get UtilisateurByUsername !
+    getUtilisateurByUsername: (state) => (username) =>
+      state.utilisateurs.find((user) => user.username === username),
+
+    getUtilisateurBySiret: (state) => (siret) =>
+      state.utilisateurs.find((user) => user.siret === siret),
+
 
      getUtilisateurs: (state) => state.utilisateurs,
      //attention j'ai mis le getteur à get UtilisateurByEmail !
@@ -743,7 +775,8 @@ export default createStore({
   
      //isLoggedIn: (state) => state.isLoggedIn, // getter pour l'état de connexion
 
-     // ---------------------------------//
+
+    // ---------------------------------//
 
     // Sorted best seller ======================arash====================================================== \\
     sortedBestSellers(state) {
@@ -762,6 +795,5 @@ export default createStore({
     // ========================================================================================================\\
   },
 
- 
   modules: {},
 });

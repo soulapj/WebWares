@@ -90,12 +90,14 @@ export default {
     };
   },
   computed: {
+
     // ...mapState(["commandes", "utilisateurs"]),
     // --- ici j'ai juste remplacé utilisateur  par currentUtilisateur afin de suivre la connexion de l'utilisateur, ce qui nous permet de set la confirmation de ses
     // commandes sur son id et ses datas correspondantes
     ...mapState(["commandes", "currentUtilisateur"]),
 
     //    ...mapGetters(["total"]),
+
     ...mapGetters(["total"]),
 
     commandeProduits() {
@@ -103,9 +105,11 @@ export default {
     },
 
     utilisateur() {
+
       // return this.utilisateurs.find((user) => user.id === 1);
       return this.currentUtilisateur;
       
+
     },
   },
   methods: {
