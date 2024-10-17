@@ -4,7 +4,7 @@ export default createStore({
   state: {
     detailProd: {},
     commandeValider: [],
-
+    commandesTransferees: [],
     savedCommandes: [],
     // ----------C j'ai un ajouté un state currentUtilisateur set sur null
     currentUtilisateur: null,
@@ -316,16 +316,60 @@ export default createStore({
       state.commandeValider = commande;
     },
 
+    incrementQuantite(state, prodId) {
+      let commande = state.commandes.find((com) =>
+        com.produits.some((p) => p.produitId === prodId)
+      );
+      if (commande) {
+        let produit = commande.produits.find((p) => p.produitId === prodId);
+        produit.quantite++;
+        let produitInfo = state.produits.find((p) => p.id === prodId);
+        commande.countTotal += produitInfo.prix;
+        localStorage.setItem("commandes", JSON.stringify(state.commandes));
+      }
+    },
+
+    decrementQuantite(state, prodId) {
+      let commande = state.commandes.find((com) =>
+        com.produits.some((p) => p.produitId === prodId)
+      );
+      if (commande) {
+        let produit = commande.produits.find((p) => p.produitId === prodId);
+        let produitInfo = state.produits.find((p) => p.id === prodId);
+
+        if (produit.quantite > produitInfo.moq) {
+          produit.quantite--;
+          commande.countTotal -= produitInfo.prix;
+          localStorage.setItem("commandes", JSON.stringify(state.commandes));
+        } else {
+          console.log(
+            `La quantité minimum pour ce produit est ${produitInfo.moq}`
+          );
+        }
+      }
+    },
+
     clearPanier(state) {
       state.commandes = [];
       localStorage.removeItem("commandes");
     },
+
 
     backSetProduitListFromLocalStorage(state, produits){
       state.backProduitList = produits;
     },
     backSetUserListFromLocalStorage(state, users){
       state.backUserList = users;
+    },
+
+    removeProduit(state, prodId) {
+      state.commandes = state.commandes
+        .map((commande) => ({
+          ...commande,
+          produits: commande.produits.filter((p) => p.produitId !== prodId),
+        }))
+        .filter((commande) => commande.produits.length > 0);
+      localStorage.setItem("commandes", JSON.stringify(state.commandes));
     },
 
     addProduitToCommande(state, prodId) {
@@ -335,9 +379,17 @@ export default createStore({
       let userId = state.currentUtilisateur?.id;
       if (!userId) return; // j'ai juste ajouté cette ligne pour s'assurer qu'on a un userId issu d'un utilisateur connecté
 
+      // const currentUser = state.currentUtilisateur;
+      // if (!currentUser) return;
+
       let commandeExistante = state.commandes.find((commande) =>
         commande.produits.some((p) => p.produitId === prodId)
       );
+      // let commandeExistante = state.commandes.find(
+      //   (commande) =>
+      //     commande.userId === currentUser.id &&
+      //     commande.produits.some((p) => p.produitId === prodId)
+      // );
 
       if (commandeExistante) {
         let produit = commandeExistante.produits.find(
@@ -363,21 +415,11 @@ export default createStore({
             },
           ],
           countTotal: produitInfo.prix * produitInfo.moq,
-
+          // userId: currentUser.id,
           userId: userId,
           // userId: this.state.currentUserId, // juste un test
         });
       }
-      localStorage.setItem("commandes", JSON.stringify(state.commandes));
-    },
-
-    removeProduit(state, prodId) {
-      state.commandes = state.commandes
-        .map((commande) => ({
-          ...commande,
-          produits: commande.produits.filter((p) => p.produitId !== prodId),
-        }))
-        .filter((commande) => commande.produits.length > 0);
       localStorage.setItem("commandes", JSON.stringify(state.commandes));
     },
 
@@ -415,42 +457,12 @@ export default createStore({
           state.utilisateurs[indexProd] = {...modObj.key1}
         },
 
-    incrementQuantite(state, prodId) {
-      let commande = state.commandes.find((com) =>
-        com.produits.some((p) => p.produitId === prodId)
-      );
-      if (commande) {
-        let produit = commande.produits.find((p) => p.produitId === prodId);
-        produit.quantite++;
-        let produitInfo = state.produits.find((p) => p.id === prodId);
-        commande.countTotal += produitInfo.prix;
-        localStorage.setItem("commandes", JSON.stringify(state.commandes));
-      }
-    },
-
-    decrementQuantite(state, prodId) {
-      let commande = state.commandes.find((com) =>
-        com.produits.some((p) => p.produitId === prodId)
-      );
-      if (commande) {
-        let produit = commande.produits.find((p) => p.produitId === prodId);
-        let produitInfo = state.produits.find((p) => p.id === prodId);
-
-        if (produit.quantite > produitInfo.moq) {
-          produit.quantite--;
-          commande.countTotal -= produitInfo.prix;
-          localStorage.setItem("commandes", JSON.stringify(state.commandes));
-        } else {
-          console.log(
-            `La quantité minimum pour ce produit est ${produitInfo.moq}`
-          );
-        }
-      }
-    },
 
     saveCommandeToLocalStorage(state, commande) {
       let userId = state.currentUtilisateur?.id;
       if (!userId) return; //j'applique la même logique que dans la mutation addProduitToCommande
+
+      // const currentUser = state.currentUtilisateur;
 
       if (commande && Array.isArray(commande.produits)) {
         state.commandeValider.push({
@@ -462,6 +474,7 @@ export default createStore({
           })),
           countTotal: commande.countTotal,
 
+          // userId: currentUser.id,
           // userId: commande.userId,
           userId: userId,
         });
@@ -630,20 +643,19 @@ export default createStore({
       state.savedCommandes = state.savedCommandes.filter(
         (savedCommande) => savedCommande.userId !== userId
       );
-      localStorage.setItem(
-        "savedCommandes",
-        JSON.stringify(state.savedCommandes)
-      );
-    },
+      localStorage.setItem("savedCommandes", JSON.stringify(state.savedCommandes));
+    }
+      },
 
     // ----------------------- Fin mutations clément //
+
     backDeleteProduct(state, idProduit){
       state.backProduitList.splice(idProduit, 1);
     },
     backDeleteUser(state, idUser){
       state.backUserList.splice(idUser, 1);
     },
-  },
+
 
   actions: {
     // ========= test ==========
@@ -762,6 +774,7 @@ export default createStore({
       if (userId) {
         commit("clearSavedCommandesForUser", userId);
       }
+
     },
     // ----------------------- Fin action Clément//
     backRemoveProduit({ commit }, produitId) {
@@ -784,6 +797,7 @@ export default createStore({
         commit("backSetUserListFromLocalStorage", backUserList);
       }
     },
+
 
   },
 
@@ -904,9 +918,7 @@ export default createStore({
           quantite: order ? order.quantite : 0,
         };
       });
-      return produitsWithQuantite
-        .sort((a, b) => b.quantite - a.quantite)
-        .slice(0, 8); // top 8 best seller
+      return produitsWithQuantite.sort((a, b) => b.quantite - a.quantite).slice(0, 8); // top 8 best seller
     },
     // ========================================================================================================\\
   },

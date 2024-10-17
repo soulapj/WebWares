@@ -1,5 +1,6 @@
 import { createRouter, createWebHistory } from "vue-router";
 import HomeView from "../views/HomeView.vue";
+import GestionCommande from "@/views/GestionCommande.vue";
 
 const routes = [
   {
@@ -101,7 +102,7 @@ const routes = [
     component: () => import("../views/RegistrationPage.vue"),
   },
 
-  // ---------------------------------
+
   {
     path: "/ajout-produit",
     name: "AjoutProd",
@@ -126,6 +127,12 @@ const routes = [
     meta: { title: 'WebWares - Modification utilisateur' },
 
   },
+  {
+    path: "/gestion-commande",
+    name: "GestionCommande",
+    component: GestionCommande,
+  },
+
 ];
 
 const router = createRouter({

@@ -5,7 +5,7 @@
     @update-search="handleSearchUpdate"
   />
   <div class="produit">
-    <div v-for="(prod, index) in filteredProduits" :key="index">
+    <div class="produit-item" v-for="(prod, index) in filteredProduits" :key="index">
       <img :src="prod.images" />
       <h4>{{ prod.titre }}</h4>
       <p v-if="isLoggedIn">
@@ -77,6 +77,12 @@ export default {
 </script>
 
 <style scoped>
+img {
+  width: 250px;
+  height: 230px;
+  margin: 15px;
+}
+
 .catégorie {
   display: inline-block;
   margin: 50px;
@@ -86,7 +92,43 @@ export default {
   display: flex;
   justify-content: center;
   flex-wrap: wrap;
-  gap: 50px;
+  gap: 20px;
+}
+
+/* Limite de 5 éléments par ligne */
+.produit-item {
+  width: calc(20% - 30px); 
+  box-sizing: border-box;
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+@media (max-width: 1200px) {
+  /* Réduire à 4 éléments par ligne pour écrans plus petits */
+  .produit-item {
+    width: calc(25% - 30px); 
+  }
+}
+
+@media (max-width: 900px) {
+  /* Réduire à 3 éléments par ligne pour tablettes */
+  .produit-item {
+    width: calc(33.33% - 30px);
+  }
+}
+
+@media (max-width: 600px) {
+  /* Réduire à 2 éléments par ligne pour petits écrans */
+  .produit-item {
+    width: calc(50% - 30px);
+  }
+}
+
+@media (max-width: 400px) {
+  /* 1 élément par ligne pour écrans très petits */
+  .produit-item {
+    width: 100%;
+  }
 }
 
 .produit > div {
