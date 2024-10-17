@@ -7,7 +7,7 @@
     </div>
 
     <!-- Navigation Links -->
-    <nav>
+    <nav v-if="isUser || !isLoggedIn">
       <router-link to="/">Accueil</router-link>
       <router-link to="/produit">Produits</router-link>
 
@@ -27,6 +27,13 @@
       </div>
     </nav>
 
+    <nav v-if="isAdmin && isLoggedIn">
+      <router-link to="/user-back">Utilisateur</router-link>
+      <router-link to="/product-back">Produits</router-link>
+      <!-- <router-link to="/">Catégories</router-link> -->
+      <router-link to="/gestion-commande">Commandes</router-link>
+    </nav>
+
     <!-- Authentication Links -->
     <div>
       <div class="auth-section" v-if="!isLoggedIn">
@@ -37,16 +44,16 @@
           @click="login"
         />
         <ButtonComponents
-        to="/signup"
-         label="S'inscrire" 
-         type="register"
-         @click="goToRegister"
+          to="/signup"
+          label="S'inscrire"
+          type="register"
+          @click="goToRegister"
         />
       </div>
 
       <div class="icons" v-else>
         <!-- Cart Icon -->
-        <router-link to="/panier" class="cart-icon">
+        <router-link to="/panier" class="cart-icon" v-if="isUser">
           <span v-if="commandes && commandes.length > 0">{{
             commandes.length
           }}</span>
@@ -61,6 +68,11 @@
           <div class="dropdown">
             <p class="welcome-msg">Bienvenue {{ currentUser.raisonSociale }}</p>
             <ButtonComponents
+              label="Profil"
+              type="login"
+              @click="$router.push('/profile/:id')"
+            />
+            <ButtonComponents
               label="Déconnexion"
               type="logout"
               @click="logout"
@@ -73,18 +85,16 @@
 </template>
 
 <script>
-import { mapState } from "vuex";
+import { mapState, mapGetters } from "vuex";
 import ButtonComponents from "./ButtonComponents.vue";
 
 export default {
-
-  props :{
-    isLoggedIn :{
-      type : Boolean,
-      required : true
-    }
+  props: {
+    isLoggedIn: {
+      type: Boolean,
+      required: true,
+    },
   },
-
 
   components: {
     ButtonComponents,
@@ -97,18 +107,20 @@ export default {
   computed: {
     ...mapState({
       categories: (state) => state.categories,
-      
-      //ici on j'ai juste modifié sur state.currentUserId 
-      currentUser: (state) => state.utilisateurs.find((user) => user.id === state.currentUserId),
+
+      //ici on j'ai juste modifié sur state.currentUserId
+      currentUser: (state) =>
+        state.utilisateurs.find((user) => user.id === state.currentUserId),
+
       commandes: (state) => state.commandes,
     }),
+    ...mapGetters(["currentUser", "isLoggedIn", "isAdmin", "isUser"]),
   },
   methods: {
-  // j'ai modifié et ajouté quelques méthodes ici : tout est indiqué par mes commentaires
+    // j'ai modifié et ajouté quelques méthodes ici : tout est indiqué par mes commentaires
 
     logout() {
-  
-      // ------------ Clément 
+      // ------------ Clément
 
       // alert("Déconnexion");
       //ici cette action permet de sauvegarder les commandes de le tableau des savedCommandes
