@@ -27,10 +27,20 @@
                 v-for="produit in commande.produits"
                 :key="produit.produitId"
               >
-                <span>
-                  <button @click="decrementQuantite(produit)">-</button>
+                <span class="changeValue">
+                  <button
+                    @click="decrementQuantite(produit)"
+                    style="width: fit-content"
+                  >
+                    -
+                  </button>
                   {{ produit.quantite }}
-                  <button @click="incrementQuantite(produit)">+</button>
+                  <button
+                    @click="incrementQuantite(produit)"
+                    style="width: fit-content"
+                  >
+                    +
+                  </button>
                 </span>
               </div>
             </td>
@@ -56,9 +66,10 @@
                 :key="produit.produitId"
               >
                 <ButtonComponents
-                  label="Supprimer l'article"
+                  style="width: fit-content"
                   type="logout"
                   @click="openDeleteModal(produit.produitId)"
+                  icon="fa-solid fa-trash"
                 />
               </div>
             </td>
@@ -83,7 +94,7 @@
       </div>
     </div>
     <div v-else>
-      <p>Votre panier est vide.</p>
+      <p style="text-align: center">Votre panier est vide.</p>
     </div>
     <ModalComponent :showModal="showModalConfirm" color="#d7c3a7">
       <template #header>
@@ -97,12 +108,12 @@
       <template #footer>
         <ButtonComponents
           label="Valider"
-          color="#E9C46A"
+          type="login"
           @click="removeProduit()"
         />
         <ButtonComponents
           label="Annuler"
-          color="#E9C46A"
+          type="logout"
           @click="closeDeleteModalConfirm"
         />
       </template>
@@ -211,5 +222,11 @@ button {
 
 .total-container p {
   font-weight: bold;
+}
+
+.changeValue {
+  display: flex;
+  align-items: center;
+  flex-direction: row;
 }
 </style>
