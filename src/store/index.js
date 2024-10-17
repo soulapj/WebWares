@@ -314,64 +314,6 @@ export default createStore({
       state.commandeValider = commande;
     },
 
-    clearPanier(state) {
-      state.commandes = [];
-      localStorage.removeItem("commandes");
-    },
-
-    addProduitToCommande(state, prodId) {
-      let produitInfo = state.produits.find((p) => p.id === prodId);
-      if (!produitInfo) return;
-
-      let userId = state.currentUtilisateur?.id;
-      if (!userId) return; // j'ai juste ajouté cette ligne pour s'assurer qu'on a un userId issu d'un utilisateur connecté
-
-      let commandeExistante = state.commandes.find((commande) =>
-        commande.produits.some((p) => p.produitId === prodId)
-      );
-
-      if (commandeExistante) {
-        let produit = commandeExistante.produits.find(
-          (p) => p.produitId === prodId
-        );
-
-        if (produit.quantite < produitInfo.moq) {
-          produit.quantite = produitInfo.moq;
-          commandeExistante.countTotal +=
-            (produitInfo.moq - produit.quantite) * produitInfo.prix;
-        } else {
-          produit.quantite++;
-          commandeExistante.countTotal += produitInfo.prix;
-        }
-      } else {
-        state.commandes.push({
-          id: state.commandes.length + 1,
-          produits: [
-            {
-              produitId: produitInfo.id,
-              titre: produitInfo.titre,
-              quantite: produitInfo.moq,
-            },
-          ],
-          countTotal: produitInfo.prix * produitInfo.moq,
-
-          userId: userId,
-          // userId: this.state.currentUserId, // juste un test
-        });
-      }
-      localStorage.setItem("commandes", JSON.stringify(state.commandes));
-    },
-
-    removeProduit(state, prodId) {
-      state.commandes = state.commandes
-        .map((commande) => ({
-          ...commande,
-          produits: commande.produits.filter((p) => p.produitId !== prodId),
-        }))
-        .filter((commande) => commande.produits.length > 0);
-      localStorage.setItem("commandes", JSON.stringify(state.commandes));
-    },
-
     incrementQuantite(state, prodId) {
       let commande = state.commandes.find((com) =>
         com.produits.some((p) => p.produitId === prodId)
@@ -405,9 +347,77 @@ export default createStore({
       }
     },
 
+    clearPanier(state) {
+      state.commandes = [];
+      localStorage.removeItem("commandes");
+    },
+
+    removeProduit(state, prodId) {
+      state.commandes = state.commandes
+        .map((commande) => ({
+          ...commande,
+          produits: commande.produits.filter((p) => p.produitId !== prodId),
+        }))
+        .filter((commande) => commande.produits.length > 0);
+      localStorage.setItem("commandes", JSON.stringify(state.commandes));
+    },
+
+    addProduitToCommande(state, prodId) {
+      let produitInfo = state.produits.find((p) => p.id === prodId);
+      if (!produitInfo) return;
+
+      let userId = state.currentUtilisateur?.id;
+      if (!userId) return; // j'ai juste ajouté cette ligne pour s'assurer qu'on a un userId issu d'un utilisateur connecté
+
+      // const currentUser = state.currentUtilisateur;
+      // if (!currentUser) return;
+
+      let commandeExistante = state.commandes.find((commande) =>
+        commande.produits.some((p) => p.produitId === prodId)
+      );
+      // let commandeExistante = state.commandes.find(
+      //   (commande) =>
+      //     commande.userId === currentUser.id &&
+      //     commande.produits.some((p) => p.produitId === prodId)
+      // );
+
+      if (commandeExistante) {
+        let produit = commandeExistante.produits.find(
+          (p) => p.produitId === prodId
+        );
+
+        if (produit.quantite < produitInfo.moq) {
+          produit.quantite = produitInfo.moq;
+          commandeExistante.countTotal +=
+            (produitInfo.moq - produit.quantite) * produitInfo.prix;
+        } else {
+          produit.quantite++;
+          commandeExistante.countTotal += produitInfo.prix;
+        }
+      } else {
+        state.commandes.push({
+          id: state.commandes.length + 1,
+          produits: [
+            {
+              produitId: produitInfo.id,
+              titre: produitInfo.titre,
+              quantite: produitInfo.moq,
+            },
+          ],
+          countTotal: produitInfo.prix * produitInfo.moq,
+          // userId: currentUser.id,
+          userId: userId,
+          // userId: this.state.currentUserId, // juste un test
+        });
+      }
+      localStorage.setItem("commandes", JSON.stringify(state.commandes));
+    },
+
     saveCommandeToLocalStorage(state, commande) {
       let userId = state.currentUtilisateur?.id;
       if (!userId) return; //j'applique la même logique que dans la mutation addProduitToCommande
+
+      // const currentUser = state.currentUtilisateur;
 
       if (commande && Array.isArray(commande.produits)) {
         state.commandeValider.push({
@@ -419,6 +429,7 @@ export default createStore({
           })),
           countTotal: commande.countTotal,
 
+          // userId: currentUser.id,
           // userId: commande.userId,
           userId: userId,
         });
