@@ -3,15 +3,29 @@
     <h2>Best Sellers</h2>
     <div class="best-seller-container" v-if="sortedBestSellers.length">
       <!-- <router-link to="/produit"> -->
-      <div class="best-seller" v-for="produit in sortedBestSellers" :key="produit.id">
+      <div
+        class="best-seller"
+        v-for="produit in sortedBestSellers"
+        :key="produit.id"
+      >
         <!-- <router-link :to="{ name: 'ProductDetails', params: { id: produit.id } }"> -->
-          <img :src="produit.images" :alt="produit.titre" class="best-seller-img" />
+        <img
+          :src="produit.images"
+          :alt="produit.titre"
+          class="best-seller-img"
+        />
         <!-- </router-link> -->
-        <div class="overlay"> <!-- v-if login state condition to be added -->
+        <div class="overlay" v-if="!isLoggedIn">
+          <!-- v-if login state condition to be added -->
           <h1>Pour voir les détails s'inscrire</h1>
-          <ButtonComponents type="register" label="S'INSCRIRE" />
+          <ButtonComponents
+            type="register"
+            label="S'INSCRIRE"
+            @click="$router.push('/register')"
+          />
         </div>
-        <div class="overlay"> <!-- v-if logout state condition to be added /-->
+        <div class="overlay" v-if="isLoggedIn">
+          <!-- v-if logout state condition to be added /-->
           <p>{{ produit.titre }}</p>
           <p>{{ produit.prix }}</p>
         </div>
@@ -22,7 +36,7 @@
 </template>
 
 <script>
-import ButtonComponents from './ButtonComponents.vue';
+import ButtonComponents from "./ButtonComponents.vue";
 import { mapState } from "vuex";
 import { mapGetters } from "vuex";
 
@@ -32,16 +46,15 @@ export default {
   },
   computed: {
     ...mapState(["produits"]),
-    ...mapGetters(["sortedBestSellers"]),
-
+    ...mapGetters(["sortedBestSellers", "isLoggedIn"]),
   },
   methods: {
     pickBestSellers(index) {
       let productSold = this.commandeValider.produits[index].quantite;
       productSold.sort((a, b) => b - a);
-    }
-  }
-}
+    },
+  },
+};
 </script>
 
 <style scoped>
