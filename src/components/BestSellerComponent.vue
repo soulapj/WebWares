@@ -2,6 +2,7 @@
   <section class="best-sellers">
     <h2>Best Sellers</h2>
     <div class="best-seller-container" v-if="sortedBestSellers.length">
+
       <!-- <router-link to="/produit"> -->
       <div
         class="best-seller"
@@ -16,6 +17,7 @@
         />
         <!-- </router-link> -->
         <div class="overlay" v-if="!isLoggedIn">
+
           <!-- v-if login state condition to be added -->
           <h1>Pour voir les détails s'inscrire</h1>
           <ButtonComponents
@@ -24,28 +26,36 @@
             @click="$router.push('/register')"
           />
         </div>
+
         <div class="overlay" v-if="isLoggedIn">
+
           <!-- v-if logout state condition to be added /-->
           <p>{{ produit.titre }}</p>
           <p>{{ produit.prix }}</p>
         </div>
       </div>
-      <!-- </router-link> -->
     </div>
   </section>
 </template>
 
 <script>
-import ButtonComponents from "./ButtonComponents.vue";
-import { mapState } from "vuex";
-import { mapGetters } from "vuex";
+
+import ButtonComponents from './ButtonComponents.vue';
+import { mapState, mapGetters } from "vuex";
+
 
 export default {
   components: {
     ButtonComponents,
   },
+  data() {
+    return {
+      userRole: null, 
+    };
+  },
   computed: {
     ...mapState(["produits"]),
+
     ...mapGetters(["sortedBestSellers", "isLoggedIn"]),
   },
   methods: {
@@ -55,6 +65,7 @@ export default {
     },
   },
 };
+
 </script>
 
 <style scoped>
@@ -85,9 +96,9 @@ export default {
 }
 
 .best-seller-img {
+  object-fit: cover;
   width: 100%;
   height: 100%;
-  object-fit: cover;
   display: block;
 }
 

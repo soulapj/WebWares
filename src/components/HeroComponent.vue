@@ -4,6 +4,7 @@
       <img src="../assets/hero/hero6.jpg" alt="Hero Image" class="hero-img" />
       <span class="hero-msg">
         <h1>Bienvenue Sur WebWares</h1>
+
         <p>
           Créez un compte pour bénéficier de réductions exclusives sur nos
           collections.
@@ -14,6 +15,7 @@
           @click="$router.push('/register')"
           v-if="!isLoggedIn"
         />
+
       </span>
     </div>
   </div>
@@ -82,7 +84,7 @@ export default {
   margin-bottom: 2rem;
 }
 
-@media (max-width: 768px) {
+@media (max-width: 1260px) {
   .hero-container {
     padding: 0;
   }
