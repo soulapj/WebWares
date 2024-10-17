@@ -3,8 +3,6 @@
     <!-- Hero section with a welcome message -->
 
     <HeroComponent />
-
-    <!-- Nos Avantage section -->
     
     <hr>
     <!-- Best Seller section -->

@@ -1,10 +1,12 @@
 <template>
   <div>
     <router-link v-if="to" :to="to" :class="['btn', buttonTypeClass]">
+      <i v-if="icon" :class="icon"></i>
       {{ label }}
     </router-link>
 
     <button v-else :class="['btn', buttonTypeClass]">
+      <i v-if="icon" :class="icon"></i>
       {{ label }}
     </button>
   </div>
@@ -19,6 +21,14 @@ export default {
       required: true
     },
     type: {
+      type: String,
+      default: 'default'
+    },
+    // to: {
+    //   type: String,
+    //   default: '/'
+    // },
+    icon: {
       type: String,
       default: 'default'
     },
@@ -38,6 +48,8 @@ export default {
           return 'btn-add';
         case 'delete':
           return 'btn-delete';
+        case 'trash':
+          return 'btn-trash';
         default:
           return 'btn-default';
       }
@@ -48,11 +60,13 @@ export default {
 
 <style scoped>
 .btn {
-  padding: 1rem 2rem;
+  padding: 1rem 1.5rem;
   font-size: 1rem;
   font-weight: bold;
   cursor: pointer;
   border-radius: 5px;
+  text-decoration: none;
+  /* margin: 2rem; */
 }
 
 .btn:hover {

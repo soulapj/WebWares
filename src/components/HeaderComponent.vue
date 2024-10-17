@@ -45,7 +45,7 @@
           </span>
           <div class="dropdown">
             <p class="welcome-msg">Bienvenue {{ currentUser.raisonSociale }}</p>
-            <ButtonComponents label="Ajouter" type="add" @click="logout" />
+            <ButtonComponents label="Déconnexions" type="logout" @click="logout" />
           </div>
         </div>
       </div>
@@ -230,7 +230,7 @@ i:hover {
   transition: 0.3s ease;
 }
 
-@media (max-width: 768px) {
+@media (max-width: 1260px) {
   header {
     display: none;
   }

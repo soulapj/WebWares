@@ -2,6 +2,7 @@ import { createStore } from "vuex";
 
 export default createStore({
   state: {
+    currentUser: null,   //======== test =========
     detailProd: {},
     commandeValider: [],
     formData: {
@@ -13,14 +14,90 @@ export default createStore({
       message: ''
     },
 
+
     categories: [
-      { id: 1, name: "Mobilier d'intérieur" },
-      { id: 2, name: "Luminaires" },
-      { id: 3, name: "Tapis" },
-      { id: 4, name: "Objets de décorations" },
+      { id: 1, 
+        name: "Mobilier d'intérieur", 
+        images: require("@/assets/category photos/Mobilier d'intérieur.jpg"), 
+        description: "Découvrez notre gamme de mobilier professionnel, conçue pour allier design et fonctionnalité dans tous vos espaces de travail."},
+      { id: 2, 
+        name: "Luminaires", 
+        images: require("@/assets/category photos/Luminaires.jpg"), 
+        description: "Optimisez l'éclairage de vos projets avec nos luminaires modernes, alliant performance et efficacité énergétique."},
+      { id: 3, 
+        name: "Tapis", 
+        images: require("@/assets/category photos/Tapis.jpg"), 
+        description: "Ajoutez une touche d'élégance à vos espaces avec nos tapis haut de gamme, parfaits pour un usage intensif en milieu professionnel."},
+      { id: 4, 
+        name: "Objets de décorations", 
+        images: require("@/assets/category photos/Objets de décorations2.jpg"), 
+        description: "Personnalisez vos espaces avec notre sélection d'articles de décoration, spécialement conçus pour répondre aux exigences des entreprises."},
     ],
 
     produits: [
+      {
+        id: 1,
+        images: require("@/assets/mobilier/mobilier-5.jpg"),
+        titre: "Table à manger en bois",
+        description: "Table à manger en bois massif avec finition élégante.",
+        prix: 299.99,
+        moq: 5,
+        categorieId: 1,
+      },
+      {
+        id: 1,
+        images: require("@/assets/mobilier/mobilier-5.jpg"),
+        titre: "Table à manger en bois",
+        description: "Table à manger en bois massif avec finition élégante.",
+        prix: 299.99,
+        moq: 5,
+        categorieId: 1,
+      },
+      {
+        id: 1,
+        images: require("@/assets/mobilier/mobilier-5.jpg"),
+        titre: "Table à manger en bois",
+        description: "Table à manger en bois massif avec finition élégante.",
+        prix: 299.99,
+        moq: 5,
+        categorieId: 1,
+      },
+      {
+        id: 1,
+        images: require("@/assets/mobilier/mobilier-5.jpg"),
+        titre: "Table à manger en bois",
+        description: "Table à manger en bois massif avec finition élégante.",
+        prix: 299.99,
+        moq: 5,
+        categorieId: 1,
+      },
+      {
+        id: 1,
+        images: require("@/assets/mobilier/mobilier-5.jpg"),
+        titre: "Table à manger en bois",
+        description: "Table à manger en bois massif avec finition élégante.",
+        prix: 299.99,
+        moq: 5,
+        categorieId: 1,
+      },
+      {
+        id: 1,
+        images: require("@/assets/mobilier/mobilier-5.jpg"),
+        titre: "Table à manger en bois",
+        description: "Table à manger en bois massif avec finition élégante.",
+        prix: 299.99,
+        moq: 5,
+        categorieId: 1,
+      },
+      {
+        id: 1,
+        images: require("@/assets/mobilier/mobilier-5.jpg"),
+        titre: "Table à manger en bois",
+        description: "Table à manger en bois massif avec finition élégante.",
+        prix: 299.99,
+        moq: 5,
+        categorieId: 1,
+      },
       {
         id: 1,
         images: require("@/assets/mobilier/mobilier-5.jpg"),
@@ -106,6 +183,9 @@ export default createStore({
     ],
   },
   mutations: {
+    setCurrentUser(state, user) {  // ========= test ========
+      state.currentUser = user;
+    },
     setCategories(state, cat) {
       state.categories = cat;
     },
@@ -250,6 +330,14 @@ export default createStore({
   },
 
   actions: {
+    // ========= test ==========
+    loadCurrentUser({ commit }) {
+      const user = JSON.parse(localStorage.getItem('currentUser'));
+      if (user) {
+        commit('setCurrentUser', user);
+      }
+    },
+    // =========== test ==========
     loadDetailProduits({ commit }, idProduit) {
       const selectedProduct = this.state.produits.find(
         (prod) => prod.id === idProduit
@@ -296,6 +384,15 @@ export default createStore({
   },
 
   getters: {
+    // ========== test =============
+    isAdmin(state) {
+      return state.currentUser?.role === 'ADMIN';
+    },
+    isUser(state) {
+      return state.currentUser?.role === 'USER';
+    },
+    // ========= test ===============
+    
     subTotal: (state) => (produitId) => {
       const produit = state.commandes
         .flatMap((commande) => commande.produits)
@@ -335,7 +432,7 @@ export default createStore({
           quantite: order ? order.quantite : 0,  
         };
       });
-      return produitsWithQuantite.sort((a, b) => b.quantite - a.quantite);
+      return produitsWithQuantite.sort((a, b) => b.quantite - a.quantite).slice(0, 8); // top 8 best seller
     },
     // ========================================================================================================\\
     

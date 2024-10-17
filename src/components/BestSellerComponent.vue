@@ -4,12 +4,12 @@
     <div class="best-seller-container" v-if="sortedBestSellers.length">
       <div class="best-seller" v-for="produit in sortedBestSellers" :key="produit.id">
         <img :src="produit.images" :alt="produit.titre" class="best-seller-img" />
-        <div class="overlay" @click="$router.push(`/product-details/` + produit.id)">
+        <div v-if="!userRole" class="overlay" @click="$router.push(`/product-details/` + produit.id)">
           <!-- v-if login state condition to be added -->
           <h1>Pour voir les détails s'inscrire</h1>
           <ButtonComponents type="register" label="S'INSCRIRE" />
         </div>
-        <div class="overlay" @click="$router.push(`/product-details/` + produit.id)">
+        <div class="overlay" v-if="userRole === `USER`" @click="$router.push(`/product-details/` + produit.id)">
           <!-- v-if logout state condition to be added /-->
           <p>{{ produit.titre }}</p>
           <p>{{ produit.prix }}</p>
@@ -21,22 +21,26 @@
 
 <script>
 import ButtonComponents from './ButtonComponents.vue';
-import { mapState } from "vuex";
-import { mapGetters } from "vuex";
+import { mapState, mapGetters } from "vuex";
 
 export default {
   components: {
     ButtonComponents,
   },
+  data() {
+    return {
+      userRole: null, 
+    };
+  },
   computed: {
     ...mapState(["produits"]),
     ...mapGetters(["sortedBestSellers"]),
-
+    
   },
-  methods: {
-    pickBestSellers(index) {
-      let productSold = this.commandeValider.produits[index].quantite;
-      productSold.sort((a, b) => b - a);
+  created() {
+    const savedUser = JSON.parse(localStorage.getItem('currentUser'));
+    if (savedUser && savedUser.role) {
+      this.userRole = savedUser.role;
     }
   }
 }
@@ -68,8 +72,6 @@ export default {
   height: 30rem;
   overflow: hidden;
 }
-
-.test {}
 
 .best-seller-img {
   object-fit: cover;
@@ -104,8 +106,6 @@ export default {
   font-size: 2rem;
   font-style: italic;
 }
-
-
 
 .overlay img {
   width: 100%;

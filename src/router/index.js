@@ -62,6 +62,15 @@ const routes = [
     component: () => import("../views/ConditionsUtilisation.vue"),
     meta: { title: "WebWares - Conditions Utilisation" },
   },
+  { 
+    // ===============test ============
+    path: "/login",
+    name: "LoginPage",
+
+    component: () => import("../views/LoginPage.vue"),
+    meta: { title: "WebWares - Login Page" },
+  }, // =========== test ==============
+  
 ];
 
 const router = createRouter({
