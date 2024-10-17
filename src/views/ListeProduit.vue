@@ -1,15 +1,30 @@
 <template>
-  <SearchBar :placeholder="'Rechercher un produit...'" :searchQuery="searchQuery" @update-search="handleSearchUpdate" />
+  <SearchBar
+    :placeholder="'Rechercher un produit...'"
+    :searchQuery="searchQuery"
+    @update-search="handleSearchUpdate"
+  />
   <div class="produit">
     <div v-for="(prod, index) in filteredProduits" :key="index">
       <img :src="prod.images" />
       <h4>{{ prod.titre }}</h4>
-      <p>Quantité minimal par commande :{{ prod.moq }}</p>
+      <p>Quantité d'achat de l'article minimum : {{ prod.moq }}</p>
       <p>EUR : {{ prod.prix }} €</p>
-      <ButtonComponents v-if="commandes && !isInBag(prod.id)" label="Ajouter au panier" color="#E9C46A"
-        @click="addToPanier(prod.id)" />
-      <ButtonComponents v-else label="Supprimer du panier" color="#E9C46A" @click="removeToPanier(prod.id)" />
-      <router-link :to="{ name: 'DetailProduit', params: { id: prod.id } }">voir détails</router-link>
+      <ButtonComponents
+        v-if="commandes && !isInBag(prod.id)"
+        label="Ajouter au panier"
+        color="#E9C46A"
+        @click="addToPanier(prod.id)"
+      />
+      <ButtonComponents
+        v-else
+        label="Supprimer du panier"
+        color="#E9C46A"
+        @click="removeToPanier(prod.id)"
+      />
+      <router-link :to="{ name: 'DetailProduit', params: { id: prod.id } }"
+        >voir détails</router-link
+      >
     </div>
   </div>
 </template>
@@ -60,8 +75,8 @@ export default {
 
 <style scoped>
 img {
-  max-width: 100%;
-  height: 100px;
+  width: 250px;
+  height: 230px;
   margin: 15px;
 }
 
@@ -73,6 +88,7 @@ img {
 .produit {
   display: flex;
   justify-content: center;
+  flex-wrap: wrap;
   gap: 50px;
 }
 </style>

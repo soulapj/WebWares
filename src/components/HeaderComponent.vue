@@ -13,12 +13,15 @@
 
       <!-- Dynamic Categories -->
       <div class="categories-dropdown">
-        <span>Catégories <i class="fa-duotone fa-solid fa-caret-down fa-xl"></i></span>
+        <span
+          >Catégories <i class="fa-duotone fa-solid fa-caret-down fa-xl"></i
+        ></span>
         <ul>
           <li v-for="category in categories" :key="category.id">
-
-            <router-link :to="{ name: 'CategorieProduits', params: { id: category.id } }">{{ category.name
-              }}</router-link>
+            <router-link
+              :to="{ name: 'CategorieProduits', params: { id: category.id } }"
+              >{{ category.name }}</router-link
+            >
           </li>
         </ul>
       </div>
@@ -27,14 +30,26 @@
     <!-- Authentication Links -->
     <div>
       <div class="auth-section" v-if="!isLoggedIn">
-
-        <ButtonComponents to="/login" label="Connexion" type="login" @click="login"/>
-        <ButtonComponents to="/signup" label="S'inscrire" type="register" />
+        <ButtonComponents
+          to="/login"
+          label="Connexion"
+          type="login"
+          @click="login"
+        />
+        <ButtonComponents
+        to="/signup"
+         label="S'inscrire" 
+         type="register"
+         @click="goToRegister"
+        />
       </div>
 
       <div class="icons" v-else>
         <!-- Cart Icon -->
         <router-link to="/panier" class="cart-icon">
+          <span v-if="commandes && commandes.length > 0">{{
+            commandes.length
+          }}</span>
           <i class="fa-solid fa-basket-shopping fa-lg"></i>
         </router-link>
 
@@ -45,7 +60,12 @@
           </span>
           <div class="dropdown">
             <p class="welcome-msg">Bienvenue {{ currentUser.raisonSociale }}</p>
-            <ButtonComponents label="Déconnexions" type="logout" @click="logout" />
+            
+            <ButtonComponents
+              label="Déconnexion"
+              type="logout"
+              @click="logout"
+            />
           </div>
         </div>
       </div>
@@ -58,44 +78,78 @@ import { mapState } from "vuex";
 import ButtonComponents from "./ButtonComponents.vue";
 
 export default {
+
+  props :{
+    isLoggedIn :{
+      type : Boolean,
+      required : true
+    }
+  },
+
+
   components: {
     ButtonComponents,
   },
   data() {
     return {
-      isLoggedIn: false,
+      // isLoggedIn: false,
     };
   },
   computed: {
     ...mapState({
       categories: (state) => state.categories,
-      currentUser: (state) => state.utilisateurs.find(user => user.id === user.id),
+      
+      //ici on j'ai juste modifié sur state.currentUserId 
+      currentUser: (state) => state.utilisateurs.find((user) => user.id === state.currentUserId),
+      commandes: (state) => state.commandes,
     }),
   },
   methods: {
-    logout() {
+  // j'ai modifié et ajouté quelques méthodes ici : tout est indiqué par mes commentaires
 
-      this.isLoggedIn = false;
+    logout() {
+  
+      // ------------ Clément 
+
+      // alert("Déconnexion");
+      //ici cette action permet de sauvegarder les commandes de le tableau des savedCommandes
+      this.$store.commit("saveCommandesForUtilisateur");
+      this.$store.commit("clearCurrentUtilisateur");
+
+      localStorage.removeItem("currentUtilisateur");
+
+      this.$emit("user-logged-in", false);
+      // alert(this.isLoggedIn);
+      this.$router.push("/");
+      // ------------ //
     },
     login() {
-      this.isLoggedIn = true;
-    }
+      // this.isLoggedIn = true; le problème était que ça nous mettait directement en connecté donc passé en commentaire
+      this.$router.push("/login");
+    },
+
+    // méthode pour rediriger vers la page d'inscription
+    goToRegister() {
+      this.$router.push("/register");
+    },
+    // -------------------------------- //
   },
   created() {
-
-    this.isLoggedIn = !!this.currentUser;
+    // this.isLoggedIn = !!this.currentUser;
   },
 };
 </script>
 
 <style scoped>
 header {
+  position: relative;
   display: flex;
   justify-content: space-around;
   align-items: center;
   padding: 0.5rem 0;
   background-color: var(--color-background);
   box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.1);
+  z-index: 238;
 }
 
 .logo img {
@@ -200,7 +254,6 @@ i:hover {
   border-radius: 5px;
   padding: 1rem 0;
   width: 17rem;
-
 }
 
 .user-menu:hover .dropdown {

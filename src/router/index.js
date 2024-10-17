@@ -62,15 +62,36 @@ const routes = [
     component: () => import("../views/ConditionsUtilisation.vue"),
     meta: { title: "WebWares - Conditions Utilisation" },
   },
-  { 
-    // ===============test ============
-    path: "/login",
-    name: "LoginPage",
+  {
+    path: "/user-back",
+    name: "BackUser",
+
+    component: () => import("../views/BackUser.vue"),
+    meta: { title: "WebWares - Liste Utilisateur Back" },
+  },
+  {
+    path: "/resume-commande",
+    name: "ConfirmCommande",
+
+    component: () => import("../views/ConfirmCommande.vue"),
+  },
+  // --------------------------------- Clément
+  {
+    path : "/login",
+    name: "Login",
 
     component: () => import("../views/LoginPage.vue"),
-    meta: { title: "WebWares - Login Page" },
-  }, // =========== test ==============
-  
+  },
+  {
+    path : "/register",
+    name: "Register",
+
+    component: () => import("../views/RegistrationPage.vue"),
+
+  }
+
+
+  // --------------------------------- 
 ];
 
 const router = createRouter({

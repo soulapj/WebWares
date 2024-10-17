@@ -1,5 +1,14 @@
 <template>
-  <div class="category-container">
+  <div>
+    <!-- Search Bar -->
+    <SearchBar
+      :placeholder="'Rechercher un produit...'"
+      :searchQuery="searchQuery"
+      @update-search="handleSearchUpdate"
+    />
+    
+    <!-- Category Info Section -->
+    <div class="category-container">
     <div class="category">
       <img :src="category.images" :alt="category.name">
       <div class="category-description">
@@ -10,7 +19,8 @@
     </div>
   </div>
 
-  <div v-if="products.length" id="view-all" class="view-all-container">
+    <!-- Products Section -->
+    <div v-if="products.length" id="view-all" class="view-all-container">
     <div v-for="product in products" :key="product.id" class="view-all">
       <img :src="product.images" :alt="product.titre" @click="$router.push(`/product-details/` + product.id)">
       <router-link :to="'/product-details/' + product.id" class="product-link">{{ product.titre }}</router-link>
@@ -19,16 +29,24 @@
       </div>
     </div>
   </div>
-  <p v-else>Aucun produit disponible pour cette catégorie.</p>
+
+    <!-- No Products Message -->
+    <p v-else>Aucun produit disponible pour cette catégorie.</p>
+  </div>
 </template>
 
 <script>
 import { mapState } from "vuex";
+import SearchBar from "@/components/SearchBar.vue";
 
 export default {
+  components: {
+    SearchBar,
+  },
   data() {
     return {
       category: {},
+      searchQuery: "", // Initialize searchQuery for the search functionality
     };
   },
   computed: {
@@ -41,8 +59,19 @@ export default {
         (product) => product.categorieId === parseInt(this.$route.params.id)
       );
     },
+    filteredProducts() {
+      // Apply search filtering
+      return this.products.filter((prod) =>
+        prod.titre.toLowerCase().includes(this.searchQuery.toLowerCase())
+      );
+    },
   },
-  watch: { // watch is to modify route params. motherfucker casse ma tete
+  methods: {
+    handleSearchUpdate(newSearchQuery) {
+      this.searchQuery = newSearchQuery;
+    },
+  },
+  watch: {
     '$route.params.id': {
       immediate: true,
       handler(newCategoryId) {
@@ -54,7 +83,7 @@ export default {
 };
 </script>
 
-<style sloped>
+<style scoped>
 .category-container {
   display: flex;
   background-color: var(--color-primary);
