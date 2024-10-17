@@ -19,20 +19,32 @@ export default createStore({
     },
 
     categories: [
-      { id: 1, name: "Mobilier d'intérieur" },
-      { id: 2, name: "Luminaires" },
-      { id: 3, name: "Tapis" },
-      { id: 4, name: "Objets de décorations" },
+      { id: 1, 
+        name: "Mobilier d'intérieur", 
+        images: require("@/assets/category photos/Mobilier d'intérieur.jpg"), 
+        description: "Découvrez notre gamme de mobilier professionnel, conçue pour allier design et fonctionnalité dans tous vos espaces de travail."},
+      { id: 2, 
+        name: "Luminaires", 
+        images: require("@/assets/category photos/Luminaires.jpg"), 
+        description: "Optimisez l'éclairage de vos projets avec nos luminaires modernes, alliant performance et efficacité énergétique."},
+      { id: 3, 
+        name: "Tapis", 
+        images: require("@/assets/category photos/Tapis.jpg"), 
+        description: "Ajoutez une touche d'élégance à vos espaces avec nos tapis haut de gamme, parfaits pour un usage intensif en milieu professionnel."},
+      { id: 4, 
+        name: "Objets de décorations", 
+        images: require("@/assets/category photos/Objets de décorations2.jpg"), 
+        description: "Personnalisez vos espaces avec notre sélection d'articles de décoration, spécialement conçus pour répondre aux exigences des entreprises."},
     ],
 
     produits: [
       {
         id: 1,
-        images: require("@/assets/mobilier/mobilier-1.jpg"),
-        titre: "Table de chevet",
-        description: "Table de chevet en bois massif avec finition élégante.",
-        prix: 199.99,
-        moq: 2,
+        images: require("@/assets/mobilier/mobilier-5.jpg"),
+        titre: "Table à manger en bois",
+        description: "Table à manger en bois massif avec finition élégante.",
+        prix: 299.99,
+        moq: 5,
         categorieId: 1,
       },
       {
@@ -261,6 +273,9 @@ export default createStore({
     ],
   },
   mutations: {
+    setCurrentUser(state, user) {  // ========= test ========
+      state.currentUser = user;
+    },
     setCategories(state, cat) {
       state.categories = cat;
     },
@@ -569,6 +584,14 @@ export default createStore({
   },
 
   actions: {
+    // ========= test ==========
+    loadCurrentUser({ commit }) {
+      const user = JSON.parse(localStorage.getItem('currentUser'));
+      if (user) {
+        commit('setCurrentUser', user);
+      }
+    },
+    // =========== test ==========
     loadDetailProduits({ commit }, idProduit) {
       const selectedProduct = this.state.produits.find(
         (prod) => prod.id === idProduit
@@ -680,6 +703,7 @@ export default createStore({
   },
 
   getters: {
+
     currentUser(state) {
       return state.utilisateurs.find((user) => user.id === state.currentUserId);
     },
@@ -694,6 +718,7 @@ export default createStore({
     isUser(state, getters) {
       return getters.currentUser && getters.currentUser.role === "USER";
     },
+
 
     subTotal: (state) => (produitId) => {
       const produit = state.commandes
@@ -770,21 +795,9 @@ export default createStore({
     getUtilisateurBySiret: (state) => (siret) =>
       state.utilisateurs.find((user) => user.siret === siret),
 
-
-     getUtilisateurs: (state) => state.utilisateurs,
-     //attention j'ai mis le getteur à get UtilisateurByEmail !
-     getUtilisateurByEmail: (state) => (email) =>
-       state.utilisateurs.find((user) => user.email === email),
- 
-     //attention j'ai mis le getteur à get UtilisateurByUsername !
-     getUtilisateurByUsername: (state) => (username) =>
-       state.utilisateurs.find((user) => user.username === username),
- 
-     getUtilisateurBySiret : (state) => (siret) =>
-       state.utilisateurs.find((user) => user.siret === siret),
-
-     filteredCommandes : (state) => {
-      const userId = state.currentUtilisateur?.id || state.previousUtilisateur?.id;
+    filteredCommandes: (state) => {
+      const userId =
+        state.currentUtilisateur?.id || state.previousUtilisateur?.id;
 
       return state.commandes.filter((commande) => commande.userId === userId);
     },
@@ -810,11 +823,9 @@ export default createStore({
         };
       });
       return produitsWithQuantite.sort((a, b) => b.quantite - a.quantite);
-     },
-      // ========================================================================================================\\
-      // Getter pour les commandes validées
-      commandeValider: (state) => state.commandeValider,
-      // Getter pour les commandes transférées
-      commandesTransferees: (state) => state.commandesTransferees,
     },
+    // ========================================================================================================\\
+  },
+
+  modules: {},
 });

@@ -145,7 +145,6 @@
         this.isLoggedIn = true;
         },
     
-
         validatePassword(){
           if(!this.motDePasse)
           {
