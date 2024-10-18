@@ -599,10 +599,23 @@ export default createStore({
         (savedCommande) => savedCommande.userId !== userId
       );
       localStorage.setItem("savedCommandes", JSON.stringify(state.savedCommandes));
-    }
+    },
     
 
     // ----------------------- Fin mutations clément //
+    // -----------------------  mutations Alex//
+    TRANSFER_COMMANDE(state, commandeId) {
+      // Trouver la commande à transférer
+      const commandeIndex = state.commandeValider.findIndex(
+        (commande) => commande.id === commandeId
+      );
+      if (commandeIndex !== -1) {
+        // Retirer la commande de la liste des commandes validées
+        const commande = state.commandeValider.splice(commandeIndex, 1)[0];
+        // Ajouter la commande à la liste des commandes transférées
+        state.commandesTransferees.push(commande);
+      }
+    },
 
 
   },
@@ -724,8 +737,12 @@ export default createStore({
       if (userId) {
         commit("clearSavedCommandesForUser", userId);
       }
-    }
+    },
      // ----------------------- Fin action Clément//
+     // -----------------------  action Alex//
+     transferCommande({ commit }, commandeId) {
+      commit('TRANSFER_COMMANDE', commandeId);
+    },
 
   },
 
@@ -846,7 +863,7 @@ export default createStore({
           quantite: order ? order.quantite : 0,
         };
       });
-      return produitsWithQuantite.sort((a, b) => b.quantite - a.quantite).slice(0, 8); // top 8 best seller
+      return produitsWithQuantite.sort((a, b) => b.quantite - a.quantite);
     },
     // ========================================================================================================\\
   },

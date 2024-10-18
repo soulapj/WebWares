@@ -10,7 +10,6 @@
             <tr>
               <th>ID</th>
               <th>Produits</th>
-              <th>Quantité</th>
               <th>Total</th>
               <th>Actions</th>
             </tr>
@@ -28,7 +27,7 @@
               <td>{{ commande.countTotal }} €</td>
               <td>
                 <!-- Bouton pour transférer la commande -->
-                <button @click="transferCommande(commande.id)">Transférer</button>
+                <button @click="transferCommande(commande.id)">Validation</button>
               </td>
             </tr>
           </tbody>
@@ -39,15 +38,14 @@
       </div>
   
       <!-- Tableau des commandes transférées -->
-      <h2>Commandes Transférées</h2>
+      <h2>Commandes LIvrées</h2>
       <div v-if="commandesTransferees.length > 0">
         <table class="table">
           <thead>
             <tr>
               <th>ID</th>
               <th>Produits</th>
-              <th>Quantité</th>
-              <th>Total</th>
+              <th>Total</th> 
             </tr>
           </thead>
           <tbody>
