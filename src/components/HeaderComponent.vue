@@ -30,7 +30,7 @@
     <nav v-if="isAdmin && isLoggedIn && isAdminView">
       <router-link to="/user-back">Utilisateur</router-link>
       <router-link to="/product-back">Produits</router-link>
-      <!-- <router-link to="/">Catégories</router-link> -->
+      <router-link to="/categ-back/">Catégories</router-link>
       <router-link to="/gestion-commande">Commandes</router-link>
     </nav>
 

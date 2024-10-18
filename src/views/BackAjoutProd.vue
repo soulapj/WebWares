@@ -19,12 +19,10 @@
                 <input type="number" min="0" id="moq" name="moq" v-model="newProd.moq"><br>
                 
                 <label for="categorieId">Catégorie produit:</label><br>
-                <select id="categorieId" name="category" v-model="newProd.categorieId">
-                    <option value="1">Mobilier d'Intérieur</option>
-                    <option value="2">Luminaires</option>
-                    <option value="3">Tapis</option>
-                    <option value="4">Objet de décoration</option>
-                </select><br>
+                <select id="categorieId" name="category" v-model="editProd.categorieId">
+                <option v-for="category in this.categories" :value="category.id" :key="category.id">{{category.name}}</option>
+                </select
+                ><br>
                 <br>
                 <div class="boutons">
                   <ButtonComponents label="Ajouter" type="submit" @click.prevent="addProd()" ></ButtonComponents>
@@ -52,15 +50,14 @@
     methods: {
       ...mapMutations(['backAddProduit']),
       addProd(){
-            console.log(this.newProd.titre,this.newProd.description,this.newProd.prix,this.newProd.moq,this.newProd.categorieId)
             if (this.newProd.titre && this.newProd.description && this.newProd.prix && this.newProd.moq && this.newProd.categorieId){
                 this.backAddProduit(this.newProd);
                 this.newProd = {};
+                this.goBack()
             } else {
                 alert("remplacer par un modal")
             }
             // this.saveProduitsLocalStorage()
-            this.goBack()
 
         },
         // saveProduitsLocalStorage(){
