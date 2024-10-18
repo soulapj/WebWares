@@ -35,7 +35,7 @@ export default {
     increaseQty() {
       this.quantity++;
     },
-
+  }
   };
   </script>
   
