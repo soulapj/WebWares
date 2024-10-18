@@ -66,6 +66,8 @@ export default {
     this.$store.dispatch("loadUtilisateurArrayFromLocalStorage");
     this.$store.dispatch("loadCurrentUtilisateurFromLocalStorage");
     this.$store.dispatch("loadCommandesFromLocalStorage");
+    this.$store.dispatch("backLoadProduitFromLocalStorage");
+    this.$store.dispatch("backLoadUserFromLocalStorage");
 
     // ----------------- //
   },

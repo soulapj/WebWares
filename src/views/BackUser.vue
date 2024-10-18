@@ -1,89 +1,46 @@
 <template>
-    <div class="top">
-        <SearchBar :placeholder="`Rechercher un nom d'entreprise`" :searchQuery="searchQuery" @update-search="handleSearchUpdate" />
-        <ButtonComponents class="bouton" label="Nouvel User" color="#72BF78" @click="openAddModal()"></ButtonComponents>
-        <!-- Ajout Modal -->
-        <ModalComponent :showModal="showAddModalConfirm" color="#d7c3a7">
-            <template #header>
-                <h2>Voulez-vous ajouter un nouvel utilisateur?</h2>
-            </template>
-            
-            <template #body>
-                <p>Êtes vous sur?</p>
-            </template>
-            <template #footer>
-                <ButtonComponents
-                    label="Valider"
-                    color="#E9C46A"
-                    @click="closeAddModalConfirm"
-                />
-                <ButtonComponents
-                    label="Annuler"
-                    color="#E9C46A"
-                    @click="closeAddModalConfirm"
-                />
-            </template>
-        </ModalComponent>
-    </div>
-    <div class="conteneur">
-      <div class="profil" v-for="(user, index) in this.filteredUser" :key="index">
-        <h4>{{ user.raisonSociale }}</h4>
-        <p>
-          Adresse de l'entreprise : {{ user.adresse }} {{ user.codePostal }}
-          {{ user.ville }}
-        </p>
-        <p>Numéro de Siret : {{ user.siret }}</p>
-        <p>Adresse mail : {{ user.email }}</p>
-        <p>Rôle : {{ user.role }}</p>
-        <div class="boutons">
-            <ButtonComponents label="Modifier" color="#72BF78" @click="openModModal(user.id)"></ButtonComponents>
-            <ButtonComponents label="Bannir" color="#e63946" @click="openDeleteModal(user.id)"></ButtonComponents>
+    <div>
+        <div class="top">
+            <SearchBar :placeholder="`Rechercher un nom d'entreprise`" :searchQuery="searchQuery" @update-search="handleSearchUpdate" />
         </div>
-        <!-- Deletion Modal -->
-        <ModalComponent :showModal="showDeleteModalConfirm" color="#d7c3a7">
-            <template #header>
-                <h2>Confirmation de bannissement :</h2>
-            </template>
-            
-            <template #body>
-                <p>Tout bannissement est définitif. Êtes-vous sur de vouloir continuer?</p>
-            </template>
-            <template #footer>
-                <ButtonComponents
-                    label="Valider"
-                    color="#E9C46A"
-                    @click="closeDeleteModalConfirm"
-                />
-                <ButtonComponents
-                    label="Annuler"
-                    color="#E9C46A"
-                    @click="closeDeleteModalConfirm"
-                />
-            </template>
-        </ModalComponent>
-        <!-- Modification Modal -->
-        <ModalComponent :showModal="showModificationModalConfirm" color="#d7c3a7">
-            <template #header>
-                <h2>Modifier {{ user.raisonSociale }} :</h2>
-            </template>
-            
-            <template #body>
-                <p>Êtes vous sur? {{ user.id }}</p>
-            </template>
-            <template #footer>
-                <ButtonComponents
-                    label="Valider"
-                    color="#E9C46A"
-                    @click="closeModModalConfirm"
-                />
-                <ButtonComponents
-                    label="Annuler"
-                    color="#E9C46A"
-                    @click="closeModModalConfirm"
-                />
-            </template>
-        </ModalComponent>
-      </div>
+        <div class="conteneur">
+          <div class="profil" v-for="(user, index) in this.filteredUser" :key="index">
+            <h4>{{ user.raisonSociale }}</h4>
+            <p>
+              Adresse de l'entreprise : {{ user.adresse }} {{ user.codePostal }}
+              {{ user.ville }}
+            </p>
+            <p>Numéro de Siret : {{ user.siret }}</p>
+            <p>Adresse mail : {{ user.email }}</p>
+            <p>Rôle : {{ user.role }}</p>
+            <div class="boutons">
+                <ButtonComponents label="Modifier" type="submit" @click="$router.push(`modif-user/`+ user.id)"></ButtonComponents>
+                <ButtonComponents label="Supprimer" type="logout" @click="openDeleteModal(user.id)"></ButtonComponents>
+            </div>
+            <!-- Deletion Modal -->
+            <ModalComponent :showModal="showDeleteModalConfirm" color="#d7c3a7">
+                <template #header>
+                    <h2>Confirmation de bannissement :</h2>
+                </template>
+        
+                <template #body>
+                    <p>Tout bannissement est définitif. Êtes-vous sur de vouloir continuer?</p>
+                </template>
+                <template #footer>
+                    <ButtonComponents
+                        label="Valider"
+                        type="submit"
+                        @click="deleteUser(this.userToRemove)"
+                    />
+                    <ButtonComponents
+                        label="Annuler"
+                        type="logout"
+                        @click="closeDeleteModalConfirm"
+                    />
+                </template>
+            </ModalComponent>
+          </div>
+        </div>
     </div>
   </template>
 
@@ -105,6 +62,7 @@ import { mapState } from "vuex";
       showDeleteModalConfirm: false,
       showModificationModalConfirm: false,
       showAddModalConfirm: false,
+      userToRemove: "",
     };
     },
     computed: {
@@ -117,48 +75,32 @@ import { mapState } from "vuex";
     },
     },
     methods: {
+        deleteUser(){
+          this.$store.commit("backRemoveUser", this.userToRemove)
+          this.showDeleteModalConfirm = false;
+          this.userToRemove = null
+        },
         // Méthode pour mettre à jour la recherche
         handleSearchUpdate(newSearchQuery) {
-            this.searchQuery = newSearchQuery;
+          this.searchQuery = newSearchQuery;
         },
-        openDeleteModal() {
+        openDeleteModal(userId) {
+            this.userToRemove = userId;
             this.showDeleteModalConfirm = true;
         },
         closeDeleteModalConfirm() {
             this.showDeleteModalConfirm = false;
+            this.userToRemove = null
         },
-        openModModal() {
+        openModModal(userId) {
+            this.userToRemove = userId;
             this.showModificationModalConfirm = true;
         },
         closeModModalConfirm() {
             this.showModificationModalConfirm = false;
         },
-        openAddModal() {
-            this.showAddModalConfirm = true;
-        },
-        closeAddModalConfirm() {
-            this.showAddModalConfirm = false;
-        },
-        saveUserToLocalStorage(){
-            localStorage.setItem("userList", JSON.stringify(this.utilisateurs))
-        }
-    },
-    watch:{
-        produits:{
-            handler(){
-                this.saveUserToLocalStorage()
-            }
-        }
-    },
-    created(){
-        this.saveUserToLocalStorage();
-        let storedUser = localStorage.getItem("userList");
-        if (storedUser) {
-          this.utilisateurs = localStorage.setItem("userList", storedUser)
-        }
 
     },
-
   };
   </script>
 
