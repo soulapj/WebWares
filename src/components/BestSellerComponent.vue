@@ -2,22 +2,35 @@
   <section class="best-sellers">
     <h2>Best Sellers</h2>
     <div class="best-seller-container" v-if="sortedBestSellers.length">
-
-      <div class="best-seller" v-for="produit in sortedBestSellers" :key="produit.id">
-        <img :src="produit.images" :alt="produit.titre" class="best-seller-img" />
-        <div v-if="savedUser" class="overlay">
+      <div
+        class="best-seller"
+        v-for="produit in sortedBestSellers"
+        :key="produit.id"
+      >
+        <img
+          :src="produit.images"
+          :alt="produit.titre"
+          class="best-seller-img"
+        />
+        <div v-if="!isLoggedIn" class="overlay">
 
           <!-- v-if login state condition to be added -->
           <h1>Pour voir les détails s'inscrire</h1>
           <ButtonComponents type="register" label="S'INSCRIRE" @click="$router.push('/register')" />
         </div>
 
-        <div class="overlay" v-if="!savedUser" @click="$router.push(`/product-details/` + produit.id)"
-          icon="fa-solid fa-trash">
+        <div
+          class="overlay"
+          v-if="isLoggedIn"
+          @click="$router.push(`/product-details/` + produit.id)"
+          icon="fa-solid fa-trash"
+        >
 
           <!-- v-if logout state condition to be added /-->
           <p>{{ produit.titre }}</p>
-          <p>€{{ produit.prix }}</p>
+
+          <p>{{ produit.prix }} €</p>
+
         </div>
       </div>
     </div>
@@ -25,10 +38,8 @@
 </template>
 
 <script>
-
-import ButtonComponents from './ButtonComponents.vue';
+import ButtonComponents from "./ButtonComponents.vue";
 import { mapState, mapGetters } from "vuex";
-
 
 export default {
   components: {
@@ -36,9 +47,17 @@ export default {
   },
   computed: {
     ...mapState(["produits"]),
-    ...mapGetters(["sortedBestSellers", "isLoggedIn"]),
+    ...mapGetters([
+      "sortedBestSellers",
+      "currentUser",
+      "isLoggedIn",
+      "isAdmin",
+      "isUser",
+      "isAdminView",
+    ]),
   },
 }
+
 </script>
 
 <style scoped>

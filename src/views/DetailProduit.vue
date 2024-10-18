@@ -7,10 +7,21 @@
         <p class="product-info">{{ detailProd.description }}</p>
         <p class="product-info">€{{ detailProd.prix }}</p>
         <p class="moq">MOQ: {{ detailProd.moq }}</p>
-        <QuantityCounterComponent :detailProd="detailProd"/>
+        <QuantityCounterComponent :detailProd="detailProd" v-if="isLoggedIn" />
         <div class="buttons">
-          <ButtonComponents label="Retour" type="default" @click="goBack" class="test2"/>
-          <ButtonComponents label="Ajouter au panier" type="login" @click="addToPanier(detailProd.id)" class="test"/>
+          <ButtonComponents
+            label="Retour"
+            type="default"
+            @click="goBack"
+            class="test2"
+          />
+          <ButtonComponents
+            v-if="isLoggedIn"
+            label="Ajouter au panier"
+            type="login"
+            @click="addToPanier(detailProd.id)"
+            class="test"
+          />
         </div>
       </div>
     </div>
@@ -20,7 +31,7 @@
 <script>
 import ButtonComponents from "@/components/ButtonComponents.vue";
 import QuantityCounterComponent from "@/components/QuantityCounterComponent.vue";
-import { mapState } from "vuex";
+import { mapState, mapGetters } from "vuex";
 
 export default {
   components: {
@@ -29,6 +40,7 @@ export default {
   },
   computed: {
     ...mapState(["detailProd", "produits", "commandes"]),
+    ...mapGetters(["isLoggedIn"]),
   },
   methods: {
     goBack() {
