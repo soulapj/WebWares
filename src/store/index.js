@@ -650,10 +650,21 @@ export default createStore({
         (savedCommande) => savedCommande.userId !== userId
       );
       localStorage.setItem("savedCommandes", JSON.stringify(state.savedCommandes));
-    }
+    },
     
 
     // ----------------------- Fin mutations clément //
+     // ----------------------- mutations alex //
+    // Ajouter une commande dans les commandes transférées
+    transferCommande(state, commande) {
+      state.commandesTransferees.push(commande);
+    },
+    // Retirer une commande des commandes validées
+    removeCommandeValider(state, commandeId) {
+      state.commandeValider = state.commandeValider.filter(
+        (commande) => commande.id !== commandeId
+      );
+    },
 
 
   },
@@ -779,8 +790,21 @@ export default createStore({
       if (userId) {
         commit("clearSavedCommandesForUser", userId);
       }
-    }
+    },
      // ----------------------- Fin action Clément//
+      // -----------------------  action Alex//
+      transferCommande({ commit, state }, commandeId) {
+        // Trouver la commande à transférer
+        const commande = state.commandeValider.find(
+          (cmd) => cmd.id === commandeId
+        );
+        if (commande) {
+          // Ajouter la commande aux commandes transférées
+          commit('transferCommande', commande);
+          // Retirer la commande du tableau des commandes validées
+          commit('removeCommandeValider', commandeId);
+        }
+      },
 
   },
 
