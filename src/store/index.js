@@ -285,6 +285,8 @@ export default createStore({
         role: "ADMIN",
       },
     ],
+    backProduitList: [],
+    backUserList: [],
   },
   mutations: {
     setCurrentUser(state, user) {
@@ -354,6 +356,14 @@ export default createStore({
       localStorage.removeItem("commandes");
     },
 
+
+    backSetProduitListFromLocalStorage(state, produits){
+      state.backProduitList = produits;
+    },
+    backSetUserListFromLocalStorage(state, users){
+      state.backUserList = users;
+    },
+
     removeProduit(state, prodId) {
       state.commandes = state.commandes
         .map((commande) => ({
@@ -414,6 +424,41 @@ export default createStore({
       }
       localStorage.setItem("commandes", JSON.stringify(state.commandes));
     },
+
+        //trouve l'index de l'objet et le supprime
+        backRemoveProduit(state, prodId) {
+          const indexProd = state.produits.map((e) => e.id).indexOf(prodId);
+          state.produits.splice(indexProd, 1);
+        },
+        backRemoveUser(state, userId) {
+          const indexUser = state.utilisateurs.map((e) => e.id).indexOf(userId);
+          state.utilisateurs.splice(indexUser, 1);
+        },
+        backAddProduit(state, newObj){
+          let maxId = 0
+          for (let i = 0; i < state.produits.length; i++){
+            if (state.produits.map((e) => e.id)[i] > maxId) {
+              maxId = state.produits.map((e) => e.id)[i];
+            }
+          }
+          newObj.id = maxId + 1;
+          state.produits.push(newObj);
+        },
+        backModProduit(state, modObj){
+          const index = state.produits.findIndex(
+            (prod) => prod.id === modObj.key2)
+            if (index !== -1) {
+              state.utilisateurs[index] = {
+                ...state.utilisateurs[index],
+                ...modObj.key2,
+              };}
+          // state.produits[index] = {...modObj.key1}
+        },
+        backModUser(state, modObj){
+          const indexProd = state.utilisateurs.map((e) => e.id).indexOf(parseInt(modObj.key2));
+          state.utilisateurs[indexProd] = {...modObj.key1}
+        },
+
 
     saveCommandeToLocalStorage(state, commande) {
       let userId = state.currentUtilisateur?.id;
@@ -604,6 +649,7 @@ export default createStore({
       state.savedCommandes = state.savedCommandes.filter(
         (savedCommande) => savedCommande.userId !== userId
       );
+
       localStorage.setItem(
         "savedCommandes",
         JSON.stringify(state.savedCommandes)
@@ -612,6 +658,15 @@ export default createStore({
 
     // ----------------------- Fin mutations clément //
   },
+
+    backDeleteProduct(state, idProduit){
+      state.backProduitList.splice(idProduit, 1);
+    },
+    backDeleteUser(state, idUser){
+      state.backUserList.splice(idUser, 1);
+    },
+
+
 
   actions: {
     // ========= test ==========
@@ -730,8 +785,31 @@ export default createStore({
       if (userId) {
         commit("clearSavedCommandesForUser", userId);
       }
+
+
     },
     // ----------------------- Fin action Clément//
+    backRemoveProduit({ commit }, produitId) {
+      commit("backRemoveProduit", produitId);
+    },
+    backRemoveUser({ commit }, userId) {
+      commit("backRemoveUser", userId);
+    },
+    backLoadProduitFromLocalStorage({ commit }){
+      const backProduitList = this.state.produits.find((e) => e.id);
+      if (backProduitList && Array.isArray(backProduitList)) {
+        commit("setProduit", backProduitList);
+        commit("backSetProduitListFromLocalStorage", backProduitList);
+      }
+    },
+    backLoadUserFromLocalStorage({ commit }){
+      const backUserList = this.state.utilisateurs.find((e) => e.id);
+      if (backUserList && Array.isArray(backUserList)) {
+        commit("setUtilisateur", backUserList);
+        commit("backSetUserListFromLocalStorage", backUserList);
+      }
+    },
+
   },
 
   getters: {
