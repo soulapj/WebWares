@@ -100,10 +100,10 @@ import ButtonComponents from "./ButtonComponents.vue";
 
 export default {
   props: {
-    // isLoggedIn: {
-    //   type: Boolean,
-    //   required: true,
-    // },
+    isLoggedIn: {
+      type: Boolean,
+      required: true,
+    },
   },
 
   components: {
@@ -164,6 +164,9 @@ export default {
     toggleAdminView() {
       this.$store.commit("toggleAdminView");
     },
+  },
+  created() {
+    // this.isLoggedIn = !!this.currentUser;
   },
 };
 </script>
