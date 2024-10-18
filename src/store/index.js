@@ -750,9 +750,13 @@ export default createStore({
     },
 
     // ici on charge les utilisateurs depuis le local storage
-    loadUtilisateurArrayFromLocalStorage({ commit }) {
-      const utilisateurs = JSON.parse(localStorage.getItem("utilisateurs"));
-      if (utilisateurs && Array.isArray(utilisateurs)) {
+
+    loadUtilisateurArrayFromLocalStorage({commit}){ 
+      // commit("setUtilisateursFromLocalStorage");
+      const utilisateurs = JSON.parse(localStorage.getItem('utilisateurs'));
+      if(utilisateurs && Array.isArray(utilisateurs)){
+
+
         commit("setUtilisateursFromLocalStorage", utilisateurs);
       }
     },
@@ -895,21 +899,19 @@ export default createStore({
     // --------------------- getters Clément
 
     getUtilisateurs: (state) => state.utilisateurs,
-    //attention j'ai mis le getteur à get UtilisateurByEmail !
+
     getUtilisateurByEmail: (state) => (email) =>
       state.utilisateurs.find((user) => user.email === email),
 
-    //attention j'ai mis le getteur à get UtilisateurByUsername !
-    getUtilisateurByUsername: (state) => (username) =>
-      state.utilisateurs.find((user) => user.username === username),
 
     getUtilisateurBySiret: (state) => (siret) =>
       state.utilisateurs.find((user) => user.siret === siret),
 
-    filteredCommandes: (state) => {
-      const userId =
-        state.currentUtilisateur?.id || state.previousUtilisateur?.id;
+    getUtilisateurByRaisonSociale: (state) => (raisonSociale) =>
+      state.utilisateurs.find((user) => user.raisonSociale === raisonSociale),
 
+     filteredCommandes : (state) => {
+      const userId = state.currentUtilisateur?.id || state.previousUtilisateur?.id;
       return state.commandes.filter((commande) => commande.userId === userId);
     },
 

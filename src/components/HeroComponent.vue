@@ -5,16 +5,8 @@
       <span class="hero-msg">
         <h1>Bienvenue Sur WebWares</h1>
 
-        <p>
-          Créez un compte pour bénéficier de réductions exclusives sur nos
-          collections.
-        </p>
-        <ButtonComponents
-          label="S'INSCRIRE"
-          type="login"
-          @click="$router.push('/register')"
-          v-if="!isLoggedIn"
-        />
+        <p>Créez un compte pour bénéficier de réductions exclusives sur nos collections.</p>
+        <ButtonComponents @Click="goToRegister" label="S'INSCRIRE" type="login"/>
 
       </span>
     </div>
@@ -28,10 +20,20 @@ export default {
   components: {
     ButtonComponents,
   },
+
+  methods:{
+    goToRegister(){
+       this.$router.push("/Register");
+
+    }
+  }
+}
+
   computed: {
     ...mapGetters(["isLoggedIn"]),
   },
 };
+
 </script>
 
 <style scoped>
