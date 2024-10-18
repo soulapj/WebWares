@@ -657,14 +657,6 @@ export default createStore({
 
 
   actions: {
-    // ========= test ==========
-    loadCurrentUser({ commit }) {
-      const user = JSON.parse(localStorage.getItem("currentUser"));
-      if (user) {
-        commit("setCurrentUser", user);
-      }
-    },
-    // =========== test ==========
     loadDetailProduits({ commit }, idProduit) {
       const selectedProduct = this.state.produits.find(
         (prod) => prod.id === idProduit

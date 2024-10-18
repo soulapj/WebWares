@@ -17,7 +17,7 @@
 
           <!-- v-if logout state condition to be added /-->
           <p>{{ produit.titre }}</p>
-          <p>{{ produit.prix }}</p>
+          <p>€{{ produit.prix }}</p>
         </div>
       </div>
     </div>
@@ -37,12 +37,6 @@ export default {
   computed: {
     ...mapState(["produits"]),
     ...mapGetters(["sortedBestSellers", "isLoggedIn"]),
-  },
-  created() {
-    const savedUser = JSON.parse(localStorage.getItem('isLoggedIn'));
-    if (savedUser === false) {
-      return savedUser
-    }
   },
 }
 </script>
@@ -111,6 +105,10 @@ export default {
 .overlay img {
   width: 100%;
   height: auto;
+}
+
+.overlay p {
+  font-size: xx-large;
 }
 
 @media (max-width: 768px) {
