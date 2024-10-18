@@ -1,40 +1,41 @@
 <template>
-    <div class="quantity-counter">
-      <button class="counter-button" @click="decreaseQty" :disabled="quantity <= detailProd.moq" >-</button>
-      <div class="quantity-display">
-        <p>QTY: {{ quantity }}</p>
-      </div>
-      <button class="counter-button" @click="increaseQty" >+</button>
+  <div class="quantity-counter">
+    <button
+      class="counter-button"
+      @click="decreaseQty"
+      :disabled="quantity <= detailProd.moq"
+    >
+      -
+    </button>
+    <div class="quantity-display">
+      <p>QTY: {{ quantity }}</p>
     </div>
-  </template>
-  
-  <script>
-  export default {
-    props: {
-      moq: {
-        type: Number,
-        required: true, 
-      },
-      detailProd: {
-        type: Object,
-        required: true,
-      },
+    <button class="counter-button" @click="increaseQty">+</button>
+  </div>
+</template>
+
+<script>
+export default {
+  props: {
+    moq: {
+      type: Number,
+      required: true,
     },
-    data() {
-      return {
-        quantity: this.detailProd.moq || 1, 
-      };
+    detailProd: {
+      type: Object,
+      required: true,
     },
-    methods: {
-      increaseQty() {
-        this.quantity++;
-      },
-      decreaseQty() {
-        if (this.quantity > this.detailProd.moq) {
-          this.quantity--;
-        }
-      },
+  },
+  data() {
+    return {
+      quantity: this.detailProd.moq || 1,
+    };
+  },
+  methods: {
+    increaseQty() {
+      this.quantity++;
     },
+
   };
   </script>
   
@@ -85,3 +86,4 @@
   }
   </style>
   
+

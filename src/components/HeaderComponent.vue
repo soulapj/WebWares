@@ -7,7 +7,7 @@
     </div>
 
     <!-- Navigation Links -->
-    <nav v-if="isUser || !isLoggedIn">
+    <nav v-if="(!isAdminView && isLoggedIn) || !isLoggedIn">
       <router-link to="/">Accueil</router-link>
       <router-link to="/produit">Produits</router-link>
 
@@ -27,7 +27,7 @@
       </div>
     </nav>
 
-    <nav v-if="isAdmin && isLoggedIn">
+    <nav v-if="isAdmin && isLoggedIn && isAdminView">
       <router-link to="/user-back">Utilisateur</router-link>
       <router-link to="/product-back">Produits</router-link>
       <!-- <router-link to="/">Catégories</router-link> -->
@@ -53,7 +53,11 @@
 
       <div class="icons" v-else>
         <!-- Cart Icon -->
-        <router-link to="/panier" class="cart-icon" v-if="isUser">
+        <router-link
+          to="/panier"
+          class="cart-icon"
+          v-if="isUser || !isAdminView"
+        >
           <span v-if="commandes && commandes.length > 0">{{
             commandes.length
           }}</span>
@@ -67,12 +71,17 @@
           </span>
           <div class="dropdown">
             <p class="welcome-msg">Bienvenue {{ currentUser.raisonSociale }}</p>
-            
+
             <ButtonComponents
               label="Profil"
               type="login"
               @click="$router.push('/profile/:id')"
             />
+            <div v-if="isAdmin && isLoggedIn">
+              <button @click="toggleAdminView" style="width: fit-content">
+                {{ isAdminView ? "Accès utilisateur" : "Accès admin" }}
+              </button>
+            </div>
             <ButtonComponents
               label="Déconnexion"
               type="logout"
@@ -115,7 +124,13 @@ export default {
 
       commandes: (state) => state.commandes,
     }),
-    ...mapGetters(["currentUser", "isLoggedIn", "isAdmin", "isUser"]),
+    ...mapGetters([
+      "currentUser",
+      "isLoggedIn",
+      "isAdmin",
+      "isUser",
+      "isAdminView",
+    ]),
   },
   methods: {
     // j'ai modifié et ajouté quelques méthodes ici : tout est indiqué par mes commentaires
@@ -145,6 +160,10 @@ export default {
       this.$router.push("/register");
     },
     // -------------------------------- //
+
+    toggleAdminView() {
+      this.$store.commit("toggleAdminView");
+    },
   },
   created() {
     // this.isLoggedIn = !!this.currentUser;

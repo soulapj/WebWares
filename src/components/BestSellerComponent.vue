@@ -2,14 +2,22 @@
   <section class="best-sellers">
     <h2>Best Sellers</h2>
     <div class="best-seller-container" v-if="sortedBestSellers.length">
+
       <div class="best-seller" v-for="produit in sortedBestSellers" :key="produit.id">
         <img :src="produit.images" :alt="produit.titre" class="best-seller-img" />
         <div v-if="!isLoggedin" class="overlay" >
+
           <!-- v-if login state condition to be added -->
           <h1>Pour voir les détails s'inscrire</h1>
-          <ButtonComponents type="register" label="S'INSCRIRE" />
+          <ButtonComponents
+            type="register"
+            label="S'INSCRIRE"
+            @click="$router.push('/register')"
+          />
         </div>
+
         <div class="overlay" v-if="isLoggedin" @click="$router.push(`/product-details/` + produit.id)" icon="fa-solid fa-trash">
+
           <!-- v-if logout state condition to be added /-->
           <p>{{ produit.titre }}</p>
           <p>{{ produit.prix }}</p>
@@ -20,8 +28,10 @@
 </template>
 
 <script>
+
 import ButtonComponents from './ButtonComponents.vue';
 import { mapState, mapGetters } from "vuex";
+
 
 export default {
   components: {
@@ -29,10 +39,12 @@ export default {
   },
   computed: {
     ...mapState(["produits"]),
-    ...mapGetters(["sortedBestSellers"]),
-    
+
+    ...mapGetters(["sortedBestSellers", "isLoggedIn"]),
   },
+
 }
+
 </script>
 
 <style scoped>

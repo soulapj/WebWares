@@ -4,6 +4,8 @@ export default createStore({
   state: {
     detailProd: {},
     commandeValider: [],
+    commandesTransferees: [],
+    isAdminView: true,
 
     savedCommandes: [],
     // ----------C j'ai un ajouté un state currentUtilisateur set sur null
@@ -19,22 +21,34 @@ export default createStore({
     },
 
     categories: [
-      { id: 1, 
-        name: "Mobilier d'intérieur", 
-        images: require("@/assets/category photos/Mobilier d'intérieur.jpg"), 
-        description: "Découvrez notre gamme de mobilier professionnel, conçue pour allier design et fonctionnalité dans tous vos espaces de travail."},
-      { id: 2, 
-        name: "Luminaires", 
-        images: require("@/assets/category photos/Luminaires.jpg"), 
-        description: "Optimisez l'éclairage de vos projets avec nos luminaires modernes, alliant performance et efficacité énergétique."},
-      { id: 3, 
-        name: "Tapis", 
-        images: require("@/assets/category photos/Tapis.jpg"), 
-        description: "Ajoutez une touche d'élégance à vos espaces avec nos tapis haut de gamme, parfaits pour un usage intensif en milieu professionnel."},
-      { id: 4, 
-        name: "Objets de décorations", 
-        images: require("@/assets/category photos/Objets de décorations2.jpg"), 
-        description: "Personnalisez vos espaces avec notre sélection d'articles de décoration, spécialement conçus pour répondre aux exigences des entreprises."},
+      {
+        id: 1,
+        name: "Mobilier d'intérieur",
+        images: require("@/assets/category photos/Mobilier d'intérieur.jpg"),
+        description:
+          "Découvrez notre gamme de mobilier professionnel, conçue pour allier design et fonctionnalité dans tous vos espaces de travail.",
+      },
+      {
+        id: 2,
+        name: "Luminaires",
+        images: require("@/assets/category photos/Luminaires.jpg"),
+        description:
+          "Optimisez l'éclairage de vos projets avec nos luminaires modernes, alliant performance et efficacité énergétique.",
+      },
+      {
+        id: 3,
+        name: "Tapis",
+        images: require("@/assets/category photos/Tapis.jpg"),
+        description:
+          "Ajoutez une touche d'élégance à vos espaces avec nos tapis haut de gamme, parfaits pour un usage intensif en milieu professionnel.",
+      },
+      {
+        id: 4,
+        name: "Objets de décorations",
+        images: require("@/assets/category photos/Objets de décorations2.jpg"),
+        description:
+          "Personnalisez vos espaces avec notre sélection d'articles de décoration, spécialement conçus pour répondre aux exigences des entreprises.",
+      },
     ],
 
     produits: [
@@ -262,8 +276,11 @@ export default createStore({
         role: "ADMIN",
       },
     ],
+    backProduitList: [],
+    backUserList: [],
   },
   mutations: {
+
     setCategories(state, cat) {
       state.categories = cat;
     },
@@ -287,64 +304,6 @@ export default createStore({
     },
     setCommandeValider(state, commande) {
       state.commandeValider = commande;
-    },
-
-    clearPanier(state) {
-      state.commandes = [];
-      localStorage.removeItem("commandes");
-    },
-
-    addProduitToCommande(state, prodId) {
-      let produitInfo = state.produits.find((p) => p.id === prodId);
-      if (!produitInfo) return;
-
-      let userId = state.currentUtilisateur?.id;
-      if (!userId) return; // j'ai juste ajouté cette ligne pour s'assurer qu'on a un userId issu d'un utilisateur connecté
-
-      let commandeExistante = state.commandes.find((commande) =>
-        commande.produits.some((p) => p.produitId === prodId)
-      );
-
-      if (commandeExistante) {
-        let produit = commandeExistante.produits.find(
-          (p) => p.produitId === prodId
-        );
-
-        if (produit.quantite < produitInfo.moq) {
-          produit.quantite = produitInfo.moq;
-          commandeExistante.countTotal +=
-            (produitInfo.moq - produit.quantite) * produitInfo.prix;
-        } else {
-          produit.quantite++;
-          commandeExistante.countTotal += produitInfo.prix;
-        }
-      } else {
-        state.commandes.push({
-          id: state.commandes.length + 1,
-          produits: [
-            {
-              produitId: produitInfo.id,
-              titre: produitInfo.titre,
-              quantite: produitInfo.moq,
-            },
-          ],
-          countTotal: produitInfo.prix * produitInfo.moq,
-
-          userId: userId,
-          // userId: this.state.currentUserId, // juste un test
-        });
-      }
-      localStorage.setItem("commandes", JSON.stringify(state.commandes));
-    },
-
-    removeProduit(state, prodId) {
-      state.commandes = state.commandes
-        .map((commande) => ({
-          ...commande,
-          produits: commande.produits.filter((p) => p.produitId !== prodId),
-        }))
-        .filter((commande) => commande.produits.length > 0);
-      localStorage.setItem("commandes", JSON.stringify(state.commandes));
     },
 
     incrementQuantite(state, prodId) {
@@ -380,9 +339,120 @@ export default createStore({
       }
     },
 
+    clearPanier(state) {
+      state.commandes = [];
+      localStorage.removeItem("commandes");
+    },
+
+
+    backSetProduitListFromLocalStorage(state, produits){
+      state.backProduitList = produits;
+    },
+    backSetUserListFromLocalStorage(state, users){
+      state.backUserList = users;
+    },
+
+    removeProduit(state, prodId) {
+      state.commandes = state.commandes
+        .map((commande) => ({
+          ...commande,
+          produits: commande.produits.filter((p) => p.produitId !== prodId),
+        }))
+        .filter((commande) => commande.produits.length > 0);
+      localStorage.setItem("commandes", JSON.stringify(state.commandes));
+    },
+
+    addProduitToCommande(state, prodId) {
+      let produitInfo = state.produits.find((p) => p.id === prodId);
+      if (!produitInfo) return;
+
+      let userId = state.currentUtilisateur?.id;
+      if (!userId) return; // j'ai juste ajouté cette ligne pour s'assurer qu'on a un userId issu d'un utilisateur connecté
+
+      // const currentUser = state.currentUtilisateur;
+      // if (!currentUser) return;
+
+      let commandeExistante = state.commandes.find((commande) =>
+        commande.produits.some((p) => p.produitId === prodId)
+      );
+      // let commandeExistante = state.commandes.find(
+      //   (commande) =>
+      //     commande.userId === currentUser.id &&
+      //     commande.produits.some((p) => p.produitId === prodId)
+      // );
+
+      if (commandeExistante) {
+        let produit = commandeExistante.produits.find(
+          (p) => p.produitId === prodId
+        );
+
+        if (produit.quantite < produitInfo.moq) {
+          produit.quantite = produitInfo.moq;
+          commandeExistante.countTotal +=
+            (produitInfo.moq - produit.quantite) * produitInfo.prix;
+        } else {
+          produit.quantite++;
+          commandeExistante.countTotal += produitInfo.prix;
+        }
+      } else {
+        state.commandes.push({
+          id: state.commandes.length + 1,
+          produits: [
+            {
+              produitId: produitInfo.id,
+              titre: produitInfo.titre,
+              quantite: produitInfo.moq,
+            },
+          ],
+          countTotal: produitInfo.prix * produitInfo.moq,
+          // userId: currentUser.id,
+          userId: userId,
+          // userId: this.state.currentUserId, // juste un test
+        });
+      }
+      localStorage.setItem("commandes", JSON.stringify(state.commandes));
+    },
+
+        //trouve l'index de l'objet et le supprime
+        backRemoveProduit(state, prodId) {
+          const indexProd = state.produits.map((e) => e.id).indexOf(prodId);
+          state.produits.splice(indexProd, 1);
+        },
+        backRemoveUser(state, userId) {
+          const indexUser = state.utilisateurs.map((e) => e.id).indexOf(userId);
+          state.utilisateurs.splice(indexUser, 1);
+        },
+        backAddProduit(state, newObj){
+          let maxId = 0
+          for (let i = 0; i < state.produits.length; i++){
+            if (state.produits.map((e) => e.id)[i] > maxId) {
+              maxId = state.produits.map((e) => e.id)[i];
+            }
+          }
+          newObj.id = maxId + 1;
+          state.produits.push(newObj);
+        },
+        backModProduit(state, modObj){
+          const index = state.produits.findIndex(
+            (prod) => prod.id === modObj.key2)
+            if (index !== -1) {
+              state.utilisateurs[index] = {
+                ...state.utilisateurs[index],
+                ...modObj.key2,
+              };}
+          // state.produits[index] = {...modObj.key1}
+        },
+        backModUser(state, modObj){
+          const indexProd = state.utilisateurs.map((e) => e.id).indexOf(parseInt(modObj.key2));
+          state.utilisateurs[indexProd] = {...modObj.key1}
+        },
+
+
     saveCommandeToLocalStorage(state, commande) {
       let userId = state.currentUtilisateur?.id;
       if (!userId) return; //j'applique la même logique que dans la mutation addProduitToCommande
+
+      // const currentUser = state.currentUtilisateur;
 
       if (commande && Array.isArray(commande.produits)) {
         state.commandeValider.push({
@@ -394,6 +464,7 @@ export default createStore({
           })),
           countTotal: commande.countTotal,
 
+          // userId: currentUser.id,
           // userId: commande.userId,
           userId: userId,
         });
@@ -428,6 +499,10 @@ export default createStore({
           );
         }
       }
+    },
+
+    toggleAdminView(state) {
+      state.isAdminView = !state.isAdminView;
     },
 
     // Contact form ===============================arash================================================================ \\
@@ -562,6 +637,7 @@ export default createStore({
       state.savedCommandes = state.savedCommandes.filter(
         (savedCommande) => savedCommande.userId !== userId
       );
+
       localStorage.setItem(
         "savedCommandes",
         JSON.stringify(state.savedCommandes)
@@ -571,12 +647,21 @@ export default createStore({
     // ----------------------- Fin mutations clément //
   },
 
+    backDeleteProduct(state, idProduit){
+      state.backProduitList.splice(idProduit, 1);
+    },
+    backDeleteUser(state, idUser){
+      state.backUserList.splice(idUser, 1);
+    },
+
+
+
   actions: {
     // ========= test ==========
     loadCurrentUser({ commit }) {
-      const user = JSON.parse(localStorage.getItem('currentUser'));
+      const user = JSON.parse(localStorage.getItem("currentUser"));
       if (user) {
-        commit('setCurrentUser', user);
+        commit("setCurrentUser", user);
       }
     },
     // =========== test ==========
@@ -591,6 +676,9 @@ export default createStore({
 
     addProduitToPanier({ commit }, prodId) {
       commit("addProduitToCommande", prodId);
+    },
+    removeProduit({ commit }, prodId) {
+      commit("removeProduit", prodId);
     },
 
     loadCommandesFromLocalStorage({ commit, state }) {
@@ -650,9 +738,13 @@ export default createStore({
     },
 
     // ici on charge les utilisateurs depuis le local storage
-    loadUtilisateurArrayFromLocalStorage({ commit }) {
-      const utilisateurs = JSON.parse(localStorage.getItem("utilisateurs"));
-      if (utilisateurs && Array.isArray(utilisateurs)) {
+
+    loadUtilisateurArrayFromLocalStorage({commit}){ 
+      // commit("setUtilisateursFromLocalStorage");
+      const utilisateurs = JSON.parse(localStorage.getItem('utilisateurs'));
+      if(utilisateurs && Array.isArray(utilisateurs)){
+
+
         commit("setUtilisateursFromLocalStorage", utilisateurs);
       }
     },
@@ -685,19 +777,40 @@ export default createStore({
       if (userId) {
         commit("clearSavedCommandesForUser", userId);
       }
+
+
     },
     // ----------------------- Fin action Clément//
+    backRemoveProduit({ commit }, produitId) {
+      commit("backRemoveProduit", produitId);
+    },
+    backRemoveUser({ commit }, userId) {
+      commit("backRemoveUser", userId);
+    },
+    backLoadProduitFromLocalStorage({ commit }){
+      const backProduitList = this.state.produits.find((e) => e.id);
+      if (backProduitList && Array.isArray(backProduitList)) {
+        commit("setProduit", backProduitList);
+        commit("backSetProduitListFromLocalStorage", backProduitList);
+      }
+    },
+    backLoadUserFromLocalStorage({ commit }){
+      const backUserList = this.state.utilisateurs.find((e) => e.id);
+      if (backUserList && Array.isArray(backUserList)) {
+        commit("setUtilisateur", backUserList);
+        commit("backSetUserListFromLocalStorage", backUserList);
+      }
+    },
+
   },
 
   getters: {
-
     currentUser(state) {
       return state.utilisateurs.find((user) => user.id === state.currentUserId);
     },
     isLoggedIn(state, getters) {
       return !!getters.currentUser;
     },
-
     isAdmin(state, getters) {
       return getters.currentUser && getters.currentUser.role === "ADMIN";
     },
@@ -706,6 +819,9 @@ export default createStore({
       return getters.currentUser && getters.currentUser.role === "USER";
     },
 
+    isAdminView(state) {
+      return state.isAdminView;
+    },
 
     subTotal: (state) => (produitId) => {
       const produit = state.commandes
@@ -771,22 +887,19 @@ export default createStore({
     // --------------------- getters Clément
 
     getUtilisateurs: (state) => state.utilisateurs,
-    //attention j'ai mis le getteur à get UtilisateurByEmail !
+
     getUtilisateurByEmail: (state) => (email) =>
       state.utilisateurs.find((user) => user.email === email),
 
-    //attention j'ai mis le getteur à get UtilisateurByUsername !
-    getUtilisateurByUsername: (state) => (username) =>
-      state.utilisateurs.find((user) => user.username === username),
 
     getUtilisateurBySiret: (state) => (siret) =>
       state.utilisateurs.find((user) => user.siret === siret),
 
+    getUtilisateurByRaisonSociale: (state) => (raisonSociale) =>
+      state.utilisateurs.find((user) => user.raisonSociale === raisonSociale),
 
-    filteredCommandes: (state) => {
-      const userId =
-        state.currentUtilisateur?.id || state.previousUtilisateur?.id;
-
+     filteredCommandes : (state) => {
+      const userId = state.currentUtilisateur?.id || state.previousUtilisateur?.id;
       return state.commandes.filter((commande) => commande.userId === userId);
     },
 
@@ -810,7 +923,9 @@ export default createStore({
           quantite: order ? order.quantite : 0,
         };
       });
-      return produitsWithQuantite.sort((a, b) => b.quantite - a.quantite).slice(0, 8); // top 8 best seller
+      return produitsWithQuantite
+        .sort((a, b) => b.quantite - a.quantite)
+        .slice(0, 8); // top 8 best seller
     },
     // ========================================================================================================\\
   },

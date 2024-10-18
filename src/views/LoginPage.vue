@@ -29,6 +29,7 @@
             @click="submitForm"
             label="Connexion"
             type="submit"
+
             v-if="true"
           />
 
@@ -251,7 +252,8 @@
   </script>
 
   
-  <style sloped>
+
+  <style scoped>
   .login-page {
     max-width: 500px;
     margin: 0 auto;
