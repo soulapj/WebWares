@@ -45,28 +45,33 @@
         v-model="newProd.moq"
       /><br />
 
+      <label for="categorieId">Catégorie produit:</label><br />
+      <select id="categorieId" name="category" v-model="newProd.categorieId">
+        <option value="1">Mobilier d'Intérieur</option>
+        <option value="2">Luminaires</option>
+        <option value="3">Tapis</option>
+        <option value="4">Objet de décoration</option></select
+      ><br />
+      <br />
+      <div class="boutons">
+        <ButtonComponents
+          label="Ajouter"
+          type="submit"
+          @click.prevent="addProd()"
+        ></ButtonComponents>
+        <ButtonComponents
+          label="Annuler"
+          type="logout"
+          @click.prevent="goBack()"
+        ></ButtonComponents>
+      </div>
+    </form>
+  </div>
+</template>
 
-                <label for="moq">Quantité Minimum:</label><br>
-                <input type="number" min="0" id="moq" name="moq" v-model="newProd.moq"><br>
-                
-                <label for="categorieId">Catégorie produit:</label><br>
-                <select id="categorieId" name="category" v-model="editProd.categorieId">
-                <option v-for="category in this.categories" :value="category.id" :key="category.id">{{category.name}}</option>
-                </select
-                ><br>
-                <br>
-                <div class="boutons">
-                  <ButtonComponents label="Ajouter" type="submit" @click.prevent="addProd()" ></ButtonComponents>
-                  <ButtonComponents label="Annuler" type="logout" @click.prevent="goBack()"></ButtonComponents>
-                </div>
-            </form>
-    </div>
-  </template>
-  
-  <script>
-    import ButtonComponents from "@/components/ButtonComponents.vue";
-    import { mapMutations } from "vuex";
-
+<script>
+import ButtonComponents from "@/components/ButtonComponents.vue";
+import { mapMutations } from "vuex";
 
 export default {
   components: {
@@ -77,7 +82,6 @@ export default {
       newProd: {},
     };
   },
-
 
   methods: {
     ...mapMutations(["backAddProduit"]),

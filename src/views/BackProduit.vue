@@ -47,7 +47,7 @@
             <td v-else-if="produit.categorieId == 2">Luminaires</td>
             <td v-else-if="produit.categorieId == 3">Tapis</td>
             <td v-else-if="produit.categorieId == 4">Objets de décoration</td>
-            <td v-else>Placeholder</td>
+            <td v-else>Erreur Catégorie</td>
             <td>
               <ButtonComponents
                 label="Modifier"

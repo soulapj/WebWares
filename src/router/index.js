@@ -132,31 +132,7 @@ const routes = [
     name: "GestionCommande",
     component: GestionCommande,
   },
-  {
-    path: "/categ-back/",
-    name: "BackCateg",
 
-    component: () => import("../views/BackCateg.vue"),
-    meta: { title: 'WebWares - Liste Categories' },
-
-  },
-  {
-    path: "/ajout-categ/",
-    name: "AjoutCateg",
-
-    component: () => import("../views/BackAjoutCateg.vue"),
-    meta: { title: 'WebWares - Ajout de nouvelle categorie' },
-
-  },
-  {
-    path: "/modif-category/:id",
-    name: "ModCateg",
-
-    component: () => import("../views/BackModifCateg.vue"),
-    meta: { title: 'WebWares - Modification categorie' },
-
-  },
-  
 ];
 
 const router = createRouter({

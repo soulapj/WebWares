@@ -416,10 +416,6 @@ export default createStore({
       const indexProd = state.produits.map((e) => e.id).indexOf(prodId);
       state.produits.splice(indexProd, 1);
     },
-    backRemoveCateg(state, prodId) {
-      const indexProd = state.categories.map((e) => e.id).indexOf(prodId);
-      state.categories.splice(indexProd, 1);
-    },
     backRemoveUser(state, userId) {
       const indexUser = state.utilisateurs.map((e) => e.id).indexOf(userId);
       state.utilisateurs.splice(indexUser, 1);
@@ -434,28 +430,11 @@ export default createStore({
       newObj.id = maxId + 1;
       state.produits.push(newObj);
     },
-    backAddCateg(state, newObj) {
-      let maxId = 0;
-      for (let i = 0; i < state.categories.length; i++) {
-        if (state.categories.map((e) => e.id)[i] > maxId) {
-          maxId = state.categories.map((e) => e.id)[i];
-        }
-      }
-      newObj.id = maxId + 1;
-      state.categories.push(newObj);
-    },
     backModProduit(state, modObj) {
       const indexProd = state.produits
         .map((e) => e.id)
         .indexOf(parseInt(modObj.key2));
       state.produits[indexProd] = { ...modObj.key1 };
-      // state.produits[index] = {...modObj.key1}
-    },
-    backModCateg(state, modObj) {
-      const indexProd = state.categories
-        .map((e) => e.id)
-        .indexOf(parseInt(modObj.id));
-      state.categories[indexProd] = { ...modObj };
       // state.produits[index] = {...modObj.key1}
     },
     backModUser(state, modObj) {

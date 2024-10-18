@@ -53,8 +53,10 @@
 
       <label for="categorieId">Catégorie produit:</label><br />
       <select id="categorieId" name="category" v-model="editProd.categorieId">
-        <option v-for="category in this.categories" :value="category.id" :key="category.id">{{category.name}}</option>
-      </select
+        <option value="1">Mobilier d'Intérieur</option>
+        <option value="2">Luminaires</option>
+        <option value="3">Tapis</option>
+        <option value="4">Objet de décoration</option></select
       ><br />
       <br />
       <div class="boutons">
@@ -123,7 +125,7 @@ export default {
     },
   },
   computed: {
-    ...mapState(["produits","categories"]),
+    ...mapState(["produits"]),
   },
   mounted() {
     const product = this.produits.find(
