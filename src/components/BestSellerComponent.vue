@@ -5,18 +5,15 @@
 
       <div class="best-seller" v-for="produit in sortedBestSellers" :key="produit.id">
         <img :src="produit.images" :alt="produit.titre" class="best-seller-img" />
-        <div v-if="!isLoggedin" class="overlay" >
+        <div v-if="savedUser" class="overlay">
 
           <!-- v-if login state condition to be added -->
           <h1>Pour voir les détails s'inscrire</h1>
-          <ButtonComponents
-            type="register"
-            label="S'INSCRIRE"
-            @click="$router.push('/register')"
-          />
+          <ButtonComponents type="register" label="S'INSCRIRE" @click="$router.push('/register')" />
         </div>
 
-        <div class="overlay" v-if="isLoggedin" @click="$router.push(`/product-details/` + produit.id)" icon="fa-solid fa-trash">
+        <div class="overlay" v-if="!savedUser" @click="$router.push(`/product-details/` + produit.id)"
+          icon="fa-solid fa-trash">
 
           <!-- v-if logout state condition to be added /-->
           <p>{{ produit.titre }}</p>
@@ -39,12 +36,15 @@ export default {
   },
   computed: {
     ...mapState(["produits"]),
-
     ...mapGetters(["sortedBestSellers", "isLoggedIn"]),
   },
-
+  created() {
+    const savedUser = JSON.parse(localStorage.getItem('isLoggedIn'));
+    if (savedUser === false) {
+      return savedUser
+    }
+  },
 }
-
 </script>
 
 <style scoped>
