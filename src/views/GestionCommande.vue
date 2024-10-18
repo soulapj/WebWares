@@ -26,7 +26,7 @@
                 </ul>
               </td>
               <td>{{ getTotalQuantite(commande.produits) }}</td>
-              <td>{{ commande.countTotal.toFixed(2) }} €</td>
+              <td>{{ commande.countTotal }} €</td>
               <td>
                 <!-- Bouton pour transférer la commande -->
                 <button @click="transferCommande(commande.id)">Transférer</button>
