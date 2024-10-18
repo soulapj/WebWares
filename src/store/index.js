@@ -459,6 +459,7 @@ export default createStore({
             quantite: p.quantite,
           })),
           countTotal: commande.countTotal,
+          commentaire: commande.commentaire,
 
           // userId: currentUser.id,
           // userId: commande.userId,
