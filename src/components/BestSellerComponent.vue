@@ -13,13 +13,10 @@
           class="best-seller-img"
         />
         <div v-if="!isLoggedIn" class="overlay">
+
           <!-- v-if login state condition to be added -->
           <h1>Pour voir les détails s'inscrire</h1>
-          <ButtonComponents
-            type="register"
-            label="S'INSCRIRE"
-            @click="$router.push('/register')"
-          />
+          <ButtonComponents type="register" label="S'INSCRIRE" @click="$router.push('/register')" />
         </div>
 
         <div
@@ -28,6 +25,7 @@
           @click="$router.push(`/product-details/` + produit.id)"
           icon="fa-solid fa-trash"
         >
+
           <!-- v-if logout state condition to be added /-->
           <p>{{ produit.titre }}</p>
           <p>{{ produit.prix }} €</p>
@@ -47,7 +45,6 @@ export default {
   },
   computed: {
     ...mapState(["produits"]),
-
     ...mapGetters([
       "sortedBestSellers",
       "currentUser",
@@ -57,7 +54,14 @@ export default {
       "isAdminView",
     ]),
   },
+  created() {
+    const savedUser = JSON.parse(localStorage.getItem('isLoggedIn'));
+    if (savedUser === false) {
+      return savedUser
+    }
+  },
 };
+
 </script>
 
 <style scoped>
