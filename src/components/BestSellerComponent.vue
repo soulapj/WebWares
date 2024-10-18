@@ -3,31 +3,17 @@
     <h2>Best Sellers</h2>
     <div class="best-seller-container" v-if="sortedBestSellers.length">
 
-      <!-- <router-link to="/produit"> -->
-      <div
-        class="best-seller"
-        v-for="produit in sortedBestSellers"
-        :key="produit.id"
-      >
-        <!-- <router-link :to="{ name: 'ProductDetails', params: { id: produit.id } }"> -->
-        <img
-          :src="produit.images"
-          :alt="produit.titre"
-          class="best-seller-img"
-        />
-        <!-- </router-link> -->
-        <div class="overlay" v-if="!isLoggedIn">
+      <div class="best-seller" v-for="produit in sortedBestSellers" :key="produit.id">
+        <img :src="produit.images" :alt="produit.titre" class="best-seller-img" />
+        <div v-if="savedUser" class="overlay">
 
           <!-- v-if login state condition to be added -->
           <h1>Pour voir les détails s'inscrire</h1>
-          <ButtonComponents
-            type="register"
-            label="S'INSCRIRE"
-            @click="$router.push('/register')"
-          />
+          <ButtonComponents type="register" label="S'INSCRIRE" @click="$router.push('/register')" />
         </div>
 
-        <div class="overlay" v-if="isLoggedIn">
+        <div class="overlay" v-if="!savedUser" @click="$router.push(`/product-details/` + produit.id)"
+          icon="fa-solid fa-trash">
 
           <!-- v-if logout state condition to be added /-->
           <p>{{ produit.titre }}</p>
@@ -48,24 +34,17 @@ export default {
   components: {
     ButtonComponents,
   },
-  data() {
-    return {
-      userRole: null, 
-    };
-  },
   computed: {
     ...mapState(["produits"]),
-
     ...mapGetters(["sortedBestSellers", "isLoggedIn"]),
   },
-  methods: {
-    pickBestSellers(index) {
-      let productSold = this.commandeValider.produits[index].quantite;
-      productSold.sort((a, b) => b - a);
-    },
+  created() {
+    const savedUser = JSON.parse(localStorage.getItem('isLoggedIn'));
+    if (savedUser === false) {
+      return savedUser
+    }
   },
-};
-
+}
 </script>
 
 <style scoped>

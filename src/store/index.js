@@ -89,15 +89,6 @@ export default createStore({
         categorieId: 1,
       },
       {
-        id: 5,
-        images: require("@/assets/mobilier/mobilier-5.jpg"),
-        titre: "Table à manger en bois",
-        description: "Table à manger en bois massif avec finition élégante.",
-        prix: 299.99,
-        moq: 5,
-        categorieId: 1,
-      },
-      {
         id: 6,
         images: require("@/assets/luminaire/luminaire-1.jpg"),
         titre: "Lampe moderne",
@@ -289,10 +280,6 @@ export default createStore({
     backUserList: [],
   },
   mutations: {
-    setCurrentUser(state, user) {
-      // ========= test ========
-      state.currentUser = user;
-    },
     setCategories(state, cat) {
       state.categories = cat;
     },
@@ -356,11 +343,10 @@ export default createStore({
       localStorage.removeItem("commandes");
     },
 
-
-    backSetProduitListFromLocalStorage(state, produits){
+    backSetProduitListFromLocalStorage(state, produits) {
       state.backProduitList = produits;
     },
-    backSetUserListFromLocalStorage(state, users){
+    backSetUserListFromLocalStorage(state, users) {
       state.backUserList = users;
     },
 
@@ -425,40 +411,38 @@ export default createStore({
       localStorage.setItem("commandes", JSON.stringify(state.commandes));
     },
 
-        //trouve l'index de l'objet et le supprime
-        backRemoveProduit(state, prodId) {
-          const indexProd = state.produits.map((e) => e.id).indexOf(prodId);
-          state.produits.splice(indexProd, 1);
-        },
-        backRemoveUser(state, userId) {
-          const indexUser = state.utilisateurs.map((e) => e.id).indexOf(userId);
-          state.utilisateurs.splice(indexUser, 1);
-        },
-        backAddProduit(state, newObj){
-          let maxId = 0
-          for (let i = 0; i < state.produits.length; i++){
-            if (state.produits.map((e) => e.id)[i] > maxId) {
-              maxId = state.produits.map((e) => e.id)[i];
-            }
-          }
-          newObj.id = maxId + 1;
-          state.produits.push(newObj);
-        },
-        backModProduit(state, modObj){
-          const index = state.produits.findIndex(
-            (prod) => prod.id === modObj.key2)
-            if (index !== -1) {
-              state.utilisateurs[index] = {
-                ...state.utilisateurs[index],
-                ...modObj.key2,
-              };}
-          // state.produits[index] = {...modObj.key1}
-        },
-        backModUser(state, modObj){
-          const indexProd = state.utilisateurs.map((e) => e.id).indexOf(parseInt(modObj.key2));
-          state.utilisateurs[indexProd] = {...modObj.key1}
-        },
-
+    //trouve l'index de l'objet et le supprime
+    backRemoveProduit(state, prodId) {
+      const indexProd = state.produits.map((e) => e.id).indexOf(prodId);
+      state.produits.splice(indexProd, 1);
+    },
+    backRemoveUser(state, userId) {
+      const indexUser = state.utilisateurs.map((e) => e.id).indexOf(userId);
+      state.utilisateurs.splice(indexUser, 1);
+    },
+    backAddProduit(state, newObj) {
+      let maxId = 0;
+      for (let i = 0; i < state.produits.length; i++) {
+        if (state.produits.map((e) => e.id)[i] > maxId) {
+          maxId = state.produits.map((e) => e.id)[i];
+        }
+      }
+      newObj.id = maxId + 1;
+      state.produits.push(newObj);
+    },
+    backModProduit(state, modObj) {
+      const indexProd = state.produits
+        .map((e) => e.id)
+        .indexOf(parseInt(modObj.key2));
+      state.produits[indexProd] = { ...modObj.key1 };
+      // state.produits[index] = {...modObj.key1}
+    },
+    backModUser(state, modObj) {
+      const indexProd = state.utilisateurs
+        .map((e) => e.id)
+        .indexOf(parseInt(modObj.key2));
+      state.utilisateurs[indexProd] = { ...modObj.key1 };
+    },
 
     saveCommandeToLocalStorage(state, commande) {
       let userId = state.currentUtilisateur?.id;
@@ -654,7 +638,8 @@ export default createStore({
     
 
     // ----------------------- Fin mutations clément //
-     // ----------------------- mutations alex //
+    },
+  // ----------------------- mutations alex //
     // Ajouter une commande dans les commandes transférées
     transferCommande(state, commande) {
       state.commandesTransferees.push(commande);
@@ -664,8 +649,17 @@ export default createStore({
       state.commandeValider = state.commandeValider.filter(
         (commande) => commande.id !== commandeId
       );
-    },
 
+  backDeleteProduct(state, idProduit) {
+    const index = state.backProduitList.findIndex(
+      (produit) => produit.id === idProduit
+    );
+    if (index !== -1) {
+      state.backProduitList.splice(index, 1);
+    }
+  },
+  backDeleteUser(state, idUser) {
+    state.backUserList.splice(idUser, 1);
 
   },
 
@@ -752,12 +746,10 @@ export default createStore({
 
     // ici on charge les utilisateurs depuis le local storage
 
-    loadUtilisateurArrayFromLocalStorage({commit}){ 
+    loadUtilisateurArrayFromLocalStorage({ commit }) {
       // commit("setUtilisateursFromLocalStorage");
-      const utilisateurs = JSON.parse(localStorage.getItem('utilisateurs'));
-      if(utilisateurs && Array.isArray(utilisateurs)){
-
-
+      const utilisateurs = JSON.parse(localStorage.getItem("utilisateurs"));
+      if (utilisateurs && Array.isArray(utilisateurs)) {
         commit("setUtilisateursFromLocalStorage", utilisateurs);
       }
     },
@@ -791,7 +783,27 @@ export default createStore({
         commit("clearSavedCommandesForUser", userId);
       }
     },
-     // ----------------------- Fin action Clément//
+    // ----------------------- Fin action Clément//
+    backRemoveProduit({ commit }, produitId) {
+      commit("backRemoveProduit", produitId);
+    },
+    backRemoveUser({ commit }, userId) {
+      commit("backRemoveUser", userId);
+    },
+    backLoadProduitFromLocalStorage({ commit }) {
+      const backProduitList = this.state.produits.find((e) => e.id);
+      if (backProduitList && Array.isArray(backProduitList)) {
+        commit("setProduit", backProduitList);
+        commit("backSetProduitListFromLocalStorage", backProduitList);
+      }
+    },
+    backLoadUserFromLocalStorage({ commit }) {
+      const backUserList = this.state.utilisateurs.find((e) => e.id);
+      if (backUserList && Array.isArray(backUserList)) {
+        commit("setUtilisateur", backUserList);
+        commit("backSetUserListFromLocalStorage", backUserList);
+      }
+    },
       // -----------------------  action Alex//
       transferCommande({ commit, state }, commandeId) {
         // Trouver la commande à transférer
@@ -805,7 +817,6 @@ export default createStore({
           commit('removeCommandeValider', commandeId);
         }
       },
-
   },
 
   getters: {
@@ -895,15 +906,15 @@ export default createStore({
     getUtilisateurByEmail: (state) => (email) =>
       state.utilisateurs.find((user) => user.email === email),
 
-
     getUtilisateurBySiret: (state) => (siret) =>
       state.utilisateurs.find((user) => user.siret === siret),
 
     getUtilisateurByRaisonSociale: (state) => (raisonSociale) =>
       state.utilisateurs.find((user) => user.raisonSociale === raisonSociale),
 
-     filteredCommandes : (state) => {
-      const userId = state.currentUtilisateur?.id || state.previousUtilisateur?.id;
+    filteredCommandes: (state) => {
+      const userId =
+        state.currentUtilisateur?.id || state.previousUtilisateur?.id;
       return state.commandes.filter((commande) => commande.userId === userId);
     },
 

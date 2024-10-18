@@ -7,7 +7,7 @@
     </div>
 
     <!-- Navigation Links -->
-    <nav v-if="(!isAdminView && isLoggedIn) || !isLoggedIn">
+    <nav v-if="(!isAdminView && isLoggedIn) || !isLoggedIn || isUser">
       <router-link to="/">Accueil</router-link>
       <router-link to="/produit">Produits</router-link>
 
@@ -173,7 +173,8 @@ export default {
 
 <style scoped>
 header {
-  position: relative;
+  position: sticky;
+  top: 0;
   display: flex;
   justify-content: space-around;
   align-items: center;
