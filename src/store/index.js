@@ -459,7 +459,7 @@ export default createStore({
             quantite: p.quantite,
           })),
           countTotal: commande.countTotal,
-
+          commentaire: commande.commentaire,
           // userId: currentUser.id,
           // userId: commande.userId,
           userId: userId,
@@ -633,15 +633,22 @@ export default createStore({
       state.savedCommandes = state.savedCommandes.filter(
         (savedCommande) => savedCommande.userId !== userId
       );
-
-      localStorage.setItem(
-        "savedCommandes",
-        JSON.stringify(state.savedCommandes)
-      );
+      localStorage.setItem("savedCommandes", JSON.stringify(state.savedCommandes));
     },
+    
 
     // ----------------------- Fin mutations clément //
-  },
+    },
+  // ----------------------- mutations alex //
+    // Ajouter une commande dans les commandes transférées
+    transferCommande(state, commande) {
+      state.commandesTransferees.push(commande);
+    },
+    // Retirer une commande des commandes validées
+    removeCommandeValider(state, commandeId) {
+      state.commandeValider = state.commandeValider.filter(
+        (commande) => commande.id !== commandeId
+      );
 
   backDeleteProduct(state, idProduit) {
     const index = state.backProduitList.findIndex(
@@ -653,6 +660,7 @@ export default createStore({
   },
   backDeleteUser(state, idUser) {
     state.backUserList.splice(idUser, 1);
+
   },
 
   actions: {
@@ -796,6 +804,19 @@ export default createStore({
         commit("backSetUserListFromLocalStorage", backUserList);
       }
     },
+      // -----------------------  action Alex//
+      transferCommande({ commit, state }, commandeId) {
+        // Trouver la commande à transférer
+        const commande = state.commandeValider.find(
+          (cmd) => cmd.id === commandeId
+        );
+        if (commande) {
+          // Ajouter la commande aux commandes transférées
+          commit('transferCommande', commande);
+          // Retirer la commande du tableau des commandes validées
+          commit('removeCommandeValider', commandeId);
+        }
+      },
   },
 
   getters: {
@@ -917,9 +938,7 @@ export default createStore({
           quantite: order ? order.quantite : 0,
         };
       });
-      return produitsWithQuantite
-        .sort((a, b) => b.quantite - a.quantite)
-        .slice(0, 8); // top 8 best seller
+      return produitsWithQuantite.sort((a, b) => b.quantite - a.quantite).slice(0, 8); // top 8 best seller
     },
     // ========================================================================================================\\
   },
