@@ -2,11 +2,12 @@
   <div class="profile-container" v-if="currentUtilisateur">
     <div class="profile-carte">
       <div class="profile-header">
-        <!-- <img
+        <img
+          v-if="currentUtilisateur.profileImage"
           class="profile-avatar"
-          src="https://via.placeholder.com/150"
+          :src="currentUtilisateur.profileImage"
           alt="Avatar de l'utilisateur"
-        /> -->
+        />
         <h2 class="profile-name">{{ currentUtilisateur.raisonSociale }}</h2>
       </div>
       <div class="profile-body">

@@ -29,7 +29,7 @@
             @click="submitForm"
             label="Connexion"
             color="var(--color-secondary)"
-            textColor="white"
+            type="login"
             class="submit-button"
             v-if="true"
           />
@@ -253,7 +253,7 @@
   </script>
 
   
-  <style>
+  <style scoped>
   .login-page {
     max-width: 500px;
     margin: 0 auto;

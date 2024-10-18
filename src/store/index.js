@@ -5,6 +5,8 @@ export default createStore({
     detailProd: {},
     commandeValider: [],
     commandesTransferees: [],
+    isAdminView: true,
+
     savedCommandes: [],
     // ----------C j'ai un ajouté un state currentUtilisateur set sur null
     currentUtilisateur: null,
@@ -283,6 +285,8 @@ export default createStore({
         role: "ADMIN",
       },
     ],
+    backProduitList: [],
+    backUserList: [],
   },
   mutations: {
     setCurrentUser(state, user) {
@@ -352,6 +356,14 @@ export default createStore({
       localStorage.removeItem("commandes");
     },
 
+
+    backSetProduitListFromLocalStorage(state, produits){
+      state.backProduitList = produits;
+    },
+    backSetUserListFromLocalStorage(state, users){
+      state.backUserList = users;
+    },
+
     removeProduit(state, prodId) {
       state.commandes = state.commandes
         .map((commande) => ({
@@ -413,6 +425,41 @@ export default createStore({
       localStorage.setItem("commandes", JSON.stringify(state.commandes));
     },
 
+        //trouve l'index de l'objet et le supprime
+        backRemoveProduit(state, prodId) {
+          const indexProd = state.produits.map((e) => e.id).indexOf(prodId);
+          state.produits.splice(indexProd, 1);
+        },
+        backRemoveUser(state, userId) {
+          const indexUser = state.utilisateurs.map((e) => e.id).indexOf(userId);
+          state.utilisateurs.splice(indexUser, 1);
+        },
+        backAddProduit(state, newObj){
+          let maxId = 0
+          for (let i = 0; i < state.produits.length; i++){
+            if (state.produits.map((e) => e.id)[i] > maxId) {
+              maxId = state.produits.map((e) => e.id)[i];
+            }
+          }
+          newObj.id = maxId + 1;
+          state.produits.push(newObj);
+        },
+        backModProduit(state, modObj){
+          const index = state.produits.findIndex(
+            (prod) => prod.id === modObj.key2)
+            if (index !== -1) {
+              state.utilisateurs[index] = {
+                ...state.utilisateurs[index],
+                ...modObj.key2,
+              };}
+          // state.produits[index] = {...modObj.key1}
+        },
+        backModUser(state, modObj){
+          const indexProd = state.utilisateurs.map((e) => e.id).indexOf(parseInt(modObj.key2));
+          state.utilisateurs[indexProd] = {...modObj.key1}
+        },
+
+
     saveCommandeToLocalStorage(state, commande) {
       let userId = state.currentUtilisateur?.id;
       if (!userId) return; //j'applique la même logique que dans la mutation addProduitToCommande
@@ -464,6 +511,10 @@ export default createStore({
           );
         }
       }
+    },
+
+    toggleAdminView(state) {
+      state.isAdminView = !state.isAdminView;
     },
 
     // Contact form ===============================arash================================================================ \\
@@ -599,23 +650,10 @@ export default createStore({
         (savedCommande) => savedCommande.userId !== userId
       );
       localStorage.setItem("savedCommandes", JSON.stringify(state.savedCommandes));
-    },
+    }
     
 
     // ----------------------- Fin mutations clément //
-    // -----------------------  mutations Alex//
-    TRANSFER_COMMANDE(state, commandeId) {
-      // Trouver la commande à transférer
-      const commandeIndex = state.commandeValider.findIndex(
-        (commande) => commande.id === commandeId
-      );
-      if (commandeIndex !== -1) {
-        // Retirer la commande de la liste des commandes validées
-        const commande = state.commandeValider.splice(commandeIndex, 1)[0];
-        // Ajouter la commande à la liste des commandes transférées
-        state.commandesTransferees.push(commande);
-      }
-    },
 
 
   },
@@ -702,9 +740,13 @@ export default createStore({
     },
 
     // ici on charge les utilisateurs depuis le local storage
-    loadUtilisateurArrayFromLocalStorage({ commit }) {
-      const utilisateurs = JSON.parse(localStorage.getItem("utilisateurs"));
-      if (utilisateurs && Array.isArray(utilisateurs)) {
+
+    loadUtilisateurArrayFromLocalStorage({commit}){ 
+      // commit("setUtilisateursFromLocalStorage");
+      const utilisateurs = JSON.parse(localStorage.getItem('utilisateurs'));
+      if(utilisateurs && Array.isArray(utilisateurs)){
+
+
         commit("setUtilisateursFromLocalStorage", utilisateurs);
       }
     },
@@ -737,12 +779,8 @@ export default createStore({
       if (userId) {
         commit("clearSavedCommandesForUser", userId);
       }
-    },
+    }
      // ----------------------- Fin action Clément//
-     // -----------------------  action Alex//
-     transferCommande({ commit }, commandeId) {
-      commit('TRANSFER_COMMANDE', commandeId);
-    },
 
   },
 
@@ -759,6 +797,10 @@ export default createStore({
 
     isUser(state, getters) {
       return getters.currentUser && getters.currentUser.role === "USER";
+    },
+
+    isAdminView(state) {
+      return state.isAdminView;
     },
 
     subTotal: (state) => (produitId) => {
@@ -825,21 +867,19 @@ export default createStore({
     // --------------------- getters Clément
 
     getUtilisateurs: (state) => state.utilisateurs,
-    //attention j'ai mis le getteur à get UtilisateurByEmail !
+
     getUtilisateurByEmail: (state) => (email) =>
       state.utilisateurs.find((user) => user.email === email),
 
-    //attention j'ai mis le getteur à get UtilisateurByUsername !
-    getUtilisateurByUsername: (state) => (username) =>
-      state.utilisateurs.find((user) => user.username === username),
 
     getUtilisateurBySiret: (state) => (siret) =>
       state.utilisateurs.find((user) => user.siret === siret),
 
-    filteredCommandes: (state) => {
-      const userId =
-        state.currentUtilisateur?.id || state.previousUtilisateur?.id;
+    getUtilisateurByRaisonSociale: (state) => (raisonSociale) =>
+      state.utilisateurs.find((user) => user.raisonSociale === raisonSociale),
 
+     filteredCommandes : (state) => {
+      const userId = state.currentUtilisateur?.id || state.previousUtilisateur?.id;
       return state.commandes.filter((commande) => commande.userId === userId);
     },
 
@@ -863,7 +903,7 @@ export default createStore({
           quantite: order ? order.quantite : 0,
         };
       });
-      return produitsWithQuantite.sort((a, b) => b.quantite - a.quantite);
+      return produitsWithQuantite.sort((a, b) => b.quantite - a.quantite).slice(0, 8); // top 8 best seller
     },
     // ========================================================================================================\\
   },
