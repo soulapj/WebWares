@@ -638,7 +638,7 @@ export default createStore({
     
 
     // ----------------------- Fin mutations clément //
-    },
+
   // ----------------------- mutations alex //
     // Ajouter une commande dans les commandes transférées
     transferCommande(state, commande) {
@@ -649,6 +649,7 @@ export default createStore({
       state.commandeValider = state.commandeValider.filter(
         (commande) => commande.id !== commandeId
       );
+    },
 
   backDeleteProduct(state, idProduit) {
     const index = state.backProduitList.findIndex(
@@ -662,6 +663,8 @@ export default createStore({
     state.backUserList.splice(idUser, 1);
 
   },
+
+},
 
   actions: {
     // ========= test ==========
