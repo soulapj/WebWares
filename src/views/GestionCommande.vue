@@ -12,7 +12,8 @@
             <th>Entreprise</th>
             <th>Adresse</th>
             <th>Produits</th>
-            <th>Total</th>
+            <th>Total HT</th>
+            <th>Total TTC</th>
             <th>Commentaires</th>
             <th>Actions</th>
           </tr>
@@ -25,11 +26,18 @@
             <td>{{ getUtilisateur(commande.userId).adresse }}</td>
             <!-- Affichage des produits -->
             <td>
-              <div v-for="produit in commande.produits" :key="produit.produitId">
+              <div
+                v-for="produit in commande.produits"
+                :key="produit.produitId"
+              >
                 {{ produit.titre }} (x{{ produit.quantite }})
               </div>
             </td>
-            <td>{{ getTotalQuantite(commande.produits) }}</td>
+            <!-- totale ht -->
+            <td>{{ commande.countTotalHT }}</td>
+            <!-- totale TTC -->
+            <td>{{ commande.countTotalTTC }}</td>
+            <!-- Commentaires -->
             <td>{{ commande.commentaire }}</td>
             <!-- Action bouton de validation -->
             <td>
@@ -53,7 +61,8 @@
             <th>Entreprise</th>
             <th>Adresse</th>
             <th>Produits</th>
-            <th>Total</th>
+            <th>Total HT</th>
+            <th>Total TTC</th>
             <th>Commentaires</th>
           </tr>
         </thead>
@@ -66,16 +75,20 @@
             <!-- Affichage des produits -->
             <td>
               <ul>
-                <li v-for="produit in commande.produits" :key="produit.produitId">
+                <li
+                  v-for="produit in commande.produits"
+                  :key="produit.produitId"
+                >
                   {{ produit.titre }} (x{{ produit.quantite }})
                 </li>
               </ul>
             </td>
-            <!-- Quantité totale -->
-            <td>{{ getTotalQuantite(commande.produits) }}</td>
+            <!-- totale ht -->
+            <td>{{ commande.countTotalHT }}</td>
+            <!-- totale TTC -->
+            <td>{{ commande.countTotalTTC }}</td>
             <!-- Commentaires -->
             <td>{{ commande.commentaire }}</td>
-            <td>{{ commande.countTotal }} €</td>
           </tr>
         </tbody>
       </table>
@@ -95,22 +108,28 @@ export default {
     ...mapState(["commandeValider", "commandesTransferees", "utilisateurs"]),
   },
   methods: {
-    ...mapActions(["transferCommande", "setCommandesValider", "setCommandesTransferees"]),
+    ...mapActions([
+      "transferCommande",
+      "setCommandesValider",
+      "setCommandesTransferees",
+    ]),
 
     // Fonction pour récupérer l'utilisateur associé à la commande
     getUtilisateur(userId) {
-      return this.utilisateurs.find(user => user.id === userId) || {};
+      return this.utilisateurs.find((user) => user.id === userId) || {};
     },
 
     // Calculer la quantité totale pour chaque commande
     getTotalQuantite(produits) {
       return produits.reduce((total, produit) => total + produit.quantite, 0);
-    }
+    },
   },
   mounted() {
     // Charger les données depuis LocalStorage quand le composant est monté
-    const commandeValider = JSON.parse(localStorage.getItem('commandeValider'));
-    const commandesTransferees = JSON.parse(localStorage.getItem('commandesTransferees'));
+    const commandeValider = JSON.parse(localStorage.getItem("commandeValider"));
+    const commandesTransferees = JSON.parse(
+      localStorage.getItem("commandesTransferees")
+    );
 
     if (commandeValider) {
       this.setCommandesValider(commandeValider);
@@ -118,7 +137,7 @@ export default {
     if (commandesTransferees) {
       this.setCommandesTransferees(commandesTransferees);
     }
-  }
+  },
 };
 </script>
 
@@ -130,7 +149,8 @@ export default {
   width: 100%;
   border-collapse: collapse;
 }
-.table th, .table td {
+.table th,
+.table td {
   padding: 10px;
   text-align: left;
   border-bottom: 1px solid #ddd;

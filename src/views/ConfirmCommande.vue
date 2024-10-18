@@ -12,6 +12,9 @@
         </ul>
         <p>
           Montant total à payer :
+          <br />
+          <strong>{{ totalHT }} € (HT)</strong>
+          <br />
           <strong>{{ total }} € (TTC)</strong>
         </p>
       </div>
@@ -97,7 +100,7 @@ export default {
 
     //    ...mapGetters(["total"]),
 
-    ...mapGetters(["total"]),
+    ...mapGetters(["total", "totalHT"]),
 
     commandeProduits() {
       return this.commandes.flatMap((commande) => commande.produits);
@@ -123,7 +126,8 @@ export default {
     validerCommande() {
       const currentCommande = {
         produits: this.commandeProduits,
-        countTotal: this.total,
+        countTotalHT: this.totalHT,
+        countTotalTTC: this.total,
         userId: 1,
         commentaire: this.informationComplementaire,
       };

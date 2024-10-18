@@ -458,7 +458,8 @@ export default createStore({
             titre: p.titre,
             quantite: p.quantite,
           })),
-          countTotal: commande.countTotal,
+          countTotalHT: commande.countTotalHT,
+          countTotalTTC: commande.countTotalTTC,
           commentaire: commande.commentaire,
           // userId: currentUser.id,
           // userId: commande.userId,
@@ -633,13 +634,15 @@ export default createStore({
       state.savedCommandes = state.savedCommandes.filter(
         (savedCommande) => savedCommande.userId !== userId
       );
-      localStorage.setItem("savedCommandes", JSON.stringify(state.savedCommandes));
+      localStorage.setItem(
+        "savedCommandes",
+        JSON.stringify(state.savedCommandes)
+      );
     },
-    
 
     // ----------------------- Fin mutations clément //
 
-  // ----------------------- mutations alex //
+    // ----------------------- mutations alex //
     // Ajouter une commande dans les commandes transférées
     transferCommande(state, commande) {
       state.commandesTransferees.push(commande);
@@ -651,20 +654,18 @@ export default createStore({
       );
     },
 
-  backDeleteProduct(state, idProduit) {
-    const index = state.backProduitList.findIndex(
-      (produit) => produit.id === idProduit
-    );
-    if (index !== -1) {
-      state.backProduitList.splice(index, 1);
-    }
+    backDeleteProduct(state, idProduit) {
+      const index = state.backProduitList.findIndex(
+        (produit) => produit.id === idProduit
+      );
+      if (index !== -1) {
+        state.backProduitList.splice(index, 1);
+      }
+    },
+    backDeleteUser(state, idUser) {
+      state.backUserList.splice(idUser, 1);
+    },
   },
-  backDeleteUser(state, idUser) {
-    state.backUserList.splice(idUser, 1);
-
-  },
-
-},
 
   actions: {
     // ========= test ==========
@@ -807,19 +808,19 @@ export default createStore({
         commit("backSetUserListFromLocalStorage", backUserList);
       }
     },
-      // -----------------------  action Alex//
-      transferCommande({ commit, state }, commandeId) {
-        // Trouver la commande à transférer
-        const commande = state.commandeValider.find(
-          (cmd) => cmd.id === commandeId
-        );
-        if (commande) {
-          // Ajouter la commande aux commandes transférées
-          commit('transferCommande', commande);
-          // Retirer la commande du tableau des commandes validées
-          commit('removeCommandeValider', commandeId);
-        }
-      },
+    // -----------------------  action Alex//
+    transferCommande({ commit, state }, commandeId) {
+      // Trouver la commande à transférer
+      const commande = state.commandeValider.find(
+        (cmd) => cmd.id === commandeId
+      );
+      if (commande) {
+        // Ajouter la commande aux commandes transférées
+        commit("transferCommande", commande);
+        // Retirer la commande du tableau des commandes validées
+        commit("removeCommandeValider", commandeId);
+      }
+    },
   },
 
   getters: {
@@ -941,7 +942,9 @@ export default createStore({
           quantite: order ? order.quantite : 0,
         };
       });
-      return produitsWithQuantite.sort((a, b) => b.quantite - a.quantite).slice(0, 8); // top 8 best seller
+      return produitsWithQuantite
+        .sort((a, b) => b.quantite - a.quantite)
+        .slice(0, 8); // top 8 best seller
     },
     // ========================================================================================================\\
   },
