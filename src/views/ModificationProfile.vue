@@ -5,6 +5,16 @@
 
       <form @submit.prevent="submitForm">
         <div class="form-group">
+          <label for="profileImage">Image de profil</label>
+          <input
+            type="file"
+            id="profileImage"
+            accept="image/*"
+            @change="imageUpload"
+          />
+        </div>
+
+        <div class="form-group">
           <label for="raisonSociale">Nom de l'entreprise</label>
           <input
             v-model="editedUser.raisonSociale"
@@ -67,6 +77,7 @@ export default {
         codePostal: "",
         ville: "",
         email: "",
+        profileImage: "",
       },
     };
   },
@@ -83,6 +94,16 @@ export default {
     },
     annulForm() {
       this.$router.push("/profile/id");
+    },
+    imageUpload(event) {
+      const file = event.target.files[0];
+      if (file) {
+        const reader = new FileReader();
+        reader.onload = (e) => {
+          this.editedUser.profileImage = e.target.result; // Conversion en base64
+        };
+        reader.readAsDataURL(file);
+      }
     },
   },
   mounted() {
