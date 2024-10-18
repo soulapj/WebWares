@@ -1,13 +1,16 @@
 <template>
   <div>
     <!-- Search Bar -->
-    <SearchBar :placeholder="'Rechercher un produit...'" :searchQuery="searchQuery"
-      @update-search="handleSearchUpdate" />
+    <SearchBar
+      :placeholder="'Rechercher un produit...'"
+      :searchQuery="searchQuery"
+      @update-search="handleSearchUpdate"
+    />
 
     <!-- Category Info Section -->
     <div class="category-container">
       <div class="category">
-        <img :src="category.images" :alt="category.name">
+        <img :src="category.images" :alt="category.name" />
         <div class="category-description">
           <h1>{{ category.name }}</h1>
           <p>{{ category.description }}</p>
@@ -19,12 +22,23 @@
     <!-- Products Section -->
     <div v-if="products.length" id="view-all" class="view-all-container">
       <div v-for="product in products" :key="product.id" class="view-all">
-        <img :src="product.images" :alt="product.titre" @click="$router.push(`/product-details/` + product.id)">
-        <router-link :to="'/product-details/' + product.id" class="product-link">{{ product.titre }}</router-link>
+        <img
+          :src="product.images"
+          :alt="product.titre"
+          @click="$router.push(`/product-details/` + product.id)"
+        />
+        <router-link
+          :to="'/product-details/' + product.id"
+          class="product-link"
+          >{{ product.titre }}</router-link
+        >
         <div class="product-description">
           <p>€{{ product.prix }}</p>
-          <ButtonComponents type="login" label="Details du produit"
-            @click="$router.push(`/product-details/` + product.id)" />
+          <ButtonComponents
+            type="login"
+            label="Details du produit"
+            @click="$router.push(`/product-details/` + product.id)"
+          />
         </div>
       </div>
     </div>
@@ -71,14 +85,15 @@ export default {
     },
   },
   watch: {
-    '$route.params.id': {
+    "$route.params.id": {
       immediate: true,
       handler(newCategoryId) {
         const categoryId = parseInt(newCategoryId);
-        this.category = this.categories.find((cat) => cat.id === categoryId) || {};
-      }
-    }
-  }
+        this.category =
+          this.categories.find((cat) => cat.id === categoryId) || {};
+      },
+    },
+  },
 };
 </script>
 
@@ -145,7 +160,6 @@ export default {
   width: fit-content;
   object-fit: fit;
 }
-
 
 .view-all {
   display: flex;
