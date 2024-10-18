@@ -86,14 +86,6 @@ export default {
   methods: {
     ...mapMutations(["backAddProduit"]),
     addProd() {
-      console.log(
-        this.newProd.titre,
-        this.newProd.description,
-        this.newProd.prix,
-        this.newProd.moq,
-        this.newProd.categorieId,
-        this.newProd.images
-      );
       if (
         this.newProd.titre &&
         this.newProd.description &&
