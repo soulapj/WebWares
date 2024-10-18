@@ -48,6 +48,7 @@
     border-radius: 5px;
     padding: 0.5rem 0;
     box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.1);
+    box-sizing: border-box;
   }
   
   .counter-button {
@@ -57,7 +58,8 @@
     cursor: pointer;
     width: 4rem;
     height: 2rem;
-    text-align: center;
+    /* text-align: center; */
+    
   }
   
   .counter-button:disabled {
@@ -73,6 +75,13 @@
   
   .quantity-display p {
     margin: 0;
+  }
+
+  @media (max-width: 768px) {
+    .counter-button {
+      justify-content: center;
+      
+    }
   }
   </style>
   

@@ -1,36 +1,34 @@
 <template>
   <div>
     <!-- Search Bar -->
-    <SearchBar
-      :placeholder="'Rechercher un produit...'"
-      :searchQuery="searchQuery"
-      @update-search="handleSearchUpdate"
-    />
-    
+    <SearchBar :placeholder="'Rechercher un produit...'" :searchQuery="searchQuery"
+      @update-search="handleSearchUpdate" />
+
     <!-- Category Info Section -->
     <div class="category-container">
-    <div class="category">
-      <img :src="category.images" :alt="category.name">
-      <div class="category-description">
-        <h1>{{ category.name }}</h1>
-        <p>{{ category.description }}</p>
-        <a href="#view-all">Tout voir</a>
+      <div class="category">
+        <img :src="category.images" :alt="category.name">
+        <div class="category-description">
+          <h1>{{ category.name }}</h1>
+          <p>{{ category.description }}</p>
+          <a href="#view-all">Tout voir</a>
+        </div>
       </div>
     </div>
-  </div>
 
     <!-- Products Section -->
     <div v-if="products.length" id="view-all" class="view-all-container">
-    <div v-for="product in products" :key="product.id" class="view-all">
-      <img :src="product.images" :alt="product.titre" @click="$router.push(`/product-details/` + product.id)">
-      <router-link :to="'/product-details/' + product.id" class="product-link">{{ product.titre }}</router-link>
-      <div class="product-description">
-        <p>€{{ product.prix }}</p>
+      <div v-for="product in products" :key="product.id" class="view-all">
+        <img :src="product.images" :alt="product.titre" @click="$router.push(`/product-details/` + product.id)">
+        <router-link :to="'/product-details/' + product.id" class="product-link">{{ product.titre }}</router-link>
+        <div class="product-description">
+          <p>€{{ product.prix }}</p>
+          <ButtonComponents type="login" label="Details du produit"
+            @click="$router.push(`/product-details/` + product.id)" />
+        </div>
       </div>
     </div>
-  </div>
 
-    <!-- No Products Message -->
     <p v-else>Aucun produit disponible pour cette catégorie.</p>
   </div>
 </template>
@@ -38,15 +36,17 @@
 <script>
 import { mapState } from "vuex";
 import SearchBar from "@/components/SearchBar.vue";
+import ButtonComponents from "@/components/ButtonComponents.vue";
 
 export default {
   components: {
     SearchBar,
+    ButtonComponents,
   },
   data() {
     return {
       category: {},
-      searchQuery: "", // Initialize searchQuery for the search functionality
+      searchQuery: "",
     };
   },
   computed: {
@@ -60,7 +60,6 @@ export default {
       );
     },
     filteredProducts() {
-      // Apply search filtering
       return this.products.filter((prod) =>
         prod.titre.toLowerCase().includes(this.searchQuery.toLowerCase())
       );
@@ -130,23 +129,23 @@ export default {
 .category-description a:hover {
   text-decoration-thickness: 3px;
 }
-          /* Show all section */
+
+/* Show all section */
 .view-all-container {
   display: flex;
   justify-content: space-evenly;
+  /* align-items: center; */
+  gap: 1rem;
   flex-wrap: wrap;
-  margin: 5rem 0;  
+  margin: 5rem 0;
 }
+
 .view-all-container img {
-  height: 100%;
-  width: 20rem;
-  object-fit: contain;
+  height: 200px;
+  width: fit-content;
+  object-fit: fit;
 }
-.view-all-container img:hover {
-  cursor: pointer;
-  transform: scale(1.05);
-  transition: 0.3s ease;;
-}
+
 
 .view-all {
   display: flex;
@@ -157,21 +156,32 @@ export default {
   flex: 0 0 25%;
   box-sizing: border-box;
   padding: 1rem 0rem;
+  box-shadow: 0px 4px 15px rgba(0, 0, 0, 0.1);
+  border-radius: 10px;
+}
+
+.view-all:hover {
+  transform: scale(1.05);
+  transition: 0.3s ease;
 }
 
 .product-link {
   text-decoration: none;
   font-size: 1.5rem;
-  margin: 1rem 0;
+  margin-top: 0.5rem;
   color: var(--color-secondary);
   font-weight: bold;
 }
+
 .product-link:hover {
   text-decoration: underline;
 }
 
 .product-description p {
-  margin: 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-evenly;
+  /* margin: 0; */
   font-size: 1.3rem;
 }
 
@@ -181,9 +191,11 @@ export default {
     justify-content: center;
     gap: 0rem;
   }
+
   .category img {
     width: 100%;
   }
+
   .category-description {
     width: 100%;
     text-align: center;

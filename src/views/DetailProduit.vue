@@ -107,6 +107,7 @@ export default {
   justify-content: space-between;
   width: 100%;
   margin-top: var(--spacing);
+  gap: var(--spacing);
 }
 
 @media (max-width: 768px) {
@@ -121,9 +122,9 @@ export default {
     justify-self: center;
     width: 100%;
   }
-  /* .buttons {
-    justify-content: center;
-
-  } */
+  .buttons {
+    /* justify-content: center; */
+    gap: 0.5rem;
+  }
 }
 </style>

@@ -9,7 +9,7 @@
           <h1>Pour voir les détails s'inscrire</h1>
           <ButtonComponents type="register" label="S'INSCRIRE" />
         </div>
-        <div class="overlay" v-if="isLoggedin" @click="$router.push(`/product-details/` + produit.id)">
+        <div class="overlay" v-if="isLoggedin" @click="$router.push(`/product-details/` + produit.id)" icon="fa-solid fa-trash">
           <!-- v-if logout state condition to be added /-->
           <p>{{ produit.titre }}</p>
           <p>{{ produit.prix }}</p>
