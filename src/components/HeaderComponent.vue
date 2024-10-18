@@ -7,7 +7,7 @@
     </div>
 
     <!-- Navigation Links -->
-    <nav v-if="(!isAdminView && isLoggedIn) || !isLoggedIn">
+    <nav v-if="(!isAdminView && isLoggedIn) || !isLoggedIn || isUser">
       <router-link to="/">Accueil</router-link>
       <router-link to="/produit">Produits</router-link>
 
