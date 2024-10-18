@@ -25,6 +25,8 @@
                   </div>
 
               </td>
+              <td>{{ getTotalQuantite(commande.produits) }}</td>
+
               <td>{{ commande.countTotal }} €</td>
               <td>
                 <!-- Bouton pour transférer la commande -->
