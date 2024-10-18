@@ -50,7 +50,6 @@
           @click="goToRegister"
         />
       </div>
-
       <div class="icons" v-else>
         <!-- Cart Icon -->
         <router-link
@@ -100,10 +99,10 @@ import ButtonComponents from "./ButtonComponents.vue";
 
 export default {
   props: {
-    // isLoggedIn: {
-    //   type: Boolean,
-    //   required: true,
-    // },
+    isLoggedIn: {
+      type: Boolean,
+      required: true,
+    },
   },
 
   components: {
