@@ -53,7 +53,11 @@
 
       <div class="icons" v-else>
         <!-- Cart Icon -->
-        <router-link to="/panier" class="cart-icon" v-if="isUser">
+        <router-link
+          to="/panier"
+          class="cart-icon"
+          v-if="isUser || !isAdminView"
+        >
           <span v-if="commandes && commandes.length > 0">{{
             commandes.length
           }}</span>
