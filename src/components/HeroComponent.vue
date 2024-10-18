@@ -5,7 +5,7 @@
       <span class="hero-msg">
         <h1>Bienvenue Sur WebWares</h1>
         <p>Créez un compte pour bénéficier de réductions exclusives sur nos collections.</p>
-        <ButtonComponents label="S'INSCRIRE" type="login"/>
+        <ButtonComponents @Click="goToRegister" label="S'INSCRIRE" type="login"/>
       </span>
     </div>
   </div>
@@ -17,6 +17,13 @@ import ButtonComponents from './ButtonComponents.vue';
 export default {
   components: {
     ButtonComponents,
+  },
+
+  methods:{
+    goToRegister(){
+       this.$router.push("/Register");
+
+    }
   }
 }
 </script>
