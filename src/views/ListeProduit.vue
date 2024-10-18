@@ -8,18 +8,20 @@
     <div class="produit-item" v-for="(prod, index) in filteredProduits" :key="index">
       <img :src="prod.images" />
       <h4>{{ prod.titre }}</h4>
-      <p>Quantité d'achat de l'article minimum : {{ prod.moq }}</p>
-      <p>EUR : {{ prod.prix }} €</p>
+      <p v-if="isLoggedIn">
+        Quantité d'achat de l'article minimum : {{ prod.moq }}
+      </p>
+      <p v-if="isLoggedIn">EUR : {{ prod.prix }} €</p>
       <ButtonComponents
-        v-if="commandes && !isInBag(prod.id)"
+        v-if="isLoggedIn && commandes && !isInBag(prod.id)"
         label="Ajouter au panier"
-        color="#E9C46A"
+        type="login"
         @click="addToPanier(prod.id)"
       />
       <ButtonComponents
-        v-else
+        v-if="isLoggedIn && commandes && isInBag(prod.id)"
         label="Supprimer du panier"
-        color="#E9C46A"
+        type="logout"
         @click="removeToPanier(prod.id)"
       />
       <router-link :to="{ name: 'DetailProduit', params: { id: prod.id } }"
@@ -30,7 +32,7 @@
 </template>
 
 <script>
-import { mapState } from "vuex";
+import { mapState, mapGetters } from "vuex";
 import ButtonComponents from "@/components/ButtonComponents.vue";
 import SearchBar from "@/components/SearchBar.vue"; // Import du composant
 
@@ -46,6 +48,7 @@ export default {
   },
   computed: {
     ...mapState(["produits", "categories", "commandes"]),
+    ...mapGetters(["currentUser", "isLoggedIn", "isAdmin", "isUser"]),
     // Propriété calculée pour filtrer les produits
     filteredProduits() {
       return this.produits.filter((prod) =>
@@ -78,6 +81,11 @@ img {
   width: 250px;
   height: 230px;
   margin: 15px;
+}
+
+.catégorie {
+  display: inline-block;
+  margin: 50px;
 }
 
 .produit {
@@ -121,5 +129,29 @@ img {
   .produit-item {
     width: 100%;
   }
+}
+
+.produit > div {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 250px;
+  text-align: center;
+}
+
+img {
+  width: 250px;
+  height: 230px;
+  margin-bottom: 15px;
+}
+
+h4,
+p,
+.button {
+  margin: 5px 0;
+}
+
+.button {
+  width: 100%;
 }
 </style>

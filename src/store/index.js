@@ -5,8 +5,11 @@ export default createStore({
     detailProd: {},
     commandeValider: [],
     commandesTransferees: [],
+    isAdminView: true,
+
     savedCommandes: [],
     // ----------C j'ai un ajouté un state currentUtilisateur set sur null
+    currentUtilisateur: null,
 
     formData: {
       firstName: "",
@@ -16,23 +19,46 @@ export default createStore({
       subject: "",
       message: "",
     },
-    
 
     categories: [
-      { id: 1, name: "Mobilier d'intérieur" },
-      { id: 2, name: "Luminaires" },
-      { id: 3, name: "Tapis" },
-      { id: 4, name: "Objets de décorations" },
+      {
+        id: 1,
+        name: "Mobilier d'intérieur",
+        images: require("@/assets/category photos/Mobilier d'intérieur.jpg"),
+        description:
+          "Découvrez notre gamme de mobilier professionnel, conçue pour allier design et fonctionnalité dans tous vos espaces de travail.",
+      },
+      {
+        id: 2,
+        name: "Luminaires",
+        images: require("@/assets/category photos/Luminaires.jpg"),
+        description:
+          "Optimisez l'éclairage de vos projets avec nos luminaires modernes, alliant performance et efficacité énergétique.",
+      },
+      {
+        id: 3,
+        name: "Tapis",
+        images: require("@/assets/category photos/Tapis.jpg"),
+        description:
+          "Ajoutez une touche d'élégance à vos espaces avec nos tapis haut de gamme, parfaits pour un usage intensif en milieu professionnel.",
+      },
+      {
+        id: 4,
+        name: "Objets de décorations",
+        images: require("@/assets/category photos/Objets de décorations2.jpg"),
+        description:
+          "Personnalisez vos espaces avec notre sélection d'articles de décoration, spécialement conçus pour répondre aux exigences des entreprises.",
+      },
     ],
 
     produits: [
       {
         id: 1,
-        images: require("@/assets/mobilier/mobilier-1.jpg"),
-        titre: "Table de chevet",
-        description: "Table de chevet en bois massif avec finition élégante.",
-        prix: 199.99,
-        moq: 2,
+        images: require("@/assets/mobilier/mobilier-5.jpg"),
+        titre: "Table à manger en bois",
+        description: "Table à manger en bois massif avec finition élégante.",
+        prix: 299.99,
+        moq: 5,
         categorieId: 1,
       },
       {
@@ -259,8 +285,14 @@ export default createStore({
         role: "ADMIN",
       },
     ],
+    backProduitList: [],
+    backUserList: [],
   },
   mutations: {
+    setCurrentUser(state, user) {
+      // ========= test ========
+      state.currentUser = user;
+    },
     setCategories(state, cat) {
       state.categories = cat;
     },
@@ -284,67 +316,6 @@ export default createStore({
     },
     setCommandeValider(state, commande) {
       state.commandeValider = commande;
-    },
-
-    clearPanier(state) {
-      state.commandes = [];
-      localStorage.removeItem("commandes");
-    },
-
-    addProduitToCommande(state, prodId) {
-      let produitInfo = state.produits.find((p) => p.id === prodId);
-      if (!produitInfo) return;
-
-
-      let userId = state.currentUtilisateur?.id;
-      if (!userId) return; // j'ai juste ajouté cette ligne pour s'assurer qu'on a un userId issu d'un utilisateur connecté
-
-      let commandeExistante = state.commandes.find((commande) =>
-        commande.produits.some((p) => p.produitId === prodId)
-
-      );
-
-      if (commandeExistante) {
-        let produit = commandeExistante.produits.find(
-          (p) => p.produitId === prodId
-        );
-
-        if (produit.quantite < produitInfo.moq) {
-          produit.quantite = produitInfo.moq;
-          commandeExistante.countTotal +=
-            (produitInfo.moq - produit.quantite) * produitInfo.prix;
-        } else {
-          produit.quantite++;
-          commandeExistante.countTotal += produitInfo.prix;
-        }
-      } else {
-        state.commandes.push({
-          id: state.commandes.length + 1,
-          produits: [
-            {
-              produitId: produitInfo.id,
-              titre: produitInfo.titre,
-              quantite: produitInfo.moq,
-            },
-          ],
-          countTotal: produitInfo.prix * produitInfo.moq,
-
-          userId: userId,
-          // userId: this.state.currentUserId, // juste un test
-
-        });
-      }
-      localStorage.setItem("commandes", JSON.stringify(state.commandes));
-    },
-
-    removeProduit(state, prodId) {
-      state.commandes = state.commandes
-        .map((commande) => ({
-          ...commande,
-          produits: commande.produits.filter((p) => p.produitId !== prodId),
-        }))
-        .filter((commande) => commande.produits.length > 0);
-      localStorage.setItem("commandes", JSON.stringify(state.commandes));
     },
 
     incrementQuantite(state, prodId) {
@@ -380,15 +351,122 @@ export default createStore({
       }
     },
 
-    saveCommandeToLocalStorage(state, commande) {
+    clearPanier(state) {
+      state.commandes = [];
+      localStorage.removeItem("commandes");
+    },
 
+
+    backSetProduitListFromLocalStorage(state, produits){
+      state.backProduitList = produits;
+    },
+    backSetUserListFromLocalStorage(state, users){
+      state.backUserList = users;
+    },
+
+    removeProduit(state, prodId) {
+      state.commandes = state.commandes
+        .map((commande) => ({
+          ...commande,
+          produits: commande.produits.filter((p) => p.produitId !== prodId),
+        }))
+        .filter((commande) => commande.produits.length > 0);
+      localStorage.setItem("commandes", JSON.stringify(state.commandes));
+    },
+
+    addProduitToCommande(state, prodId) {
+      let produitInfo = state.produits.find((p) => p.id === prodId);
+      if (!produitInfo) return;
 
       let userId = state.currentUtilisateur?.id;
-      if(!userId) return; //j'applique la même logique que dans la mutation addProduitToCommande
+      if (!userId) return; // j'ai juste ajouté cette ligne pour s'assurer qu'on a un userId issu d'un utilisateur connecté
 
+      // const currentUser = state.currentUtilisateur;
+      // if (!currentUser) return;
+
+      let commandeExistante = state.commandes.find((commande) =>
+        commande.produits.some((p) => p.produitId === prodId)
+      );
+      // let commandeExistante = state.commandes.find(
+      //   (commande) =>
+      //     commande.userId === currentUser.id &&
+      //     commande.produits.some((p) => p.produitId === prodId)
+      // );
+
+      if (commandeExistante) {
+        let produit = commandeExistante.produits.find(
+          (p) => p.produitId === prodId
+        );
+
+        if (produit.quantite < produitInfo.moq) {
+          produit.quantite = produitInfo.moq;
+          commandeExistante.countTotal +=
+            (produitInfo.moq - produit.quantite) * produitInfo.prix;
+        } else {
+          produit.quantite++;
+          commandeExistante.countTotal += produitInfo.prix;
+        }
+      } else {
+        state.commandes.push({
+          id: state.commandes.length + 1,
+          produits: [
+            {
+              produitId: produitInfo.id,
+              titre: produitInfo.titre,
+              quantite: produitInfo.moq,
+            },
+          ],
+          countTotal: produitInfo.prix * produitInfo.moq,
+          // userId: currentUser.id,
+          userId: userId,
+          // userId: this.state.currentUserId, // juste un test
+        });
+      }
+      localStorage.setItem("commandes", JSON.stringify(state.commandes));
+    },
+
+        //trouve l'index de l'objet et le supprime
+        backRemoveProduit(state, prodId) {
+          const indexProd = state.produits.map((e) => e.id).indexOf(prodId);
+          state.produits.splice(indexProd, 1);
+        },
+        backRemoveUser(state, userId) {
+          const indexUser = state.utilisateurs.map((e) => e.id).indexOf(userId);
+          state.utilisateurs.splice(indexUser, 1);
+        },
+        backAddProduit(state, newObj){
+          let maxId = 0
+          for (let i = 0; i < state.produits.length; i++){
+            if (state.produits.map((e) => e.id)[i] > maxId) {
+              maxId = state.produits.map((e) => e.id)[i];
+            }
+          }
+          newObj.id = maxId + 1;
+          state.produits.push(newObj);
+        },
+        backModProduit(state, modObj){
+          const index = state.produits.findIndex(
+            (prod) => prod.id === modObj.key2)
+            if (index !== -1) {
+              state.utilisateurs[index] = {
+                ...state.utilisateurs[index],
+                ...modObj.key2,
+              };}
+          // state.produits[index] = {...modObj.key1}
+        },
+        backModUser(state, modObj){
+          const indexProd = state.utilisateurs.map((e) => e.id).indexOf(parseInt(modObj.key2));
+          state.utilisateurs[indexProd] = {...modObj.key1}
+        },
+
+
+    saveCommandeToLocalStorage(state, commande) {
+      let userId = state.currentUtilisateur?.id;
+      if (!userId) return; //j'applique la même logique que dans la mutation addProduitToCommande
+
+      // const currentUser = state.currentUtilisateur;
 
       if (commande && Array.isArray(commande.produits)) {
-        
         state.commandeValider.push({
           id: state.commandeValider.length + 1,
           produits: commande.produits.map((p) => ({
@@ -398,9 +476,9 @@ export default createStore({
           })),
           countTotal: commande.countTotal,
 
+          // userId: currentUser.id,
           // userId: commande.userId,
           userId: userId,
-
         });
         localStorage.setItem(
           "commandeValider",
@@ -410,6 +488,35 @@ export default createStore({
         console.error("Invalid commande object", commande);
       }
     },
+
+    updateUtilisateur(state, updatedData) {
+      const index = state.utilisateurs.findIndex(
+        (user) => user.id === updatedData.id
+      );
+
+      if (index !== -1) {
+        state.utilisateurs[index] = {
+          ...state.utilisateurs[index],
+          ...updatedData,
+        };
+
+        if (state.currentUserId === updatedData.id) {
+          state.currentUtilisateur = {
+            ...state.utilisateurs[index],
+          };
+
+          localStorage.setItem(
+            "currentUtilisateur",
+            JSON.stringify(state.currentUtilisateur)
+          );
+        }
+      }
+    },
+
+    toggleAdminView(state) {
+      state.isAdminView = !state.isAdminView;
+    },
+
     // Contact form ===============================arash================================================================ \\
     setFormData(state, payload) {
       state.formData = payload;
@@ -435,34 +542,30 @@ export default createStore({
     setCurrentUtilisateur(state, userId) {
       const utilisateur = state.utilisateurs.find((user) => user.id === userId);
 
-      if(utilisateur)
-        {
-          state.currentUtilisateur = utilisateur;
-          state.currentUserId = userId;
-          localStorage.setItem("currentUtilisateur", JSON.stringify(utilisateur));
+      if (utilisateur) {
+        state.currentUtilisateur = utilisateur;
+        state.currentUserId = userId;
+        localStorage.setItem("currentUtilisateur", JSON.stringify(utilisateur));
 
-          const savedCommande = state.savedCommandes.find(
-            (savedCommande) => savedCommande.userId === userId);
-          if(savedCommande) {
-            state.commandes = savedCommande.commandes;
-          }
-          else {
-            state.commandes = [];
-          }
-       
-        }      
-    },    
+        const savedCommande = state.savedCommandes.find(
+          (savedCommande) => savedCommande.userId === userId
+        );
+        if (savedCommande) {
+          state.commandes = savedCommande.commandes;
+        } else {
+          state.commandes = [];
+        }
+      }
+    },
 
-    clearCurrentUtilisateur(state) { 
-
-      if(state.currentUtilisateur) {
+    clearCurrentUtilisateur(state) {
+      if (state.currentUtilisateur) {
         state.previousUtilisateur = state.currentUtilisateur;
       }
 
       state.currentUtilisateur = null;
       state.isLoggedIn = false;
       localStorage.removeItem("currentUtilisateur");
-
     },
 
     addUser(state, newUser) {
@@ -471,21 +574,22 @@ export default createStore({
     },
 
     setUtilisateursFromLocalStorage(state) {
-     const storedUtilisateurs = JSON.parse(localStorage.getItem('utilisateurs'));
-     if(storedUtilisateurs && Array.isArray(storedUtilisateurs)) {
-       state.utilisateurs = storedUtilisateurs;
-     }
+      const storedUtilisateurs = JSON.parse(
+        localStorage.getItem("utilisateurs")
+      );
+      if (storedUtilisateurs && Array.isArray(storedUtilisateurs)) {
+        state.utilisateurs = storedUtilisateurs;
+      }
     },
 
-    updateUserForCommandes(state, userId){
+    updateUserForCommandes(state, userId) {
       // alert("Mutation test : userId for mutation UpdateUserForCommandes : " + userId);
       let commandes = state.commandes.map((commande) => {
-
-        if(!commande.userId || commande.userId === 1) {
+        if (!commande.userId || commande.userId === 1) {
           commande.userId = userId;
-        }        
+        }
         return commande;
-      })
+      });
       localStorage.setItem("commandes", JSON.stringify(commandes));
     },
 
@@ -503,13 +607,12 @@ export default createStore({
       }
     },
 
-
     //la sauvegarde des commandes de l'utilisateur se fait lors de la déconnexion
-    // 
+    //
     saveCommandesForUtilisateur(state) {
       const currentUserId = state.currentUtilisateur?.id;
-      if(!currentUserId) return;
-      
+      if (!currentUserId) return;
+
       const existingSavedCommande = state.savedCommandes.find(
         (savedCommande) => savedCommande.userId === currentUserId
       );
@@ -522,47 +625,58 @@ export default createStore({
           commandes: [...state.commandes],
         });
       }
-      localStorage.setItem("savedCommandes", JSON.stringify(state.savedCommandes));
+      localStorage.setItem(
+        "savedCommandes",
+        JSON.stringify(state.savedCommandes)
+      );
     },
 
     //la restauration des commandes de l'utilisateur se fait lors de la connexion
-    setPanierForCurrentUser(state, userId) { 
+    setPanierForCurrentUser(state, userId) {
       const savedCommande = state.savedCommandes.find(
-        savedCommande => savedCommande.userId === userId
+        (savedCommande) => savedCommande.userId === userId
       );
-      if (savedCommande){
+      if (savedCommande) {
         state.commandes = savedCommande.commandes;
-      }
-      else {
+      } else {
         state.commandes = [];
       }
       localStorage.setItem("commandes", JSON.stringify(state.commandes));
     },
 
     // une fois la vente confirmée on supprime la commande de la liste des commandes sauvegardées
-    clearSavedCommandesForUser(state, userId){
+    clearSavedCommandesForUser(state, userId) {
       state.savedCommandes = state.savedCommandes.filter(
-        savedCommande => savedCommande.userId !== userId
+        (savedCommande) => savedCommande.userId !== userId
       );
-      localStorage.setItem("savedCommandes", JSON.stringify(state.savedCommandes));
+
+      localStorage.setItem(
+        "savedCommandes",
+        JSON.stringify(state.savedCommandes)
+      );
     },
-    
 
     // ----------------------- Fin mutations clément //
-    // ----------------------- mutations alex //
-    // Ajouter une commande dans les commandes transférées
-    transferCommande(state, commande) {
-      state.commandesTransferees.push(commande);
-    },
-    // Retirer une commande des commandes validées
-    removeCommandeValider(state, commandeId) {
-      state.commandeValider = state.commandeValider.filter(
-        (commande) => commande.id !== commandeId
-      );
-    },
   },
 
+    backDeleteProduct(state, idProduit){
+      state.backProduitList.splice(idProduit, 1);
+    },
+    backDeleteUser(state, idUser){
+      state.backUserList.splice(idUser, 1);
+    },
+
+
+
   actions: {
+    // ========= test ==========
+    loadCurrentUser({ commit }) {
+      const user = JSON.parse(localStorage.getItem("currentUser"));
+      if (user) {
+        commit("setCurrentUser", user);
+      }
+    },
+    // =========== test ==========
     loadDetailProduits({ commit }, idProduit) {
       const selectedProduct = this.state.produits.find(
         (prod) => prod.id === idProduit
@@ -571,24 +685,23 @@ export default createStore({
         commit("setDetailProduit", selectedProduct);
       }
     },
-    
-    
+
     addProduitToPanier({ commit }, prodId) {
       commit("addProduitToCommande", prodId);
     },
- 
+    removeProduit({ commit }, prodId) {
+      commit("removeProduit", prodId);
+    },
+
     loadCommandesFromLocalStorage({ commit, state }) {
       const commandes = JSON.parse(localStorage.getItem("commandes"));
-      if(commandes && state.currentUtilisateur) {
+      if (commandes && state.currentUtilisateur) {
         const commandesUtitilisateur = commandes.filter(
           (commande) => commande.userId === state.currentUtilisateur.id
         );
         commit("setCommandesFromLocalStorage", commandesUtitilisateur);
-      }
-      else
-      {
+      } else {
         commit("setCommandesFromLocalStorage", []);
-
       }
     },
 
@@ -605,102 +718,123 @@ export default createStore({
     },
     // ========================================================================================= \\
 
-
-
     // --------------------- Début actions Clément
 
-    loadPanierForCurrentUser({commit, state}) {
-
+    loadPanierForCurrentUser({ commit, state }) {
       const userId = state.currentUtilisateur?.id;
-      if(userId) {
+      if (userId) {
         commit("setPanierForCurrentUser", userId);
       }
     },
 
-
     loadCurrentUtilisateurFromLocalStorage({ commit }) {
       const currentUtilisateur = localStorage.getItem("currentUtilisateur");
 
-      if(currentUtilisateur) {
+      if (currentUtilisateur) {
         const utilisateur = JSON.parse(currentUtilisateur);
 
         commit("setCurrentUtilisateur", JSON.parse(currentUtilisateur));
-        const savedCommandes = JSON.parse(localStorage.getItem("savedCommandes"));
+        const savedCommandes = JSON.parse(
+          localStorage.getItem("savedCommandes")
+        );
 
-
-        if(savedCommandes) {
+        if (savedCommandes) {
           const userCommandes = savedCommandes.find(
             (commande) => commande.userId === utilisateur.id
           );
-          if(userCommandes) {
+          if (userCommandes) {
             commit("setCommandesFromLocalStorage", userCommandes.commandes);
-          }   
-          
+          }
         }
       }
     },
 
-
     // ici on charge les utilisateurs depuis le local storage
+
     loadUtilisateurArrayFromLocalStorage({commit}){ 
+      // commit("setUtilisateursFromLocalStorage");
       const utilisateurs = JSON.parse(localStorage.getItem('utilisateurs'));
       if(utilisateurs && Array.isArray(utilisateurs)){
+
 
         commit("setUtilisateursFromLocalStorage", utilisateurs);
       }
     },
 
-
     // loadUtilisateursArrayFromLocalStorage({commit}) {
     //   commit("setUtilisateursFromLocalStorage");
     // },
 
-    registerUser({commit}, newUser){
-
+    registerUser({ commit }, newUser) {
       const id = this.state.utilisateurs.length + 1;
       const userWithId = { id, ...newUser };
       commit("addUser", userWithId);
       return { success: true };
     },
 
-
-    setUserIdForCommande({commit}, userId) {
+    setUserIdForCommande({ commit }, userId) {
       commit("setUserIdForcommande", userId);
-    }, 
-    
-    updateUserIdInCommandes({commit }, payload) {
-      commit("updateUserForCommandes", payload.userId);
-
     },
 
-    saveCommandesForUtilisateur({commit}) {
+    updateUserIdInCommandes({ commit }, payload) {
+      commit("updateUserForCommandes", payload.userId);
+    },
+
+    saveCommandesForUtilisateur({ commit }) {
       commit("saveCommandeForUtilisateur");
     },
 
-    clearSavedCommandesForUser({ commit, state}){
+    clearSavedCommandesForUser({ commit, state }) {
       const userId = state.currentUtilisateur?.id;
-      if(userId) {
+      if (userId) {
         commit("clearSavedCommandesForUser", userId);
       }
-    },
-     // ----------------------- Fin action Clément//
 
-     // -----------------------  action Alex//
-     transferCommande({ commit, state }, commandeId) {
-      // Trouver la commande à transférer
-      const commande = state.commandeValider.find(
-        (cmd) => cmd.id === commandeId
-      );
-      if (commande) {
-        // Ajouter la commande aux commandes transférées
-        commit('transferCommande', commande);
-        // Retirer la commande du tableau des commandes validées
-        commit('removeCommandeValider', commandeId);
+
+    },
+    // ----------------------- Fin action Clément//
+    backRemoveProduit({ commit }, produitId) {
+      commit("backRemoveProduit", produitId);
+    },
+    backRemoveUser({ commit }, userId) {
+      commit("backRemoveUser", userId);
+    },
+    backLoadProduitFromLocalStorage({ commit }){
+      const backProduitList = this.state.produits.find((e) => e.id);
+      if (backProduitList && Array.isArray(backProduitList)) {
+        commit("setProduit", backProduitList);
+        commit("backSetProduitListFromLocalStorage", backProduitList);
       }
     },
+    backLoadUserFromLocalStorage({ commit }){
+      const backUserList = this.state.utilisateurs.find((e) => e.id);
+      if (backUserList && Array.isArray(backUserList)) {
+        commit("setUtilisateur", backUserList);
+        commit("backSetUserListFromLocalStorage", backUserList);
+      }
+    },
+
   },
 
   getters: {
+    currentUser(state) {
+      return state.utilisateurs.find((user) => user.id === state.currentUserId);
+    },
+    isLoggedIn(state, getters) {
+      return !!getters.currentUser;
+    },
+    isAdmin(state, getters) {
+      return getters.currentUser && getters.currentUser.role === "ADMIN";
+    },
+
+    isUser(state, getters) {
+      return getters.currentUser && getters.currentUser.role === "USER";
+    },
+
+    isAdminView(state) {
+      return state.isAdminView;
+    },
+
     subTotal: (state) => (produitId) => {
       const produit = state.commandes
         .flatMap((commande) => commande.produits)
@@ -758,32 +892,34 @@ export default createStore({
         .toFixed(2);
     },
 
+    isUserLoggedIn: (state) => {
+      return !!state.currentUtilisateur;
+    },
+
     // --------------------- getters Clément
-     getUtilisateurs: (state) => state.utilisateurs,
-     //attention j'ai mis le getteur à get UtilisateurByEmail !
-     getUtilisateurByEmail: (state) => (email) =>
-       state.utilisateurs.find((user) => user.email === email),
- 
-     //attention j'ai mis le getteur à get UtilisateurByUsername !
-     getUtilisateurByUsername: (state) => (username) =>
-       state.utilisateurs.find((user) => user.username === username),
- 
-     getUtilisateurBySiret : (state) => (siret) =>
-       state.utilisateurs.find((user) => user.siret === siret),
+
+    getUtilisateurs: (state) => state.utilisateurs,
+
+    getUtilisateurByEmail: (state) => (email) =>
+      state.utilisateurs.find((user) => user.email === email),
+
+
+    getUtilisateurBySiret: (state) => (siret) =>
+      state.utilisateurs.find((user) => user.siret === siret),
+
+    getUtilisateurByRaisonSociale: (state) => (raisonSociale) =>
+      state.utilisateurs.find((user) => user.raisonSociale === raisonSociale),
 
      filteredCommandes : (state) => {
       const userId = state.currentUtilisateur?.id || state.previousUtilisateur?.id;
-
       return state.commandes.filter((commande) => commande.userId === userId);
+    },
 
-     },
-
-     getPreviousUtilisateur: (state) => {
+    getPreviousUtilisateur: (state) => {
       return state.previousUtilisateur;
-     },
-  
-     //isLoggedIn: (state) => state.isLoggedIn, // getter pour l'état de connexion
+    },
 
+    //isLoggedIn: (state) => state.isLoggedIn, // getter pour l'état de connexion
 
     // ---------------------------------//
 
@@ -799,12 +935,12 @@ export default createStore({
           quantite: order ? order.quantite : 0,
         };
       });
-      return produitsWithQuantite.sort((a, b) => b.quantite - a.quantite);
-     },
-      // ========================================================================================================\\
-      // Getter pour les commandes validées
-      commandeValider: (state) => state.commandeValider,
-      // Getter pour les commandes transférées
-      commandesTransferees: (state) => state.commandesTransferees,
+      return produitsWithQuantite
+        .sort((a, b) => b.quantite - a.quantite)
+        .slice(0, 8); // top 8 best seller
     },
+    // ========================================================================================================\\
+  },
+
+  modules: {},
 });

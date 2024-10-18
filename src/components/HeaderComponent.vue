@@ -7,7 +7,7 @@
     </div>
 
     <!-- Navigation Links -->
-    <nav>
+    <nav v-if="(!isAdminView && isLoggedIn) || !isLoggedIn">
       <router-link to="/">Accueil</router-link>
       <router-link to="/produit">Produits</router-link>
 
@@ -27,6 +27,13 @@
       </div>
     </nav>
 
+    <nav v-if="isAdmin && isLoggedIn && isAdminView">
+      <router-link to="/user-back">Utilisateur</router-link>
+      <router-link to="/product-back">Produits</router-link>
+      <!-- <router-link to="/">Catégories</router-link> -->
+      <router-link to="/gestion-commande">Commandes</router-link>
+    </nav>
+
     <!-- Authentication Links -->
     <div>
       <div class="auth-section" v-if="!isLoggedIn">
@@ -37,16 +44,20 @@
           @click="login"
         />
         <ButtonComponents
-        to="/signup"
-         label="S'inscrire" 
-         type="register"
-         @click="goToRegister"
+          to="/signup"
+          label="S'inscrire"
+          type="register"
+          @click="goToRegister"
         />
       </div>
 
       <div class="icons" v-else>
         <!-- Cart Icon -->
-        <router-link to="/panier" class="cart-icon">
+        <router-link
+          to="/panier"
+          class="cart-icon"
+          v-if="isUser || !isAdminView"
+        >
           <span v-if="commandes && commandes.length > 0">{{
             commandes.length
           }}</span>
@@ -60,6 +71,17 @@
           </span>
           <div class="dropdown">
             <p class="welcome-msg">Bienvenue {{ currentUser.raisonSociale }}</p>
+
+            <ButtonComponents
+              label="Profil"
+              type="login"
+              @click="$router.push('/profile/:id')"
+            />
+            <div v-if="isAdmin && isLoggedIn">
+              <button @click="toggleAdminView" style="width: fit-content">
+                {{ isAdminView ? "Accès utilisateur" : "Accès admin" }}
+              </button>
+            </div>
             <ButtonComponents
               label="Déconnexion"
               type="logout"
@@ -73,18 +95,16 @@
 </template>
 
 <script>
-import { mapState } from "vuex";
+import { mapState, mapGetters } from "vuex";
 import ButtonComponents from "./ButtonComponents.vue";
 
 export default {
-
-  props :{
-    isLoggedIn :{
-      type : Boolean,
-      required : true
-    }
+  props: {
+    isLoggedIn: {
+      type: Boolean,
+      required: true,
+    },
   },
-
 
   components: {
     ButtonComponents,
@@ -97,18 +117,26 @@ export default {
   computed: {
     ...mapState({
       categories: (state) => state.categories,
-      
-      //ici on j'ai juste modifié sur state.currentUserId 
-      currentUser: (state) => state.utilisateurs.find((user) => user.id === state.currentUserId),
+
+      //ici on j'ai juste modifié sur state.currentUserId
+      currentUser: (state) =>
+        state.utilisateurs.find((user) => user.id === state.currentUserId),
+
       commandes: (state) => state.commandes,
     }),
+    ...mapGetters([
+      "currentUser",
+      "isLoggedIn",
+      "isAdmin",
+      "isUser",
+      "isAdminView",
+    ]),
   },
   methods: {
-  // j'ai modifié et ajouté quelques méthodes ici : tout est indiqué par mes commentaires
+    // j'ai modifié et ajouté quelques méthodes ici : tout est indiqué par mes commentaires
 
     logout() {
-  
-      // ------------ Clément 
+      // ------------ Clément
 
       // alert("Déconnexion");
       //ici cette action permet de sauvegarder les commandes de le tableau des savedCommandes
@@ -132,6 +160,10 @@ export default {
       this.$router.push("/register");
     },
     // -------------------------------- //
+
+    toggleAdminView() {
+      this.$store.commit("toggleAdminView");
+    },
   },
   created() {
     // this.isLoggedIn = !!this.currentUser;
@@ -282,7 +314,7 @@ i:hover {
   transition: 0.3s ease;
 }
 
-@media (max-width: 768px) {
+@media (max-width: 1260px) {
   header {
     display: none;
   }

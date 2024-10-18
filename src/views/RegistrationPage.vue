@@ -1,17 +1,43 @@
 <template>
-    <div class="registration-page">
-        <h2>Inscription</h2>
+  <div class="sheet">
+    <div class="registration-page">        
+
         <form @submit.prevent="submitForm">
+
+          <h2 class="inscription-title">Inscription</h2>
+
           <div class="form-row-1">
 
             <div>
               <label for="raisonSociale">Raison Sociale :</label>
-              <input type="text" v-model="raisonSociale" id="raisonSociale" @input="checkRaisonSocialLength" :class="{'input-error': hasErrorRaisonSociale}" required />
+              <!-- <input type="text" 
+              v-model="raisonSociale" 
+              id="raisonSociale" 
+              :class="{'input-error': !isValidRaisonSociale}"
+              required /> -->
+
+              <input type ="text"
+                v-model="raisonSociale"
+                id="raisonSociale"
+                :style="raisonSocialeBorderColor"
+                @input="checkRaisonSocialLength"
+                @blur="isTouchedRaisonSociale = true"
+                :class="{'input-error': hasErrorRaisonSociale && isTouchedRaisonSociale}" required /> 
+                <span v-if="hasErrorRaisonSociale && isTouchedRaisonSociale" style ="color : red">
+                  La raison sociale doit contenir au moins 6 caractères et ne pas être 
+                  présente dans notre base de données.</span>
             </div>
             
             <div>
               <label for="siret">Siret :</label>
-              <input type="text" v-model="siret" id="siret" @input="checkSiretStrength" :class="{'input-error': hasErrorSiret}" required />        
+              <input type="text"
+               v-model="siret" id="siret"
+                @input="checkSiretStrength"
+                @blur="isTouchedSiret = true; checkSiretStrength" 
+                :style="siretBorderColor" 
+                :class="{'input-error': hasErrorSiret && isTouchedSiret}" required /> 
+                <span v-if="hasErrorSiret && isTouchedSiret" style ="color : red">Le siret ne doit être présent dans notre base données,
+                  ne peut être constitué que de chiffres et doit être de 14 caractères</span>       
             </div>
             
           </div>
@@ -20,17 +46,39 @@
 
             <div>
               <label for="adresse">Adresse :</label>
-              <input type="text" v-model="adresse" id="adresse" @input="checkAdress" :class="{'input-error': hasErrorAdresse}"  required />
+              <input type="text" v-model="adresse" 
+              id="adresse"
+              @input="checkAdress" 
+              @blur="isTouchedAdresse = true; checkAdress()"
+              :style="adressBorderColor"
+              :class="{'input-error': hasErrorAdresse && isTouchedAdresse}"
+              required />
+              <span v-if="hasErrorAdresse && isTouchedAdresse" style ="color : red">L'adresse doit contenir au moins 5 caractères.</span>
             </div>
 
             <div>
               <label for="codePostal">Code Postal :</label>
-              <input type="text" v-model="codePostal" id="codePostal" @input="checkErrorPostalCode" :class="{'input-error': hasErrorCodePostal}" required />
+              <input type="text"
+               v-model="codePostal"
+                id="codePostal"
+                 @input="checkErrorPostalCode"
+                  @blur="isTouchedCodePostal = true; checkErrorPostalCode()"
+                  :style="codePostalBorderColor"
+                 :class="{'input-error': hasErrorCodePostal && isTouchedCodePostal}"
+                  required />
+                  <span v-if="hasErrorCodePostal && isTouchedCodePostal" style ="color : red">Le code postal doit être composé de 5 chiffres.</span>
             </div>
             
             <div>
               <label for="ville">Ville :</label>
-              <input type="text" v-model="ville" id="ville" @input="checkVille" :class="{'input-error': hasErrorVille}" required />
+              <input type="text"
+               v-model="ville" 
+              id="ville"
+               @input="checkVille"
+                @blur="isTouchedVille = true; checkVille()"
+              :style="villeBorderColor" 
+              :class="{'input-error': hasErrorVille && isTouchedVille}" required />
+              <span v-if="hasErrorVille && isTouchedVille" style ="color : red">La ville doit contenir au moins 3 caractères.</span>
             </div>
 
           </div>
@@ -39,12 +87,15 @@
 
             <div>
               <label for="email">Email :</label>
-              <input type="email" v-model="email" id="email" :class="{'input-error': hasErrorMail}" required />
-            </div>
-
-            <div>
-              <label for="username">Nom d'utilisateur :</label>
-              <input type="text" v-model="username" id="username" @input="checkUsernameLength" :class="{'input-error': hasErrorUserName}" required />
+              <input type="email" 
+              v-model="email" 
+              id="email"
+              @input="checkEmail" 
+              @blur="isTouchedEmail = true; checkEmail()"
+              :style="emailBorderColor"
+              :class="{'input-error': hasErrorMail && isTouchedEmail}" required />
+              <span v-if="hasErrorMail && isTouchedEmail" style ="color : red">L'email n'est pas valide.</span>
+            
             </div>
 
           </div>
@@ -54,34 +105,49 @@
             
             <div>
               <label for="motDePasse">Mot de Passe :</label>
-              <input type="password" v-model="motDePasse" id="motDePasse"
-              @input="checkPassWordStrenght"
-              :class="{'input-error': hasErrorPassword}" 
-              required />
-              <span class="password-strength" :style="passwordStrengthColor"> {{ passwordStrengthMessage }}</span>          
+              <input type="password" 
+                v-model="motDePasse" 
+                id="motDePasse"
+                @input="checkPassWordStrenght"
+                @blur="isTouchedPassword = true; checkPassWordStrenght()"
+                :style="passwordBorderColor"
+                :class="{'input-error': hasErrorPassword && isTouchedPassword}" 
+                required />
+
+              <h3 v-if="motDePasse.length > 0">Force du mot de passe :</h3>
+              <span class="password-strength" :style="passwordStrengthColor">{{ passwordStrengthMessage }}</span>
             </div>
 
             <div>
               <label for="confirmPassword">Confirmer le mot de passe :</label>
-              <input type="password" v-model="confirmPassword" id="confirmPassword" :class="{'input-error': hasErrorConfirmPassword}" required />
+              <input type="password" v-model="confirmPassword"
+               id="confirmPassword"
+               :style="confirmPasswordBorderColor"
+                :class="{'input-error': hasErrorConfirmPassword}"
+                 required />
+                  <span v-if="hasErrorConfirmPassword" style ="color : red">Les mots de passe ne correspondent pas.</span>
             </div>
+            
 
           </div>      
-          
-          <div>
-              <h3>Force du mot de passe : {{passwordStrength}}</h3>
-          </div>     
-
-          <ButtonComponent 
+        
+          <div class="Registration-btn">
+            <ButtonComponent
           @click="submitForm"
           label="S'inscrire"
-          color="var(--color-accent)"
-          textColor="var(--color-secondary)"
-          class="submit-button"
+          type="register"
+          class="btn-Register"
+     
           v-if="true"
           />
+          </div>
+
         </form>
     </div>
+
+    
+  </div>
+    
 
     <ModalComponent :showModal="showModal" @close="showModal" color="{ backgroundColor:White}">
       <template #header>
@@ -119,6 +185,7 @@
         email: "",
         username: "",
         motDePasse: "",
+        isFocused: false,
         hasErrorRaisonSociale: false,
         hasErrorSiret: false,
         hasErrorAdresse: false,
@@ -133,6 +200,17 @@
         siretStrengthMessage :"",
         showModal: false,
         errorMessage: "",
+        isSubmitting: false,
+
+      //interactions flags
+      isTouchedRaisonSociale: false,
+      isTouchedSiret: false,
+      isTouchedAdresse: false,
+      isTouchedCodePostal: false,
+      isTouchedVille: false,
+      isTouchedEmail: false,
+      isTouchedPassword: false,
+      isTouchedConfirmPassword: false,
       };
     },
 
@@ -149,50 +227,137 @@
         }
       },
 
-      siretStrength(){
-        if(this.siret.length < 14){
-          return {color : 'red'};
+      raisonSocialeBorderColor(){
+        if(this.hasErrorRaisonSociale)
+        {
+          return {color : 'red', borderColor : 'red'};
         }
         else
         {
-          return {color : ''};
-
+          return {color : 'black', borderColor : 'black'};
         }
+      },
 
+      siretBorderColor(){
+        const siretRegex = /^\d{14}$/;
+        if(this.isTouchedSiret && !siretRegex.test(this.siret)){
+          return {color : 'red', borderColor : 'red'};
+        }
+        else
+        {
+          return {color : 'black', borderColor : 'black'};
+        }
+      },
+
+      adressBorderColor(){
+      if(this.isTouchedAdresse && this.hasErrorAdresse){
+        return {color :'red', borderColor : 'red'};
       }
+      else{
+        return {color : 'black', borderColor : 'black'};
+      }   
+    },
 
-     
+    codePostalBorderColor(){     
+      if(this.isTouchedCodePostal && this.hasErrorCodePostal)
+      {
+        return {color : 'red', borderColor : 'red'};
+      }
+      else{
+        return {color : 'black', borderColor : 'black'};
+      } 
+    },
+
+    villeBorderColor(){
+      if(this.isTouchedVille && this.hasErrorVille)
+      {
+        return {color : 'red', borderColor : 'red'};
+      }
+      else{
+        return {color : 'black', borderColor : 'black'};
+      } 
+    },
+
+    emailBorderColor(){
+      if(this.isTouchedEmail && this.hasErrorMail)
+      {
+        return {color : 'red', borderColor : 'red'};
+      }
+      else{
+        return {color : 'black', borderColor : 'black'};
+      } 
+    },
+
+    passwordBorderColor(){
+      if (this.isTouchedPassword && (this.hasErrorPassword || this.motDePass === ""))
+      {
+        return {color : 'red', borderColor : 'red'};
+      }
+      else{
+        return {color : 'black', borderColor : 'black'};
+      }
+    },
+
+    confirmPasswordBorderColor(){
+      if (this.hasErrorConfirmPassword)
+      {
+        return {color : 'red', borderColor : 'red'};
+      }
+      else{
+        return {color : 'black', borderColor : 'black'};
+      } 
+    },
+         
     },
   
     methods: {
       ...mapActions(["registerUser"]),
+
+      onFocus(){
+        this.isFocused = true;
+      },
+      onBlur(){
+        this.isFocused = false;
+      },
 
       closeModal(){
         this.showModal = false;
       },
 
       checkDuplicateData(){
-        const userWithEmail = this.$store.getters.getUtilisateurByEmail(this.email);
-        const userWithUsername = this.$store.getters.getUtilisateurByUsername(this.username);
-        const userWithSiret = this.$store.getters.getUtilisateurBySiret(this.siret);
+        this.raisonSocial = this.raisonSociale.trim();
+        this.siret = this.siret.trim();
+        this.adresse = this.adresse.trim();
 
-        if (userWithEmail){
+
+        const userWithEmail = this.$store.getters.getUtilisateurByEmail(this.email);
+        const userWithSiret = this.$store.getters.getUtilisateurBySiret(this.siret);
+        const userWithRaisonSociale = this.$store.getters.getUtilisateurByRaisonSociale(this.raisonSociale);
+
+        const utilisateurs = JSON.parse(localStorage.getItem("utilisateurs")) || [];
+
+        const emailExists = utilisateurs.some(utilisateur => utilisateur.email === this.email);
+        const siretExists = utilisateurs.some(utilisateur => utilisateur.siret === this.siret);
+        const raisonSocialeExists = utilisateurs.some(utilisateur => utilisateur.raisonSociale === this.raisonSociale);
+
+        if (userWithEmail || emailExists){
           this.hasErrorMail = true;
           this.errorMessage = "Un utilisateur avec cet email existe déjà.";
           this.showModal = true;
           return false;
         }
 
-        if (userWithUsername){
-          this.hasErrorUserName = true;
-          this.errorMessage = "Un utilisateur avec ce nom d'utilisateur existe déjà.";
+
+        if (userWithSiret || siretExists){
+          this.hasErrorSiret = true;
+          this.errorMessage = "Un utilisateur avec ce siret existe déjà.";
           this.showModal = true;
           return false;
         }
 
-        if (userWithSiret){
-          this.hasErrorSiret = true;
-          this.errorMessage = "Un utilisateur avec ce siret existe déjà.";
+        if (userWithRaisonSociale || raisonSocialeExists){
+          this.hasErrorRaisonSociale = true;
+          this.errorMessage = "Un utilisateur avec cette raison sociale existe déjà.";
           this.showModal = true;
           return false;
         }
@@ -202,19 +367,20 @@
 
       checkSiretStrength(){
 
-        const siret = this.siret;
+        const siret = this.siret.trim();
+        const siretRegex = /^\d{14}$/;
 
-        if(siret.length === 0){
-          this.siretStrengthMessage = "";
-        } 
-        else if (siret.length < 14)
+        if(!siret)
         {
-          this.siretStrengthMessage = "Siret invalide";
+          this.hasErrorSiret = true;
+        }
+
+        else if (!siretRegex.test(siret))
+        {
           this.hasErrorSiret = true;
         } 
         else 
         {
-          this.siretStrengthMessage = "Siret valide";
           this.hasErrorSiret = false;
         }
 
@@ -232,19 +398,15 @@
       },
 
       checkRaisonSocialLength(){
-        if(this.raisonSociale.length < 3)
-        {
-          this.hasErrorRaisonSociale = true;
-        }
-        else
-        {
-          this.hasErrorRaisonSociale = false;
-        }
+        this.raisonSociale = this.raisonSociale.trim();
+        this.hasErrorRaisonSociale = this.raisonSociale.length < 6;
+        
       },
 
       checkAdress()
       {
-        if(this.adresse.length < 5)
+        const adresse = this.adresse.trim();
+        if(!adresse || this.adresse.length < 5)
         {
           this.hasErrorAdresse = true;
         }
@@ -256,7 +418,9 @@
 
       checkErrorPostalCode(){
         const codePostalRegex = /^\d{5}$/;
-        if(!codePostalRegex.test(this.codePostal))
+        const codePostal = this.codePostal.trim();
+
+        if(!codePostal || !codePostalRegex.test(codePostal))
         {
           this.hasErrorCodePostal = true;
         }
@@ -264,10 +428,12 @@
         {
           this.hasErrorCodePostal = false;
         }
+
       },
 
       checkVille(){
-        if(this.ville.length < 3)
+        const ville = this.ville.trim();
+        if(!ville || this.ville.length < 3)
         {
           this.hasErrorVille = true;
         }
@@ -275,27 +441,15 @@
         {
           this.hasErrorVille = false;
         }
-      },
-
-
-
-      
+      },      
 
       checkEmail(){
         const emailRegex = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,6}$/;
-        if(!emailRegex.test(this.email))
-        {
-          this.hasErrorEmail = true;
-        }
-        else
-        {
-          this.hasErrorEmail = false;
-        }
+        this.hasErrorMail = !emailRegex.test(this.email.trim());
       },
 
       checkPassWordStrenght(){
         let strength = 0;
-
         const password = this.motDePasse;
 
         if(password.length >= 6) strength++;
@@ -304,18 +458,25 @@
         if (/[0-9]/.test(password)) strength++; // Contient des chiffres
         if (/\W/.test(password)) strength++;    // Contient un symbole
 
-        if (password.length === 0) {
+        if (password.length === 0) 
+        {
         this.passwordStrengthMessage = "";
-        } else if (strength <= 2) {
+        } 
+        else if (strength <= 2) 
+        {
           this.passwordStrengthMessage = "Faible";
           this.passwordStrengthColor = 'red';
           this.passwordStrength = 1;
 
-        } else if (strength === 3) {
+        } 
+        else if (strength === 3)
+         {
           this.passwordStrengthMessage = "Moyen";
           this.passwordStrengthColor = 'orange';
           this.passwordStrength = 2;
-        } else if (strength >= 4) {
+        } 
+        else if (strength >= 4) 
+        {
           this.passwordStrengthMessage = "Fort";
           this.passwordStrengthColor = 'green';
           this.passwordStrength = 3;
@@ -323,6 +484,33 @@
         }
 
       },
+
+      // checkifDatasInUtilisateurs(){
+      //   //get local storage
+      //   const utilisateurs = JSON.parse(localStorage.getItem("utilisateurs")) || [];
+
+      //   if(!Array.isArrayutilisateurs || utilisateurs.length === 0)
+      //   {
+      //     return false;
+      //   }
+
+      //   const emailExists = utilisateurs.some(utilisateur => utilisateur.email === this.email);
+      //   const siretExists = utilisateurs.some(utilisateur => utilisateur.siret === this.siret);
+      //   const raisonSocialeExists = utilisateurs.some(utilisateur => utilisateur.raisonSociale === this.raisonSociale);
+
+      //   if(emailExists || siretExists || raisonSocialeExists)
+      //   {
+      //     this.hasErrorMail = emailExists;
+      //     this.hasErrorSiret = siretExists;
+      //     this.hasErrorRaisonSociale = raisonSocialeExists;
+      //     this.errorMessage = "Certaines informations que vous avez entré existent déjà dans notre base de données. Echec de l'enregistrement.";
+      //     this.showModal = true;
+      //     return true;
+      //   }
+
+
+      //   return false; 
+      // },
       
 
       validateForm()
@@ -332,53 +520,47 @@
         const villeRegex = /^[a-zA-ZÀ-ÿ\s-]+$/;
         const emailRegex = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/;
         const usernameRegex = /^[a-zA-Z0-9À-ÖØ-öø-ÿ\s._-]{3,40}$/;
-        const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[a-zA-Z\d]{8,}$/;
+        // const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[a-zA-Z\d]{8,}$/;
 
         
-        this.hasErrorRaisonSociale = this.raisonSociale.length < 3;
+        this.hasErrorRaisonSociale = this.checkRaisonSocialLength();
         this.hasErrorSiret = !siretRegex.test(this.siret);
         this.hasErrorAdresse = this.adresse.length < 5;
         this.hasErrorCodePostal = !codePostalRegex.test(this.codePostal);
         this.hasErrorVille = !villeRegex.test(this.ville);
         this.hasErrorMail = !emailRegex.test(this.email);
         this.hasErrorUserName = !usernameRegex.test(this.username) && this.username.length > 3;
-        this.hasErrorPassword = !passwordRegex.test(this.motDePasse);
+        this.hasErrorPassword = this.passwordStrength < 3;
+        this.hasErrorConfirmPassword = this.motDePasse !== this.confirmPassword;
+     
 
-        const isDuplicateData = this.checkDuplicateData();
-        if (!isDuplicateData){
+        // const passwordStrength = this.checkPassWordStrenght(this.motDePasse);
+       
+        if(this.hasErrorPassword)
+        {
+          this.errorMessage = "Le mot de passe est trop faible. Veuillez choisir un mot de passe plus puissant.";
+          this.showModal = true;
           return false;
-        }
-
-        const passwordStrength = this.checkPassWordStrenght(this.motDePasse);
-        if(passwordStrength < 4)
-        {
-          this.errorMessage = "Le mot de passe est trop faible.";
-          this.showModal = true;
-          this.hasErrorPassword = true;
-        }
-        else
-        {
-          this.hasErrorPassword = false;
-        }
-        if(this.motDePasse !== this.confirmPassword)
-        {
-          this.hasErrorConfirmPassword = true;
-          this.hasErrorPassword = true;
-          this.errorMessage = "Les mots de passe ne correspondent pas.";
-          this.showModal = true;
-          return false; // 
-          
-        }
-        else
-        {
-          this.hasErrorConfirmPassword = false;        
-        
         }
       },
   
       async submitForm() {
+        this.isSubmitting = true;
+
+        const isDuplicateData = this.checkDuplicateData();
+
+        if (!isDuplicateData) {
+          this.isSubmitting = false;
+          return;
+        }
 
         this.validateForm();
+        // if(!this.validateForm())
+        // {
+        //   this.isSubmitting = false;
+        //   return;
+        // }
+        // this.validateForm();
 
         if(
           this.hasErrorRaisonSociale ||
@@ -391,11 +573,15 @@
         this.hasErrorPassword
         ) 
         {
-          this.errorMessage = "Veuillez corriger les erreurs dans le formulaire";
           this.showModal = true;
+          this.isSubmitting = false;
           return;
         }
         
+        if(this.isSubmitting === false)
+        {
+          return;
+        }
         const newUser = {
           raisonSociale: this.raisonSociale,
           siret: this.siret,
@@ -418,30 +604,73 @@
         } else {
           this.errorMessage = "Une erreur est survenue lors de l'inscription.";
           this.showModal = true;
+          this.isSubmitting = true;
         }
       },
     },
   };
   </script>
   
-  <style scoped>
+  <style scoped >
+
+  * {
+    box-sizing: border-box;
+  }
+
+  .input-error {
+    border: 1px solid red;
+  }
+
+  .sheet {
+    height: 100%;
+    max-height: 900px;
+    max-width: 1200px;
+    width: 100%;
+    margin: 0 auto;
+    margin-top: 30px;
+    margin-bottom: 30px;
+    border-style: none;
+    border-radius: 10px;
+    transform: scale(0.85);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1), 0 6px 20px rgba(0, 0, 0, 0.1);
+    display: flex;
+    flex-direction: column;
+    
+  }
+
+  .inscription-title{
+    text-align: center;
+    position: relative;
+    font-size: 25px;
+    margin-bottom: 100px;
+    top: 20px;
+    margin-left: -40px;
+  }
 
   .registration-page {
-  width: 100%;  
-  max-width: 800px;
-  margin: 50px auto;
-  padding: 20px;
+    margin-left: 25%;
+    display: flex;
+    flex-direction: column;
+    width: 60%;
+    height: 100%;
+    margin-left: 280px;
+  }
+  .registration-page input  {
+  max-width: 1200px;
+  width: 90%;  
+  margin: 30px auto;
+  margin-left : -2%;
+  padding: 15px;
   border: 1px solid #ccc;
   border-radius: 10px;
   display: grid;
   grid-template-columns: repeat(3, 1fr);
-  gap: 20px;
-  
   }
 
-  .registration-page h2 {
-    grid-column: span 3;
-    text-align: center;
+  .registration-page label {
+    font-size: 20px;
+    position: relative;
+    top: 20px;  
   }
 
   .registration-page form {
@@ -452,28 +681,36 @@
 
   .form-row-1{
     display: grid;
+    width: 104%;
     grid-template-columns: repeat(2, 1fr);
-    gap: 30px;
   }
 
   .form-row-2{
     display: grid;
     grid-template-columns: repeat(3, 1fr);
-    gap: 30px;
-
+    width: 102%;
   }
 
   .form-row-3{
     display: grid;
-    grid-template-columns: repeat(2, 1fr);
-    gap: 30px;
+    grid-template-columns: repeat(1, 1fr);
+    width: 105%;
+    
+  }
+
+  .form-row-3 input {
+    width: 95%;
   }
 
   .form-row-4{
     display: grid;
     grid-template-columns: repeat(2, 1fr);
-    gap: 30px;
     align-items: start;
+    width: 105%;
+  }
+
+  .form-row-4 h3{
+    font-size: 20px;
   }
 
   .registration-page h3 {
@@ -486,11 +723,53 @@
   .password-strength {
     font-weight: bold;
     min-height: 20px;
+    font-size: 24px;
   }
 
-  .submit-button {
-    width:  150px;
-    align-self: center;
+  .Registration-btn {
+    display: flex;
+    justify-content: center;
+    margin-top: 20px;
+    margin-bottom: 30px;
   }
+
+  @media (max-width: 1024px) and (min-width: 400px) {
+
+    .sheet{
+      max-height: 100%;
+      padding: 15px;
+    }
+    .registration-page {
+     width: 100%;
+     height: 100%;
+     padding: 15px;
+     margin : 0 auto;
+    }
+
+    .form-row-1, .form-row-2, .form-row-3, .form-row-4 {
+    grid-template-columns: 1fr;
+    width: 100%; 
+    
+    }
+
+    .registration-page input {
+      width: 95%;
+      margin: 10px 0;
+    }
+
+    .registration-page label {
+      top: 10px;
+     
+    }
+     
+  
+
+    
+
+  }
+
+    /* Malheureusement on ne peut pas changer la couleur de la bordure d'input quand il est sélectionné, ou en tout
+  cas je ne sais pas comment le faire, donc je me suis contenté de mettre l'inscription en rouge pour les erreurs
+  tant que l'erreur n'est pas corrigée, et la bordure devient rouge s'il y a une Erreur et que le champ est désélectionné */
 
   </style>
