@@ -50,7 +50,6 @@
           @click="goToRegister"
         />
       </div>
-
       <div class="icons" v-else>
         <!-- Cart Icon -->
         <router-link
