@@ -5,6 +5,8 @@ export default createStore({
     detailProd: {},
     commandeValider: [],
     commandesTransferees: [],
+    isAdminView: true,
+
     savedCommandes: [],
     // ----------C j'ai un ajouté un state currentUtilisateur set sur null
     currentUtilisateur: null,
@@ -466,6 +468,10 @@ export default createStore({
       }
     },
 
+    toggleAdminView(state) {
+      state.isAdminView = !state.isAdminView;
+    },
+
     // Contact form ===============================arash================================================================ \\
     setFormData(state, payload) {
       state.formData = payload;
@@ -598,13 +604,13 @@ export default createStore({
       state.savedCommandes = state.savedCommandes.filter(
         (savedCommande) => savedCommande.userId !== userId
       );
-      localStorage.setItem("savedCommandes", JSON.stringify(state.savedCommandes));
-    }
-    
+      localStorage.setItem(
+        "savedCommandes",
+        JSON.stringify(state.savedCommandes)
+      );
+    },
 
     // ----------------------- Fin mutations clément //
-
-
   },
 
   actions: {
@@ -724,9 +730,8 @@ export default createStore({
       if (userId) {
         commit("clearSavedCommandesForUser", userId);
       }
-    }
-     // ----------------------- Fin action Clément//
-
+    },
+    // ----------------------- Fin action Clément//
   },
 
   getters: {
@@ -742,6 +747,10 @@ export default createStore({
 
     isUser(state, getters) {
       return getters.currentUser && getters.currentUser.role === "USER";
+    },
+
+    isAdminView(state) {
+      return state.isAdminView;
     },
 
     subTotal: (state) => (produitId) => {
@@ -846,7 +855,9 @@ export default createStore({
           quantite: order ? order.quantite : 0,
         };
       });
-      return produitsWithQuantite.sort((a, b) => b.quantite - a.quantite).slice(0, 8); // top 8 best seller
+      return produitsWithQuantite
+        .sort((a, b) => b.quantite - a.quantite)
+        .slice(0, 8); // top 8 best seller
     },
     // ========================================================================================================\\
   },
