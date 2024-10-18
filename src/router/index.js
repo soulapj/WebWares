@@ -1,5 +1,6 @@
 import { createRouter, createWebHistory } from "vue-router";
 import HomeView from "../views/HomeView.vue";
+import GestionCommande from "@/views/GestionCommande.vue";
 
 const routes = [
   {
@@ -75,23 +76,63 @@ const routes = [
 
     component: () => import("../views/ConfirmCommande.vue"),
   },
+  {
+    path: "/profile/:id",
+    name: "UtilisateurProfile",
+
+    component: () => import("../views/UtilisateurProfile.vue"),
+  },
+  {
+    path: "/modification-profile",
+    name: "ModificationProfile",
+
+    component: () => import("../views/ModificationProfile.vue"),
+  },
   // --------------------------------- Clément
   {
-    path : "/login",
+    path: "/login",
     name: "Login",
 
     component: () => import("../views/LoginPage.vue"),
   },
   {
-    path : "/register",
+    path: "/register",
     name: "Register",
 
     component: () => import("../views/RegistrationPage.vue"),
+  },
 
-  }
 
+  {
+    path: "/ajout-produit",
+    name: "AjoutProd",
 
-  // --------------------------------- 
+    component: () => import("../views/BackAjoutProd.vue"),
+    meta: { title: 'WebWares - Ajout de nouveau produit' },
+
+  },
+  {
+    path: "/modif-produit/:id",
+    name: "ModProd",
+
+    component: () => import("../views/BackModifProd.vue"),
+    meta: { title: 'WebWares - Modification produit' },
+
+  },
+  {
+    path: "/modif-user/:id",
+    name: "ModUser",
+
+    component: () => import("../views/BackModifUser.vue"),
+    meta: { title: 'WebWares - Modification utilisateur' },
+
+  },
+  {
+    path: "/gestion-commande",
+    name: "GestionCommande",
+    component: GestionCommande,
+  },
+
 ];
 
 const router = createRouter({

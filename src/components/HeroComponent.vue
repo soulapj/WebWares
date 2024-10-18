@@ -1,19 +1,21 @@
 <template>
   <div class="hero-container">
     <div class="hero">
-      <img src="../assets/hero/hero6.jpg" alt="Hero Image" class="hero-img">
+      <img src="../assets/hero/hero6.jpg" alt="Hero Image" class="hero-img" />
       <span class="hero-msg">
         <h1>Bienvenue Sur WebWares</h1>
+
         <p>Créez un compte pour bénéficier de réductions exclusives sur nos collections.</p>
         <ButtonComponents @Click="goToRegister" label="S'INSCRIRE" type="login"/>
+
       </span>
     </div>
   </div>
 </template>
 
 <script>
-
-import ButtonComponents from './ButtonComponents.vue';
+import { mapGetters } from "vuex";
+import ButtonComponents from "./ButtonComponents.vue";
 export default {
   components: {
     ButtonComponents,
@@ -26,6 +28,12 @@ export default {
     }
   }
 }
+
+  computed: {
+    ...mapGetters(["isLoggedIn"]),
+  },
+};
+
 </script>
 
 <style scoped>
@@ -54,7 +62,6 @@ export default {
   background-color: var(--color-secondary);
   color: var(--color-background);
   border: 2px solid var(--color-secondary);
-  ;
   padding: 1rem 2rem;
   font-weight: bold;
   border-radius: 5px;
@@ -79,7 +86,7 @@ export default {
   margin-bottom: 2rem;
 }
 
-@media (max-width: 768px) {
+@media (max-width: 1260px) {
   .hero-container {
     padding: 0;
   }
@@ -96,14 +103,14 @@ export default {
     display: flex;
     flex-direction: column;
     justify-content: center;
-    align-items: center
+    align-items: center;
   }
   .hero h1 {
-  font-size: 2rem;
-  margin-bottom: 1rem;
-}
+    font-size: 2rem;
+    margin-bottom: 1rem;
+  }
   .hero-img {
-  width: 100%;
-}
+    width: 100%;
+  }
 }
 </style>

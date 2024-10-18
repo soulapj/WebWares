@@ -1,10 +1,12 @@
 <template>
   <div>
     <router-link v-if="to" :to="to" :class="['btn', buttonTypeClass]">
+      <i v-if="icon" :class="icon"></i>
       {{ label }}
     </router-link>
 
     <button v-else :class="['btn', buttonTypeClass]">
+      <i v-if="icon" :class="icon"></i>
       {{ label }}
     </button>
   </div>
@@ -22,6 +24,14 @@ export default {
       type: String,
       default: 'default'
     },
+    // to: {
+    //   type: String,
+    //   default: '/'
+    // },
+    icon: {
+      type: String,
+      default: 'default'
+    },
   },
   computed: {
     buttonTypeClass() {
@@ -34,6 +44,12 @@ export default {
           return 'btn-login';
         case 'submit':
           return 'btn-submit';
+        case 'add':
+          return 'btn-add';
+        case 'delete':
+          return 'btn-delete';
+        case 'trash':
+          return 'btn-trash';
         default:
           return 'btn-default';
       }
@@ -44,11 +60,13 @@ export default {
 
 <style scoped>
 .btn {
-  padding: 1rem 2rem;
+  padding: 1rem 1.5rem;
   font-size: 1rem;
   font-weight: bold;
   cursor: pointer;
   border-radius: 5px;
+  text-decoration: none;
+  /* margin: 2rem; */
 }
 
 .btn:hover {
@@ -94,6 +112,32 @@ export default {
   color: var(--color-secondary);
   border: 2px solid var(--color-secondary);
 }
+.btn-add {
+  /* login */
+  background-color: var(--color-secondary);
+  color: var(--color-background);
+  border: 2px solid var(--color-secondary);
+  padding: 0.1rem;
+}
+
+.btn-add:hover {
+  /* login:hover */
+  color: var(--color-secondary);
+  border: 2px solid var(--color-secondary);
+}
+.btn-delete {
+  /* login */
+  background-color: var(--color-logout);
+  color: var(--color-background);
+  border: 2px solid var(--color-logout);
+  padding: 0.2rem;
+}
+
+.btn-delete:hover {
+  /* login:hover */
+  color: var(--color-logout);
+  border: 2px solid var(--color-logout);
+}
 
 .btn-submit {
   /* submit */
@@ -116,5 +160,11 @@ export default {
 /* Default) */
 .btn-default {
   background-color: #6c757d;
+  color: var(--color-background);
+}
+
+.btn-default:hover {
+  background-color: var(--color-background);
+  color: #6c757d;
 }
 </style>
