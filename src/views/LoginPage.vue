@@ -25,12 +25,11 @@
               required />
           </div>
 
-          <ButtonComponent
+          <ButtonComponents
             @click="submitForm"
             label="Connexion"
-            color="var(--color-secondary)"
-            type="login"
-            class="submit-button"
+            type="submit"
+
             v-if="true"
           />
 
@@ -55,7 +54,7 @@
   import { mapActions } from 'vuex';
   import { useRouter } from 'vue-router';
   import ModalComponent from "@/components/ModalComponent.vue"
-  import ButtonComponent from "@/components/ButtonComponents.vue"
+  import ButtonComponents from "@/components/ButtonComponents.vue"
   
   export default {
 
@@ -63,7 +62,7 @@
 
     components: {
       ModalComponent,
-      ButtonComponent
+      ButtonComponents
     },
 
     data() {
@@ -253,6 +252,7 @@
   </script>
 
   
+
   <style scoped>
   .login-page {
     max-width: 500px;

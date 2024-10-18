@@ -35,49 +35,55 @@ export default {
     increaseQty() {
       this.quantity++;
     },
-    decreaseQty() {
-      if (this.quantity > this.detailProd.moq) {
-        this.quantity--;
-      }
-    },
-  },
-};
-</script>
 
-<style scoped>
-.quantity-counter {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  width: 100%;
-  border: 1px solid var(--color-secondary);
-  border-radius: 5px;
-  padding: 0.5rem 0;
-  box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.1);
-}
+  };
+  </script>
+  
+  <style scoped>
+  .quantity-counter {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+    border: 1px solid var(--color-secondary);
+    border-radius: 5px;
+    padding: 0.5rem 0;
+    box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.1);
+    box-sizing: border-box;
+  }
+  
+  .counter-button {
+    background-color: transparent;
+    border: none;
+    font-size: 1.5rem;
+    cursor: pointer;
+    width: 4rem;
+    height: 2rem;
+    /* text-align: center; */
+    
+  }
+  
+  .counter-button:disabled {
+    color: #ccc;
+    cursor: not-allowed;
+  }
+  
+  .quantity-display {
+    font-size: 1.2rem;
+    font-weight: bold;
+    text-align: center;
+  }
+  
+  .quantity-display p {
+    margin: 0;
+  }
 
-.counter-button {
-  background-color: transparent;
-  border: none;
-  font-size: 1.5rem;
-  cursor: pointer;
-  width: 4rem;
-  height: 2rem;
-  text-align: center;
-}
+  @media (max-width: 768px) {
+    .counter-button {
+      justify-content: center;
+      
+    }
+  }
+  </style>
+  
 
-.counter-button:disabled {
-  color: #ccc;
-  cursor: not-allowed;
-}
-
-.quantity-display {
-  font-size: 1.2rem;
-  font-weight: bold;
-  text-align: center;
-}
-
-.quantity-display p {
-  margin: 0;
-}
-</style>

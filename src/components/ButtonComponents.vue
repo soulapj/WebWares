@@ -60,8 +60,10 @@ export default {
 
 <style scoped>
 .btn {
-  padding: 1rem 1.5rem;
-  font-size: 1rem;
+  /* padding: 1rem 1.5rem; */
+  padding: clamp(1rem, 1vw, 1.5rem);
+  /* font-size: 1rem; */
+  font-size: clamp(0.7rem, 1rem, 1.5rem);
   font-weight: bold;
   cursor: pointer;
   border-radius: 5px;

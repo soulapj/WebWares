@@ -89,15 +89,6 @@ export default createStore({
         categorieId: 1,
       },
       {
-        id: 5,
-        images: require("@/assets/mobilier/mobilier-5.jpg"),
-        titre: "Table à manger en bois",
-        description: "Table à manger en bois massif avec finition élégante.",
-        prix: 299.99,
-        moq: 5,
-        categorieId: 1,
-      },
-      {
         id: 6,
         images: require("@/assets/luminaire/luminaire-1.jpg"),
         titre: "Lampe moderne",
@@ -289,10 +280,7 @@ export default createStore({
     backUserList: [],
   },
   mutations: {
-    setCurrentUser(state, user) {
-      // ========= test ========
-      state.currentUser = user;
-    },
+
     setCategories(state, cat) {
       state.categories = cat;
     },

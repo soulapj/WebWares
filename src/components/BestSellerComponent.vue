@@ -3,20 +3,9 @@
     <h2>Best Sellers</h2>
     <div class="best-seller-container" v-if="sortedBestSellers.length">
 
-      <!-- <router-link to="/produit"> -->
-      <div
-        class="best-seller"
-        v-for="produit in sortedBestSellers"
-        :key="produit.id"
-      >
-        <!-- <router-link :to="{ name: 'ProductDetails', params: { id: produit.id } }"> -->
-        <img
-          :src="produit.images"
-          :alt="produit.titre"
-          class="best-seller-img"
-        />
-        <!-- </router-link> -->
-        <div class="overlay" v-if="!isLoggedIn">
+      <div class="best-seller" v-for="produit in sortedBestSellers" :key="produit.id">
+        <img :src="produit.images" :alt="produit.titre" class="best-seller-img" />
+        <div v-if="!isLoggedin" class="overlay" >
 
           <!-- v-if login state condition to be added -->
           <h1>Pour voir les détails s'inscrire</h1>
@@ -27,7 +16,7 @@
           />
         </div>
 
-        <div class="overlay" v-if="isLoggedIn">
+        <div class="overlay" v-if="isLoggedin" @click="$router.push(`/product-details/` + produit.id)" icon="fa-solid fa-trash">
 
           <!-- v-if logout state condition to be added /-->
           <p>{{ produit.titre }}</p>
@@ -48,23 +37,13 @@ export default {
   components: {
     ButtonComponents,
   },
-  data() {
-    return {
-      userRole: null, 
-    };
-  },
   computed: {
     ...mapState(["produits"]),
 
     ...mapGetters(["sortedBestSellers", "isLoggedIn"]),
   },
-  methods: {
-    pickBestSellers(index) {
-      let productSold = this.commandeValider.produits[index].quantite;
-      productSold.sort((a, b) => b - a);
-    },
-  },
-};
+
+}
 
 </script>
 

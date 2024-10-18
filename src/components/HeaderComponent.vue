@@ -173,7 +173,8 @@ export default {
 
 <style scoped>
 header {
-  position: relative;
+  position: sticky;
+  top: 0;
   display: flex;
   justify-content: space-around;
   align-items: center;
