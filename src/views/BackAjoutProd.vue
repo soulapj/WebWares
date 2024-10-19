@@ -47,10 +47,8 @@
 
       <label for="categorieId">Catégorie produit:</label><br />
       <select id="categorieId" name="category" v-model="newProd.categorieId">
-        <option value="1">Mobilier d'Intérieur</option>
-        <option value="2">Luminaires</option>
-        <option value="3">Tapis</option>
-        <option value="4">Objet de décoration</option></select
+        <option v-for="category in this.categories" :value="category.id" :key="category.id">{{category.name}}</option>
+      </select
       ><br />
       <br />
       <div class="boutons">
@@ -88,7 +86,7 @@
 <script>
 import ButtonComponents from "@/components/ButtonComponents.vue";
 import ModalComponent from "@/components/ModalComponent.vue";
-import { mapMutations } from "vuex";
+import { mapMutations, mapState } from "vuex";
 
 export default {
   components: {
@@ -143,6 +141,9 @@ export default {
     closeModal() {
       this.showModalConfirm = false;
     },
+  },
+  computed: {
+    ...mapState(["produits", "categories"]),
   },
 };
 </script>
