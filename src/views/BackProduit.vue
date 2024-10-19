@@ -43,11 +43,11 @@
             <td class="desc">{{ produit.description }}</td>
             <td>{{ produit.prix }}</td>
             <td>{{ produit.moq }}</td>
-            <div class="categorybox hide">
+            <td class="categorybox hide">
               <div v-for="(category, index) in this.categories" :key="index">
                 <div v-if="produit.categorieId == category.id"> {{ category.name }}</div>
               </div>
-            </div>
+            </td>
             <!-- <td v-if="produit.categorieId == 1">Mobilier d'Intérieur</td>
             <td v-else-if="produit.categorieId == 2">Luminaires</td>
             <td v-else-if="produit.categorieId == 3">Tapis</td>
