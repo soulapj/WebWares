@@ -48,19 +48,38 @@
         </div>
       </form>
     </div>
+    <ModalComponent :showModal="showModalConfirm" color="#d7c3a7">
+            <template #header>
+              <h2>Veuillez remplir tous les champs</h2>
+            </template>
+
+            <template #body>
+              <p></p>
+            </template>
+            <template #footer>
+          <ButtonComponents
+            label="Continuer"
+            type="submit"
+            @click="closeModal()"
+          />
+        </template>
+      </ModalComponent>
   </template>
   
   <script>
   import ButtonComponents from "@/components/ButtonComponents.vue";
+import ModalComponent from "@/components/ModalComponent.vue";
   import { mapState, mapMutations } from "vuex";
   
   export default {
     components: {
       ButtonComponents,
+      ModalComponent
     },
     data() {
       return {
         addCateg: {},
+        showModalConfirm: false,
         // payload: { key1: {}, key2: this.$route.params.id },
       };
     },
@@ -69,15 +88,16 @@
       modCateg() {
         if (
           this.addCateg.name &&
-          this.addCateg.description
+          this.addCateg.description && 
+          this.addCateg.images
         ) {
           this.addCateg.id = this.$route.params.id;
           this.payload = this.addCateg;
           this.backModCateg(this.payload);
+          this.goBack();
         } else {
-          alert("remplacer par un modal");
+          this.openModal()
         }
-        this.goBack();
       },
   
       goBack() {
@@ -93,6 +113,12 @@
           };
           reader.readAsDataURL(file);
         }
+      },
+      openModal() {
+      this.showModalConfirm = true;
+      },
+      closeModal() {
+        this.showModalConfirm = false;
       },
     },
     computed: {

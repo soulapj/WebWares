@@ -6,7 +6,13 @@
                 <input type="text" id="name" name="name" v-model="newCateg.name"><br>
 
                 <label for="images">Image de la catégorie:</label><br>
-                <input type="file" id="images" name="images" accept="image/png, image/jpeg"/><br>
+                  <input
+                  type="file"
+                  id="images"
+                  name="images"
+                  accept="image/png, image/jpeg"
+                  @change="imageAdd"
+                /><br>
 
                 <label for="description">Description catégorie:</label><br>
                 <textarea  type="text" id="description" name="description" v-model="newCateg.description" placeholder="Entrez votre description" rows="5" cols="33"></textarea><br>
@@ -17,21 +23,41 @@
                   <ButtonComponents label="Annuler" type="logout" @click.prevent="goBack()"></ButtonComponents>
                 </div>
             </form>
+            <ModalComponent :showModal="showModalConfirm" color="#d7c3a7">
+            <template #header>
+              <h2>Veuillez remplir tous les champs</h2>
+            </template>
+
+            <template #body>
+              <p></p>
+            </template>
+            <template #footer>
+          <ButtonComponents
+            label="Continuer"
+            type="submit"
+            @click="closeModal()"
+          />
+        </template>
+      </ModalComponent>
     </div>
   </template>
   
   <script>
     import ButtonComponents from "@/components/ButtonComponents.vue";
+    import ModalComponent from "@/components/ModalComponent.vue";
     import { mapMutations } from "vuex";
 
 
   export default {
     components:{
         ButtonComponents,
+        ModalComponent
     },
     data() {
     return {
       newCateg: {},
+      showModalConfirm: false,
+      
     };
     },
 
@@ -43,7 +69,7 @@
                 this.newCateg = {};
                 this.goBack()
             } else {
-                alert("remplacer par un modal")
+                this.openModal()
             }
             // this.saveProduitsLocalStorage()
 
@@ -53,7 +79,23 @@
         // },
         goBack(){
             this.$router.back()
-        }
+        },
+        imageAdd(event) {
+      const file = event.target.files[0];
+      if (file) {
+        const reader = new FileReader();
+        reader.onload = (e) => {
+          this.newCateg.images = e.target.result; // Conversion en base64
+        };
+        reader.readAsDataURL(file);
+      }
+    },
+    openModal() {
+      this.showModalConfirm = true;
+    },
+    closeModal() {
+      this.showModalConfirm = false;
+    },
 
     }
     

@@ -164,6 +164,9 @@ export default {
       this.$store.commit("toggleAdminView");
     },
   },
+  created() {
+    // this.isLoggedIn = !!this.currentUser;
+  },
 };
 </script>
 

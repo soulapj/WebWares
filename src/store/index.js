@@ -416,13 +416,13 @@ export default createStore({
       const indexProd = state.produits.map((e) => e.id).indexOf(prodId);
       state.produits.splice(indexProd, 1);
     },
-    backRemoveCateg(state, prodId) {
-      const indexProd = state.categories.map((e) => e.id).indexOf(prodId);
-      state.categories.splice(indexProd, 1);
-    },
     backRemoveUser(state, userId) {
       const indexUser = state.utilisateurs.map((e) => e.id).indexOf(userId);
       state.utilisateurs.splice(indexUser, 1);
+    },
+    backRemoveCateg(state, prodId) {
+      const indexProd = state.categories.map((e) => e.id).indexOf(prodId);
+      state.categories.splice(indexProd, 1);
     },
     backAddProduit(state, newObj) {
       let maxId = 0;
@@ -449,7 +449,12 @@ export default createStore({
         .map((e) => e.id)
         .indexOf(parseInt(modObj.key2));
       state.produits[indexProd] = { ...modObj.key1 };
-      // state.produits[index] = {...modObj.key1}
+    },
+    backModUser(state, modObj) {
+      const indexProd = state.utilisateurs
+        .map((e) => e.id)
+        .indexOf(parseInt(modObj.key2));
+      state.utilisateurs[indexProd] = { ...modObj.key1 };
     },
     backModCateg(state, modObj) {
       const indexProd = state.categories
@@ -457,12 +462,6 @@ export default createStore({
         .indexOf(parseInt(modObj.id));
       state.categories[indexProd] = { ...modObj };
       // state.produits[index] = {...modObj.key1}
-    },
-    backModUser(state, modObj) {
-      const indexProd = state.utilisateurs
-        .map((e) => e.id)
-        .indexOf(parseInt(modObj.key2));
-      state.utilisateurs[indexProd] = { ...modObj.key1 };
     },
 
     saveCommandeToLocalStorage(state, commande) {
@@ -689,6 +688,14 @@ export default createStore({
   },
 
   actions: {
+    // ========= test ==========
+    loadCurrentUser({ commit }) {
+      const user = JSON.parse(localStorage.getItem("currentUser"));
+      if (user) {
+        commit("setCurrentUser", user);
+      }
+    },
+    // =========== test ==========
     loadDetailProduits({ commit }, idProduit) {
       const selectedProduct = this.state.produits.find(
         (prod) => prod.id === idProduit

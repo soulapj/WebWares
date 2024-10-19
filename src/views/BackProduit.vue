@@ -21,9 +21,9 @@
       <table>
         <thead>
           <tr>
-            <th>Image</th>
+            <th class="pimg">Image</th>
             <th>Titre</th>
-            <th>Description</th>
+            <th class="desc">Description</th>
             <th>Prix</th>
             <th>Quantité Minimum</th>
             <th>Catégorie</th>
@@ -32,23 +32,28 @@
         </thead>
         <tbody>
           <tr v-for="(produit, index) in this.filteredProduits" :key="index">
-            <td>
+            <td class="pimg">
               <img
                 v-bind:src="produit.images"
                 id="image"
                 v-bind:alt="produit.titre"
               />
             </td>
-            <td>{{ produit.titre }}</td>
-            <td>{{ produit.description }}</td>
+            <td >{{ produit.titre }}</td>
+            <td class="desc">{{ produit.description }}</td>
             <td>{{ produit.prix }}</td>
             <td>{{ produit.moq }}</td>
-            <td v-if="produit.categorieId == 1">Mobilier d'Intérieur</td>
+            <div class="categorybox hide">
+              <div v-for="(category, index) in this.categories" :key="index">
+                <div v-if="produit.categorieId == category.id"> {{ category.name }}</div>
+              </div>
+            </div>
+            <!-- <td v-if="produit.categorieId == 1">Mobilier d'Intérieur</td>
             <td v-else-if="produit.categorieId == 2">Luminaires</td>
             <td v-else-if="produit.categorieId == 3">Tapis</td>
             <td v-else-if="produit.categorieId == 4">Objets de décoration</td>
-            <td v-else>Placeholder</td>
-            <td>
+            <td v-else>Placeholder</td> -->
+            <td class="act">
               <ButtonComponents
                 label="Modifier"
                 type="submit"
@@ -184,6 +189,20 @@ td {
   text-align: center;
 }
 
+.categorybox {
+  display: flex;
+  border-bottom: 1px solid #ddd;
+  border-top: 1px solid transparent;
+}
+
+.hide {
+  display: flex;
+  text-align: center;
+  align-items: center;
+  justify-content: center;
+  height: 156px;
+}
+
 th {
   background-color: #d7c3a7;
   color: #264653;
@@ -216,4 +235,32 @@ img {
   display: flex;
   justify-content: center;
 }
+
+@media (max-width: 1200px) {
+  .desc {
+    display: none;
+  }
+  
+}
+
+@media (max-width: 900px) {
+  .top {
+    transform: scale(80%) translate(-5%);
+  }
+  
+}
+
+@media (max-width: 600px) {
+  .pimg {
+    display: none;
+  }
+  td{
+    padding: 3px
+  }
+  .act {
+    transform: scale(80%);
+  }
+  
+}
+
 </style>

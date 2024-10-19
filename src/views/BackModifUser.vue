@@ -35,17 +35,35 @@
                   <ButtonComponents label="Annuler" type="logout" @click.prevent="goBack()"></ButtonComponents>
                 </div>
             </form>
+            <ModalComponent :showModal="showModalConfirm" color="#d7c3a7">
+            <template #header>
+              <h2>Veuillez remplir tous les champs</h2>
+            </template>
+
+            <template #body>
+              <p></p>
+            </template>
+            <template #footer>
+          <ButtonComponents
+            label="Continuer"
+            type="submit"
+            @click="closeModal()"
+          />
+        </template>
+      </ModalComponent>
     </div>
   </template>
   
   <script>
   import ButtonComponents from "@/components/ButtonComponents.vue";
+import ModalComponent from "@/components/ModalComponent.vue";
   import { mapState, mapMutations } from "vuex";
 
 
   export default {
     components:{
         ButtonComponents,
+        ModalComponent
     },
     data() {
     return {
@@ -59,7 +77,8 @@
         motDePasse: "",
         role: "",
       },
-      payload: {key1: {}, key2: (this.$route.params.id)}
+      payload: {key1: {}, key2: (this.$route.params.id)},
+      showModalConfirm: false,
 
     };
     },
@@ -70,14 +89,20 @@
         this.editUser.id = this.$route.params.id
         this.payload.key1 = this.editUser
         this.backModUser(this.payload)
-        } else {
-        alert("remplacer par un modal")
-        }
         this.goBack()
+        } else {
+          this.openModal()
+        }
     },
     
     goBack() {
       this.$router.back()
+    },
+    openModal() {
+      this.showModalConfirm = true;
+    },
+    closeModal() {
+      this.showModalConfirm = false;
     },
     },
     computed:{

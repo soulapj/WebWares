@@ -70,21 +70,40 @@
         ></ButtonComponents>
       </div>
     </form>
+    <ModalComponent :showModal="showModalConfirm" color="#d7c3a7">
+            <template #header>
+              <h2>Veuillez remplir tous les champs</h2>
+            </template>
+
+            <template #body>
+              <p></p>
+            </template>
+            <template #footer>
+          <ButtonComponents
+            label="Continuer"
+            type="submit"
+            @click="closeModal()"
+          />
+        </template>
+      </ModalComponent>
   </div>
 </template>
 
 <script>
 import ButtonComponents from "@/components/ButtonComponents.vue";
+import ModalComponent from "@/components/ModalComponent.vue";
 import { mapState, mapMutations } from "vuex";
 
 export default {
   components: {
     ButtonComponents,
+    ModalComponent
   },
   data() {
     return {
       editProd: {},
       payload: { key1: {}, key2: this.$route.params.id },
+      showModalConfirm: false,
     };
   },
   methods: {
@@ -101,10 +120,10 @@ export default {
         this.editProd.id = this.$route.params.id;
         this.payload.key1 = this.editProd;
         this.backModProduit(this.payload);
+        this.goBack();
       } else {
-        alert("remplacer par un modal");
+        this.openModal()
       }
-      this.goBack();
     },
 
     goBack() {
@@ -121,9 +140,15 @@ export default {
         reader.readAsDataURL(file);
       }
     },
+    openModal() {
+      this.showModalConfirm = true;
+    },
+    closeModal() {
+      this.showModalConfirm = false;
+    },
   },
   computed: {
-    ...mapState(["produits","categories"]),
+    ...mapState(["produits", "categories"]),
   },
   mounted() {
     const product = this.produits.find(

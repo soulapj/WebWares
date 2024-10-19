@@ -115,6 +115,7 @@ import { mapState } from "vuex";
     .conteneur{
         background-color: #ece5dc;
         display: flex;
+        flex-wrap: wrap;
         justify-content: space-evenly;
     }
     .profil{
