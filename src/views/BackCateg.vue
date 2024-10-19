@@ -22,7 +22,7 @@
             <th>Id</th>
             <th>Nom</th>
             <th>Image</th>
-            <th>Description</th>
+            <th class="desc">Description</th>
             <th>Actions</th>
           </tr>
         </thead>
@@ -37,7 +37,7 @@
                 v-bind:alt="category.name"
               />
             </td>
-            <td>{{ category.description }}</td>
+            <td class="desc">{{ category.description }}</td>
             <td>
               <ButtonComponents
                 label="Modifier"
@@ -205,5 +205,35 @@ img {
 .top {
   display: flex;
   justify-content: center;
+}
+
+@media (max-width: 1200px) {
+  .desc {
+    display: none;
+  }
+  
+}
+
+@media (max-width: 900px) {
+  .top {
+    transform: scale(80%) translate(-5%);
+  }
+  
+}
+
+@media (max-width: 600px) {
+  .pimg {
+    display: none;
+  }
+  td{
+    padding: 3px
+  }
+  .act {
+    transform: scale(80%);
+  }
+  img {
+    margin:0px;
+  }
+  
 }
 </style>

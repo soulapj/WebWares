@@ -67,19 +67,38 @@
       </div>
     </form>
   </div>
+  <ModalComponent :showModal="showModalConfirm" color="#d7c3a7">
+            <template #header>
+              <h2>Veuillez remplir tous les champs</h2>
+            </template>
+
+            <template #body>
+              <p></p>
+            </template>
+            <template #footer>
+          <ButtonComponents
+            label="Continuer"
+            type="submit"
+            @click="closeModal()"
+          />
+        </template>
+      </ModalComponent>
 </template>
 
 <script>
 import ButtonComponents from "@/components/ButtonComponents.vue";
+import ModalComponent from "@/components/ModalComponent.vue";
 import { mapMutations } from "vuex";
 
 export default {
   components: {
     ButtonComponents,
+    ModalComponent
   },
   data() {
     return {
       newProd: {},
+      showModalConfirm: false,
     };
   },
 
@@ -96,11 +115,11 @@ export default {
       ) {
         this.backAddProduit(this.newProd);
         this.newProd = {};
+        this.goBack();
       } else {
-        alert("remplacer par un modal");
+        this.openModal()
       }
       // this.saveProduitsLocalStorage()
-      this.goBack();
     },
     // saveProduitsLocalStorage(){
     //     localStorage.setItem("produitList", JSON.stringify(this.produits))
@@ -117,6 +136,12 @@ export default {
         };
         reader.readAsDataURL(file);
       }
+    },
+    openModal() {
+      this.showModalConfirm = true;
+    },
+    closeModal() {
+      this.showModalConfirm = false;
     },
   },
 };
