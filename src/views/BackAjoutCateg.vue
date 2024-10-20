@@ -19,7 +19,7 @@
 
                 <br>
                 <div class="boutons">
-                  <ButtonComponents label="Ajouter" type="submit" @click.prevent="addCateg()" ></ButtonComponents>
+                  <ButtonComponents label="Ajouter" type="login" @click.prevent="addCateg()" style="margin-right: 0.5rem"></ButtonComponents>
                   <ButtonComponents label="Annuler" type="logout" @click.prevent="goBack()"></ButtonComponents>
                 </div>
             </form>

@@ -20,8 +20,9 @@
           <li v-for="category in categories" :key="category.id">
             <router-link
               :to="{ name: 'CategorieProduits', params: { id: category.id } }"
-              >{{ category.name }}</router-link
-            >
+              >{{ category.name }}
+            </router-link>
+            <i class="fa-solid fa-chevron-right fa-lg"></i>
           </li>
         </ul>
       </div>
@@ -57,9 +58,8 @@
           class="cart-icon"
           v-if="isUser || !isAdminView"
         >
-          <span v-if="commandes && commandes.length > 0">{{
-            commandes.length
-          }}</span>
+          <span v-if="commandes && commandes.length > 0">
+            {{commandes.length}}</span>
           <i class="fa-solid fa-basket-shopping fa-lg"></i>
         </router-link>
 
@@ -71,21 +71,29 @@
           <div class="dropdown">
             <p class="welcome-msg">Bienvenue {{ currentUser.raisonSociale }}</p>
 
-            <ButtonComponents
-              label="Profil"
-              type="login"
-              @click="$router.push('/profile/:id')"
-            />
-            <div v-if="isAdmin && isLoggedIn">
-              <button @click="toggleAdminView" style="width: fit-content">
-                {{ isAdminView ? "Accès utilisateur" : "Accès admin" }}
-              </button>
-            </div>
-            <ButtonComponents
+            <div>
+              <ButtonComponents
+                label="Profil"
+                type="login"
+                @click="$router.push('/profile/:id')"
+              />
+              <!-- <div v-if="isAdmin && isLoggedIn">
+                <button @click="toggleAdminView" style="width: fit-content">
+                  {{ isAdminView ? "Accès utilisateur" : "Accès admin" }}
+                </button>
+              </div> -->
+              <ButtonComponents
               label="Déconnexion"
               type="logout"
               @click="logout"
-            />
+              />
+              <div v-if="isAdmin && isLoggedIn">
+                <div @click="toggleAdminView" class="toggle-admin">
+                  {{ isAdminView ? "Accès Utilisateur" : "Accès Admin" }}
+                  <i :class="isAdminView ? 'fa-solid fa-toggle-on fa-xl' : 'fa-solid fa-toggle-off fa-xl'"></i>
+                </div>
+              </div>
+            </div>
           </div>
         </div>
       </div>
@@ -146,7 +154,7 @@ export default {
 
       this.$emit("user-logged-in", false);
       // alert(this.isLoggedIn);
-      this.$router.push("/");
+      this.$router.push("/login");
       // ------------ //
     },
     login() {
@@ -228,6 +236,7 @@ nav a:hover {
 .categories-dropdown ul {
   display: none;
   position: absolute;
+  margin: 0;
   background-color: var(--color-background);
   box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.3);
   border-radius: 5px;
@@ -235,8 +244,8 @@ nav a:hover {
   padding: 1rem;
   width: 20rem;
   text-align: left;
-  top: 20px;
-  left: -100px;
+  top: 43px;
+  left: 0px;
 }
 
 .categories-dropdown:hover ul {
@@ -244,6 +253,9 @@ nav a:hover {
 }
 
 .categories-dropdown ul li {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
   font-size: 1rem;
   line-height: 1.5;
 }
@@ -273,6 +285,13 @@ i:hover {
   position: relative;
 }
 
+.dropdown > div {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-evenly;
+  gap: 0.5rem;
+}
+
 .user-menu .dropdown {
   display: none;
   text-align: center;
@@ -284,7 +303,7 @@ i:hover {
   box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.3);
   border-radius: 5px;
   padding: 1rem 0;
-  width: 17rem;
+  width: 20rem;
 }
 
 .user-menu:hover .dropdown {
@@ -312,6 +331,10 @@ i:hover {
   border: 2px solid var(--color-logout);
   padding: 0.5rem 1rem;
   transition: 0.3s ease;
+}
+
+.toggle-admin {
+  margin: 0.5rem 0;
 }
 
 @media (max-width: 1260px) {

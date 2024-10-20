@@ -6,6 +6,7 @@ export default createStore({
     commandeValider: [],
     commandesTransferees: [],
     isAdminView: true,
+    isLoggedIn: false,
 
     savedCommandes: [],
     // ----------C j'ai un ajouté un state currentUtilisateur set sur null

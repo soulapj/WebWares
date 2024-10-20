@@ -41,13 +41,14 @@
             <td>
               <ButtonComponents
                 label="Modifier"
-                type="submit"
+                type="login"
                 @click="$router.push(`/modif-category/` + category.id)"
               ></ButtonComponents>
               <ButtonComponents
                 label="Supprimer"
                 type="logout"
                 @click="openDeleteModal(category.id)"
+                style="margin-top: 0.5rem"
               ></ButtonComponents>
             </td>
           </tr>

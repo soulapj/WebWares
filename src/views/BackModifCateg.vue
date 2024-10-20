@@ -37,13 +37,14 @@
         <div class="boutons">
           <ButtonComponents
             label="Modifier"
-            type="submit"
+            type="login"
             @click.prevent="modCateg()"
           ></ButtonComponents>
           <ButtonComponents
             label="Annuler"
             type="logout"
             @click.prevent="goBack()"
+            style="margin-left: 0.5rem"
           ></ButtonComponents>
         </div>
       </form>

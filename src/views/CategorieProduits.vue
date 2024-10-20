@@ -158,7 +158,7 @@ export default {
 .view-all-container img {
   height: 200px;
   width: fit-content;
-  object-fit: fit;
+  object-fit: cover;
 }
 
 .view-all {

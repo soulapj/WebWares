@@ -1,5 +1,5 @@
 <template>
-  <section class="best-sellers">
+  <section class="best-sellers" id="BestSellerComponent">
     <h2>Best Sellers</h2>
     <div class="best-seller-container" v-if="sortedBestSellers.length">
       <div
@@ -121,6 +121,10 @@ export default {
 }
 
 .overlay h1 {
+  font-size: 2rem;
+  font-style: italic;
+}
+.overlay p {
   font-size: 2rem;
   font-style: italic;
 }

@@ -29,7 +29,6 @@
             @click="submitForm"
             label="Connexion"
             type="submit"
-
             v-if="true"
           />
 

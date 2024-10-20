@@ -4,10 +4,11 @@
       <img src="../assets/hero/hero6.jpg" alt="Hero Image" class="hero-img" />
       <span class="hero-msg">
         <h1>Bienvenue Sur WebWares</h1>
-
-        <p>Créez un compte pour bénéficier de réductions exclusives sur nos collections.</p>
-        <ButtonComponents @Click="goToRegister" label="S'INSCRIRE" type="login"/>
-
+        <div v-if="!isLoggedIn">
+          <p>Créez un compte pour bénéficier de réductions exclusives sur nos collections.</p>
+          <ButtonComponents @Click="goToRegister" label="S'INSCRIRE" type="login"/>
+        </div>
+        <div v-else><a href="#BestSellerComponent">Découvrez nos produits les plus vendus</a></div>
       </span>
     </div>
   </div>
@@ -15,17 +16,39 @@
 
 <script>
 import ButtonComponents from "./ButtonComponents.vue";
+import { mapState } from "vuex";
+import { mapGetters } from "vuex";
 export default {
   components: {
     ButtonComponents,
   },
-
+  // props: {
+  //       isLoggedIn: {
+  //           type: Boolean,
+  //           required: true,
+  //       },
+  //   },
   methods:{
     goToRegister(){
        this.$router.push("/Register");
-
     }
-  }
+  },
+  computed: {
+        ...mapState({
+            categories: (state) => state.categories,
+
+            currentUser: (state) =>
+                state.utilisateurs.find((user) => user.id === state.currentUserId),
+            commandes: (state) => state.commandes,
+        }),
+        ...mapGetters([
+            "currentUser",
+            "isLoggedIn",
+            "isAdmin",
+            "isUser",
+            "isAdminView",
+        ]),
+      }
 };
 
 </script>
@@ -50,6 +73,16 @@ export default {
 .hero-msg {
   flex: 1;
   margin: 0 5rem;
+}
+
+.hero-msg a {
+  font-size: 1.3rem;
+  color: var(--color-secondary);
+  text-underline-offset: 5px;
+}
+.hero-msg a:hover {
+  text-decoration-thickness: 3px;
+
 }
 
 .hero-msg button {
