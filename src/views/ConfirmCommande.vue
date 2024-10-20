@@ -50,6 +50,12 @@
 
     <div v-else>
       <p><strong>Commande en cours de traitement!</strong></p>
+      <br />
+      <ButtonComponents
+        label="Retour Accueil"
+        type="login"
+        @click="$router.push('/')"
+      />
     </div>
 
     <ModalComponent :showModal="showModalCommandeConfirm" color="#d7c3a7">
@@ -62,16 +68,18 @@
       </template>
 
       <template #footer>
-        <ButtonComponents
-          label="Valider"
-          type="login"
-          @click="validerCommande()"
-        />
-        <ButtonComponents
-          label="Annuler"
-          type="logout"
-          @click="closeValidateCommandeModal"
-        />
+        <div class="btn-conf">
+          <ButtonComponents
+            label="Valider"
+            type="login"
+            @click="validerCommande()"
+          />
+          <ButtonComponents
+            label="Annuler"
+            type="logout"
+            @click="closeValidateCommandeModal"
+          />
+        </div>
       </template>
     </ModalComponent>
   </div>
@@ -149,5 +157,11 @@ export default {
   justify-content: center;
   flex-direction: column;
   gap: 30px;
+}
+
+.btn-conf {
+  display: flex;
+  justify-content: center;
+  gap: 15px;
 }
 </style>

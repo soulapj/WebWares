@@ -95,6 +95,13 @@
     </div>
     <div v-else>
       <p style="text-align: center">Votre panier est vide.</p>
+      <br />
+      <ButtonComponents
+        style="text-align: center"
+        label="Retour Accueil"
+        type="login"
+        @click="$router.push('/')"
+      />
     </div>
     <ModalComponent :showModal="showModalConfirm" color="#d7c3a7">
       <template #header>
@@ -106,16 +113,18 @@
       </template>
 
       <template #footer>
-        <ButtonComponents
-          label="Valider"
-          type="login"
-          @click="removeProduit()"
-        />
-        <ButtonComponents
-          label="Annuler"
-          type="logout"
-          @click="closeDeleteModalConfirm"
-        />
+        <div class="btn-conf">
+          <ButtonComponents
+            label="Valider"
+            type="login"
+            @click="removeProduit()"
+          />
+          <ButtonComponents
+            label="Annuler"
+            type="logout"
+            @click="closeDeleteModalConfirm"
+          />
+        </div>
       </template>
     </ModalComponent>
   </div>
@@ -228,5 +237,11 @@ button {
   display: flex;
   align-items: center;
   flex-direction: row;
+}
+
+.btn-conf {
+  display: flex;
+  justify-content: center;
+  gap: 15px;
 }
 </style>
