@@ -14,7 +14,7 @@
             <p>Adresse mail : {{ user.email }}</p>
             <p>Rôle : {{ user.role }}</p>
             <div class="boutons">
-                <ButtonComponents label="Modifier" type="submit" @click="$router.push(`modif-user/`+ user.id)"></ButtonComponents>
+                <ButtonComponents label="Modifier" type="login" @click="$router.push(`modif-user/`+ user.id)"></ButtonComponents>
                 <ButtonComponents label="Supprimer" type="logout" @click="openDeleteModal(user.id)"></ButtonComponents>
             </div>
             <!-- Deletion Modal -->

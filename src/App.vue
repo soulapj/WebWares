@@ -10,11 +10,16 @@
 
     <!-- Router-view to show different views like HomeView, Product List, etc. -->
     <!-- ici on écoute l'évent passé depuis la page login -->
-    <router-view @user-logged-in="handleUserLoggedIn" />
+    <router-view 
+    :isLoggedIn="isLoggedIn"
+    @user-logged-in="handleUserLoggedIn" />
 
     <!-- Footer should be visible on all pages -->
     <FooterComponent />
-    <HeaderMobileComponent />
+    <HeaderMobileComponent 
+    :isLoggedIn="isLoggedIn"
+    @user-logged-in="handleUserLoggedIn"
+    />
   </div>
 </template>
 

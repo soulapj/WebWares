@@ -56,14 +56,15 @@
             <td class="act">
               <ButtonComponents
                 label="Modifier"
-                type="submit"
+                type="login"
                 @click="$router.push(`modif-produit/` + produit.id)"
-              ></ButtonComponents>
+              />
               <ButtonComponents
                 label="Supprimer"
                 type="logout"
                 @click="openDeleteModal(produit.id)"
-              ></ButtonComponents>
+                style="margin-top: 0.5rem"
+              />
             </td>
           </tr>
         </tbody>
@@ -187,6 +188,10 @@ td {
   border: 1px solid #ddd;
   padding: 10px;
   text-align: center;
+}
+
+.act {
+  margin: 10px;
 }
 
 .categorybox {

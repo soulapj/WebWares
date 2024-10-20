@@ -54,8 +54,9 @@
       <div class="boutons">
         <ButtonComponents
           label="Ajouter"
-          type="submit"
+          type="login"
           @click.prevent="addProd()"
+          style="margin-right: 0.5rem"
         ></ButtonComponents>
         <ButtonComponents
           label="Annuler"

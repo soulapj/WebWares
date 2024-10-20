@@ -7,26 +7,31 @@
   <div class="produit">
     <div class="produit-item" v-for="(prod, index) in filteredProduits" :key="index">
       <img :src="prod.images" />
-      <h4>{{ prod.titre }}</h4>
+      <h3>{{ prod.titre }}</h3>
       <p v-if="isLoggedIn">
         Quantité d'achat de l'article minimum : {{ prod.moq }}
       </p>
       <p v-if="isLoggedIn">EUR : {{ prod.prix }} €</p>
-      <ButtonComponents
-        v-if="isLoggedIn && commandes && !isInBag(prod.id)"
-        label="Ajouter au panier"
-        type="login"
-        @click="addToPanier(prod.id)"
-      />
-      <ButtonComponents
-        v-if="isLoggedIn && commandes && isInBag(prod.id)"
-        label="Supprimer du panier"
-        type="logout"
-        @click="removeToPanier(prod.id)"
-      />
-      <router-link :to="{ name: 'DetailProduit', params: { id: prod.id } }"
-        >voir détails</router-link
-      >
+      <div class="button">
+        <ButtonComponents
+          v-if="isLoggedIn && commandes && !isInBag(prod.id)"
+          label="Ajouter au panier"
+          type="login"
+          @click="addToPanier(prod.id)"
+        />
+        <ButtonComponents
+          v-if="isLoggedIn && commandes && isInBag(prod.id)"
+          label="Supprimer du panier"
+          type="logout"
+          @click="removeToPanier(prod.id)"
+        />
+        <ButtonComponents
+        class="test"
+        label="Voir détails"
+        type="register"
+        @click="$router.push({ name: 'DetailProduit', params: { id: prod.id } })"
+        />
+      </div>
     </div>
   </div>
 </template>
@@ -93,6 +98,7 @@ img {
   justify-content: center;
   flex-wrap: wrap;
   gap: 20px;
+  margin: 1rem 0;
 }
 
 /* Limite de 5 éléments par ligne */
@@ -100,7 +106,21 @@ img {
   width: calc(20% - 30px); 
   box-sizing: border-box;
   text-align: center;
-  margin-bottom: 20px;
+  margin-bottom: 0.5rem;
+  padding: 0 0.5rem;
+  box-shadow: 0px 4px 15px rgba(0, 0, 0, 0.1);
+}
+
+h3 {
+  margin: 0.5rem 0;
+}
+
+.button {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 0.5rem;
 }
 
 @media (max-width: 1200px) {

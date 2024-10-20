@@ -60,8 +60,9 @@
       <div class="boutons">
         <ButtonComponents
           label="Modifier"
-          type="submit"
+          type="login"
           @click.prevent="modProd()"
+          style="margin-right: 0.5rem"
         ></ButtonComponents>
         <ButtonComponents
           label="Annuler"

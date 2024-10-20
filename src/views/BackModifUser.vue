@@ -31,7 +31,7 @@
                 </select><br>
                 <br>
                 <div class="boutons">
-                  <ButtonComponents label="Modifier" type="submit" @click.prevent="modUser()"></ButtonComponents>
+                  <ButtonComponents label="Modifier" type="login" @click.prevent="modUser()" style="margin-right: 0.5rem"></ButtonComponents>
                   <ButtonComponents label="Annuler" type="logout" @click.prevent="goBack()"></ButtonComponents>
                 </div>
             </form>
